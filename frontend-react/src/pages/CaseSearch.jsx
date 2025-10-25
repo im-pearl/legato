@@ -108,7 +108,7 @@ function CaseSearch() {
     setShowLoadingModal(true);
     setTimeout(() => {
       setShowLoadingModal(false);
-      navigate('/case-finalreview');
+      navigate('/case-final-review');
     }, 1500);
   };
 
@@ -140,7 +140,7 @@ function CaseSearch() {
         }}
       >
         {/* 사실관계 */}
-        <Card sx={{ mb: 3 }}>
+        <Card variant="outlined" sx={{ mb: 3 }}>
           <CardContent>
             <Typography variant="h6" fontWeight={600} mb={2}>
               사실관계
@@ -152,7 +152,7 @@ function CaseSearch() {
         </Card>
 
         {/* 판례 검색 결과 */}
-        <Card sx={{ mb: 3 }}>
+        <Card variant="outlined" sx={{ mb: 3 }}>
           <CardContent>
             <Typography variant="h6" fontWeight={600} mb={3}>
               판례 검색 결과
@@ -187,10 +187,10 @@ function CaseSearch() {
                 <Box sx={{ ml: 5, display: 'flex', flexDirection: 'column', gap: 2 }}>
                   {issue.precedents.map((precedent, precedentIndex) => (
                     <Paper
+                      variant="outlined"
                       key={precedentIndex}
                       sx={{
                         p: 2,
-                        border: 1,
                         borderColor: precedent.selected ? 'primary.main' : 'grey.300',
                         bgcolor: precedent.selected ? 'primary.50' : 'white',
                         transition: 'all 0.2s',
@@ -234,7 +234,7 @@ function CaseSearch() {
             </Box>
 
             {/* 추가 검색 */}
-            <Paper sx={{ p: 3, bgcolor: 'grey.50' }}>
+            <Paper variant="outlined" sx={{ p: 3, bgcolor: 'grey.50' }}>
               <Typography variant="subtitle1" fontWeight={600} color="grey.800" mb={2}>
                 추가 판례 검색
               </Typography>

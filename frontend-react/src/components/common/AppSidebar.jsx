@@ -123,7 +123,7 @@ function AppSidebar({ open, onToggle }) {
       <Divider />
 
       {/* Vertical Stepper */}
-      {open ? (
+      {open && (
         <Box sx={{ px: 2, py: 3 }}>
           <Stepper activeStep={activeStep} orientation="vertical">
             {steps.map((step, index) => (
@@ -143,28 +143,6 @@ function AppSidebar({ open, onToggle }) {
               </Step>
             ))}
           </Stepper>
-        </Box>
-      ) : (
-        <Box sx={{ px: 1, py: 2 }}>
-          {steps.map((step, index) => (
-            <IconButton
-              key={step.label}
-              onClick={() => handleStepClick(step.path)}
-              sx={{
-                width: '100%',
-                mb: 1,
-                color: activeStep === index ? 'primary.main' : 'grey.600',
-                bgcolor: activeStep === index ? 'primary.50' : 'transparent',
-                '&:hover': {
-                  bgcolor: activeStep === index ? 'primary.100' : 'grey.100',
-                },
-              }}
-            >
-              <Typography variant="h6" fontWeight={600}>
-                {index + 1}
-              </Typography>
-            </IconButton>
-          ))}
         </Box>
       )}
 

@@ -87,7 +87,7 @@ function CaseIssues() {
         }}
       >
         {/* 사실관계 섹션 */}
-        <Card sx={{ mb: 3 }}>
+        <Card variant="outlined" sx={{ mb: 3 }}>
           <CardContent>
             <Typography variant="h6" fontWeight={600} mb={2}>
               사실관계
@@ -109,7 +109,7 @@ function CaseIssues() {
         </Card>
 
         {/* 쟁점 섹션 */}
-        <Card sx={{ mb: 3 }}>
+        <Card variant="outlined" sx={{ mb: 3 }}>
           <CardContent>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
               <Typography variant="h6" fontWeight={600}>

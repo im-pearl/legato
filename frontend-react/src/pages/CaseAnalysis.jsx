@@ -161,7 +161,7 @@ function CaseAnalysis() {
         }}
       >
         {/* 하이라이터 툴바 */}
-        <Paper sx={{ p: 2, mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Paper variant="outlined" sx={{ p: 2, mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
           <Typography variant="body2" fontWeight={500} color="grey.700">
             하이라이터
           </Typography>
@@ -204,7 +204,7 @@ function CaseAnalysis() {
           {/* 왼쪽 열: 의뢰서 & 상담 결과지 */}
           <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 3, overflowY: 'auto', minHeight: 0 }}>
             {/* 의뢰서 */}
-            <Card sx={{ flexShrink: 0 }}>
+            <Card variant="outlined" sx={{ flexShrink: 0 }}>
                 <CardContent>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
                     <Typography variant="h6" fontWeight={600}>
@@ -269,7 +269,7 @@ function CaseAnalysis() {
               </Card>
 
               {/* 상담 결과지 */}
-              <Card sx={{ flexShrink: 0 }}>
+              <Card variant="outlined" sx={{ flexShrink: 0 }}>
                 <CardContent>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
                     <Typography variant="h6" fontWeight={600}>
@@ -313,7 +313,7 @@ function CaseAnalysis() {
           {/* 오른쪽 열: 자료 업로드 & 심사역 작성 */}
           <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 3, overflowY: 'auto', minHeight: 0 }}>
             {/* 자료 업로드 */}
-            <Card sx={{ flexShrink: 0 }}>
+            <Card variant="outlined" sx={{ flexShrink: 0 }}>
                 <CardContent>
                   <Typography variant="h6" fontWeight={600} mb={2}>
                     자료 업로드
@@ -358,6 +358,7 @@ function CaseAnalysis() {
                     <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
                       {files.map((file, index) => (
                         <Paper
+                          variant="outlined"
                           key={index}
                           sx={{
                             p: 1.5,
@@ -365,8 +366,7 @@ function CaseAnalysis() {
                             alignItems: 'center',
                             justifyContent: 'space-between',
                             bgcolor: file.highlight ? 'primary.50' : 'white',
-                            border: 1,
-                            borderColor: file.highlight ? 'primary.200' : 'grey.200',
+                            borderColor: file.highlight ? 'primary.200' : 'grey.300',
                           }}
                         >
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
@@ -410,7 +410,7 @@ function CaseAnalysis() {
               </Card>
 
               {/* 심사역 작성 */}
-              <Card sx={{ flexShrink: 0 }}>
+              <Card variant="outlined" sx={{ flexShrink: 0 }}>
                 <CardContent>
                   <Typography variant="h6" fontWeight={600} mb={2}>
                     심사역 작성

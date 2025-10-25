@@ -23,7 +23,7 @@ const router = createBrowserRouter([
     element: <CaseSearch />,
   },
   {
-    path: '/case-finalreview',
+    path: '/case-final-review',
     element: <CaseFinalReview />,
   },
 ]);

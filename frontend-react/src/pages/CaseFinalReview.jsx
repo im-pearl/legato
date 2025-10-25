@@ -130,7 +130,7 @@ function CaseFinalReview() {
         }}
       >
         {/* 사실관계 */}
-        <Card sx={{ mb: 3 }}>
+        <Card variant="outlined" sx={{ mb: 3 }}>
           <CardContent>
             <Typography variant="h6" fontWeight={600} mb={2}>
               사실관계
@@ -143,13 +143,13 @@ function CaseFinalReview() {
 
         {/* 쟁점 및 포섭 */}
         {issues.map((issue, issueIndex) => (
-          <Card key={issueIndex} sx={{ mb: 3 }}>
+          <Card key={issueIndex} variant="outlined" sx={{ mb: 3 }}>
             <CardContent>
               <Typography variant="h6" fontWeight={600} mb={2}>
                 쟁점 {issueIndex + 1}
               </Typography>
 
-              <Paper sx={{ p: 2, mb: 3, bgcolor: 'primary.50' }}>
+              <Paper variant="outlined" sx={{ p: 2, mb: 3, bgcolor: 'primary.50' }}>
                 <Typography variant="body2" color="grey.800" lineHeight={1.5}>
                   {issue.content}
                 </Typography>
@@ -160,7 +160,7 @@ function CaseFinalReview() {
               </Typography>
               <Box sx={{ mb: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
                 {issue.precedents.map((precedent, precedentIndex) => (
-                  <Paper key={precedentIndex} sx={{ p: 2, border: 1, borderColor: 'grey.300' }}>
+                  <Paper variant="outlined" key={precedentIndex} sx={{ p: 2 }}>
                     <Typography variant="body2" fontWeight={600} color="primary.main" mb={1}>
                       {precedent.caseNumber}
                     </Typography>
@@ -192,7 +192,7 @@ function CaseFinalReview() {
         ))}
 
         {/* 결론 */}
-        <Card sx={{ mb: 3 }}>
+        <Card variant="outlined" sx={{ mb: 3 }}>
           <CardContent>
             <Typography variant="h6" fontWeight={600} mb={2}>
               결론
@@ -215,7 +215,7 @@ function CaseFinalReview() {
         </Card>
 
         {/* 승소가능성 */}
-        <Card sx={{ mb: 3 }}>
+        <Card variant="outlined" sx={{ mb: 3 }}>
           <CardContent>
             <Typography variant="h6" fontWeight={600} mb={3}>
               승소가능성
@@ -253,7 +253,7 @@ function CaseFinalReview() {
         </Card>
 
         {/* 집행가능성 */}
-        <Card sx={{ mb: 3 }}>
+        <Card variant="outlined" sx={{ mb: 3 }}>
           <CardContent>
             <Typography variant="h6" fontWeight={600} mb={3}>
               집행가능성
