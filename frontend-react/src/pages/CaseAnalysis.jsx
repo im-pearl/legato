@@ -10,6 +10,8 @@ import {
   Link,
   IconButton,
   Paper,
+  Stack,
+  TextField,
 } from '@mui/material';
 import {
   CloudUpload as CloudUploadIcon,
@@ -207,221 +209,244 @@ function CaseAnalysis() {
           </Box>
         </Paper>
 
-        {/* 의뢰서 & 상담 결과지 */}
-        <Grid container spacing={3} sx={{ mb: 3 }}>
-          {/* 의뢰서 */}
-          <Grid item xs={12} md={6}>
+        {/* 메인 2열 레이아웃 */}
+        <Box sx={{ display: 'flex', gap: 3, mb: 3, flexDirection: { xs: 'column', md: 'row' } }}>
+          {/* 왼쪽 열: 의뢰서 & 상담 결과지 */}
+          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 3 }}>
+            {/* 의뢰서 */}
             <Card>
-              <CardContent>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                  <Typography variant="h6" fontWeight={600}>
-                    의뢰서
-                  </Typography>
-                  <Link href="#" underline="hover" fontSize="0.875rem" fontWeight={500}>
-                    자세히 보기
-                  </Link>
-                </Box>
+                <CardContent>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                    <Typography variant="h6" fontWeight={600}>
+                      의뢰서
+                    </Typography>
+                    <Link href="#" underline="hover" fontSize="0.875rem" fontWeight={500}>
+                      자세히 보기
+                    </Link>
+                  </Box>
 
-                <Box sx={{ mb: 2, pb: 2, borderBottom: 1, borderColor: 'grey.200' }}>
-                  <Typography variant="subtitle2" fontWeight={600} color="grey.700" mb={1.5}>
-                    의뢰서 정보
-                  </Typography>
-                  <Grid container spacing={2}>
-                    {Object.entries(requestBasicInfo).map(([label, value]) => (
-                      <Grid item xs={6} key={label}>
-                        <Typography variant="caption" color="grey.600" display="block">
-                          {label}
-                        </Typography>
-                        <Typography variant="body2" fontWeight={500}>
-                          {value}
-                        </Typography>
-                      </Grid>
-                    ))}
-                  </Grid>
-                </Box>
-
-                <Box sx={{ mb: 2, pb: 2, borderBottom: 1, borderColor: 'grey.200' }}>
-                  <Typography variant="subtitle2" fontWeight={600} color="grey.700" mb={1}>
-                    의뢰서 제목
-                  </Typography>
-                  <Typography variant="body2" color="grey.800">
-                    계약서 작성 없이 설계용역을 했는데 터무니없이 낮은 금액을 받았어요
-                  </Typography>
-                </Box>
-
-                <Box>
-                  <Typography variant="subtitle2" fontWeight={600} color="grey.700" mb={1.5}>
-                    질문 및 답변
-                  </Typography>
-                  {qaItems.map((item, index) => (
-                    <Box key={index} sx={{ mb: 1.5 }}>
-                      <Typography variant="body2" fontWeight={500} color="grey.800" mb={0.5}>
-                        {index + 1}. {item.question}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        color="grey.700"
-                        sx={{
-                          p: 1,
-                          borderRadius: 1,
-                          bgcolor: 'white',
-                          '&:hover': { bgcolor: 'grey.100' },
-                          cursor: 'text',
-                          userSelect: 'text',
-                        }}
-                      >
-                        {item.answer}
-                      </Typography>
-                    </Box>
-                  ))}
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-
-          {/* 상담 결과지 */}
-          <Grid item xs={12} md={6}>
-            <Card>
-              <CardContent>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                  <Typography variant="h6" fontWeight={600}>
-                    상담 결과지
-                  </Typography>
-                  <Link href="#" underline="hover" fontSize="0.875rem" fontWeight={500}>
-                    자세히 보기
-                  </Link>
-                </Box>
-
-                {Object.entries(consultationGroups).map(([groupName, items]) => (
-                  <Box key={groupName} sx={{ mb: 2, pb: 2, borderBottom: 1, borderColor: 'grey.200' }}>
+                  <Box sx={{ mb: 2, pb: 2, borderBottom: 1, borderColor: 'grey.200' }}>
                     <Typography variant="subtitle2" fontWeight={600} color="grey.700" mb={1.5}>
-                      {groupName}
+                      의뢰서 정보
                     </Typography>
                     <Grid container spacing={2}>
-                      {items.map((item, index) => (
-                        <Grid item xs={groupName === '상담 내용' ? 12 : 6} key={index}>
+                      {Object.entries(requestBasicInfo).map(([label, value]) => (
+                        <Grid item xs={6} key={label}>
                           <Typography variant="caption" color="grey.600" display="block">
-                            {item.label}
+                            {label}
                           </Typography>
-                          <Typography
-                            variant="body2"
-                            color="grey.800"
-                            sx={{
-                              p: 0.75,
-                              borderRadius: 1,
-                              '&:hover': { bgcolor: 'grey.100' },
-                              cursor: 'text',
-                              userSelect: 'text',
-                            }}
-                          >
-                            {item.value}
+                          <Typography variant="body2" fontWeight={500}>
+                            {value}
                           </Typography>
                         </Grid>
                       ))}
                     </Grid>
                   </Box>
-                ))}
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
 
-        {/* 자료 업로드 */}
-        <Card sx={{ mb: 3 }}>
-          <CardContent>
-            <Typography variant="h6" fontWeight={600} mb={2}>
-              자료 업로드
-            </Typography>
+                  <Box sx={{ mb: 2, pb: 2, borderBottom: 1, borderColor: 'grey.200' }}>
+                    <Typography variant="subtitle2" fontWeight={600} color="grey.700" mb={1}>
+                      의뢰서 제목
+                    </Typography>
+                    <Typography variant="body2" color="grey.800">
+                      계약서 작성 없이 설계용역을 했는데 터무니없이 낮은 금액을 받았어요
+                    </Typography>
+                  </Box>
 
-            <Box
-              onClick={() => fileInputRef.current?.click()}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={handleFileDrop}
-              sx={{
-                p: 4,
-                border: '2px dashed',
-                borderColor: 'grey.300',
-                borderRadius: 2,
-                textAlign: 'center',
-                cursor: 'pointer',
-                bgcolor: 'grey.50',
-                transition: 'all 0.2s',
-                '&:hover': {
-                  borderColor: 'primary.main',
-                  bgcolor: 'primary.50',
-                },
-              }}
-            >
-              <CloudUploadIcon sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
-              <Typography variant="body1" fontWeight={500} color="grey.700">
-                클릭하거나 파일을 여기에 끌어다 놓으세요
-              </Typography>
-              <Typography variant="caption" color="grey.600">
-                PDF, DOCX, JPG, PNG 파일 (최대 20MB)
-              </Typography>
-              <input
-                ref={fileInputRef}
-                type="file"
-                multiple
-                style={{ display: 'none' }}
-                onChange={handleFileSelect}
-              />
-            </Box>
+                  <Box>
+                    <Typography variant="subtitle2" fontWeight={600} color="grey.700" mb={1.5}>
+                      질문 및 답변
+                    </Typography>
+                    {qaItems.map((item, index) => (
+                      <Box key={index} sx={{ mb: 1.5 }}>
+                        <Typography variant="body2" fontWeight={500} color="grey.800" mb={0.5}>
+                          {index + 1}. {item.question}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          color="grey.700"
+                          sx={{
+                            p: 1,
+                            borderRadius: 1,
+                            bgcolor: 'white',
+                            '&:hover': { bgcolor: 'grey.100' },
+                            cursor: 'text',
+                            userSelect: 'text',
+                          }}
+                        >
+                          {item.answer}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                </CardContent>
+              </Card>
 
-            {files.length > 0 && (
-              <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                {files.map((file, index) => (
-                  <Paper
-                    key={index}
+              {/* 상담 결과지 */}
+              <Card>
+                <CardContent>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                    <Typography variant="h6" fontWeight={600}>
+                      상담 결과지
+                    </Typography>
+                    <Link href="#" underline="hover" fontSize="0.875rem" fontWeight={500}>
+                      자세히 보기
+                    </Link>
+                  </Box>
+
+                  {Object.entries(consultationGroups).map(([groupName, items]) => (
+                    <Box key={groupName} sx={{ mb: 2, pb: 2, borderBottom: 1, borderColor: 'grey.200' }}>
+                      <Typography variant="subtitle2" fontWeight={600} color="grey.700" mb={1.5}>
+                        {groupName}
+                      </Typography>
+                      <Grid container spacing={2}>
+                        {items.map((item, index) => (
+                          <Grid item xs={groupName === '상담 내용' ? 12 : 6} key={index}>
+                            <Typography variant="caption" color="grey.600" display="block">
+                              {item.label}
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              color="grey.800"
+                              sx={{
+                                p: 0.75,
+                                borderRadius: 1,
+                                '&:hover': { bgcolor: 'grey.100' },
+                                cursor: 'text',
+                                userSelect: 'text',
+                              }}
+                            >
+                              {item.value}
+                            </Typography>
+                          </Grid>
+                        ))}
+                      </Grid>
+                    </Box>
+                  ))}
+                </CardContent>
+              </Card>
+          </Box>
+
+          {/* 오른쪽 열: 자료 업로드 & 심사역 작성 */}
+          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 3 }}>
+            {/* 자료 업로드 */}
+            <Card>
+                <CardContent>
+                  <Typography variant="h6" fontWeight={600} mb={2}>
+                    자료 업로드
+                  </Typography>
+
+                  <Box
+                    onClick={() => fileInputRef.current?.click()}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={handleFileDrop}
                     sx={{
-                      p: 1.5,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      bgcolor: file.highlight ? 'primary.50' : 'white',
-                      border: 1,
-                      borderColor: file.highlight ? 'primary.200' : 'grey.200',
+                      p: 4,
+                      border: '2px dashed',
+                      borderColor: 'grey.300',
+                      borderRadius: 2,
+                      textAlign: 'center',
+                      cursor: 'pointer',
+                      bgcolor: 'grey.50',
+                      transition: 'all 0.2s',
+                      '&:hover': {
+                        borderColor: 'primary.main',
+                        bgcolor: 'primary.50',
+                      },
                     }}
                   >
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                      <FileIcon sx={{ color: 'grey.600' }} />
-                      <Typography variant="body2" fontWeight={500}>
-                        {file.name}
-                      </Typography>
+                    <CloudUploadIcon sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
+                    <Typography variant="body1" fontWeight={500} color="grey.700">
+                      클릭하거나 파일을 여기에 끌어다 놓으세요
+                    </Typography>
+                    <Typography variant="caption" color="grey.600">
+                      PDF, DOCX, JPG, PNG 파일 (최대 20MB)
+                    </Typography>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      multiple
+                      style={{ display: 'none' }}
+                      onChange={handleFileSelect}
+                    />
+                  </Box>
+
+                  {files.length > 0 && (
+                    <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                      {files.map((file, index) => (
+                        <Paper
+                          key={index}
+                          sx={{
+                            p: 1.5,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            bgcolor: file.highlight ? 'primary.50' : 'white',
+                            border: 1,
+                            borderColor: file.highlight ? 'primary.200' : 'grey.200',
+                          }}
+                        >
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                            <FileIcon sx={{ color: 'grey.600' }} />
+                            <Typography variant="body2" fontWeight={500}>
+                              {file.name}
+                            </Typography>
+                          </Box>
+                          <Box sx={{ display: 'flex', gap: 0.5 }}>
+                            <IconButton
+                              size="small"
+                              onClick={() => toggleFileHighlight(index)}
+                              sx={{
+                                color: file.highlight ? 'primary.main' : 'grey.500',
+                                bgcolor: file.highlight ? 'primary.100' : 'transparent',
+                                '&:hover': {
+                                  bgcolor: file.highlight ? 'primary.100' : 'grey.100',
+                                },
+                              }}
+                            >
+                              <EditIcon fontSize="small" />
+                            </IconButton>
+                            <IconButton
+                              size="small"
+                              onClick={() => removeFile(index)}
+                              sx={{
+                                color: 'error.main',
+                                '&:hover': {
+                                  bgcolor: 'error.lighter',
+                                },
+                              }}
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </Box>
+                        </Paper>
+                      ))}
                     </Box>
-                    <Box sx={{ display: 'flex', gap: 0.5 }}>
-                      <IconButton
-                        size="small"
-                        onClick={() => toggleFileHighlight(index)}
-                        sx={{
-                          color: file.highlight ? 'primary.main' : 'grey.500',
-                          bgcolor: file.highlight ? 'primary.100' : 'transparent',
-                          '&:hover': {
-                            bgcolor: file.highlight ? 'primary.100' : 'grey.100',
-                          },
-                        }}
-                      >
-                        <EditIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        onClick={() => removeFile(index)}
-                        sx={{
-                          color: 'error.main',
-                          '&:hover': {
-                            bgcolor: 'error.lighter',
-                          },
-                        }}
-                      >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </Box>
-                  </Paper>
-                ))}
-              </Box>
-            )}
-          </CardContent>
-        </Card>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* 심사역 작성 */}
+              <Card>
+                <CardContent>
+                  <Typography variant="h6" fontWeight={600} mb={2}>
+                    심사역 작성
+                  </Typography>
+                  <TextField
+                    fullWidth
+                    multiline
+                    rows={6}
+                    placeholder="사건에 대한 심사 내용을 작성해주세요..."
+                    variant="outlined"
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        bgcolor: 'grey.50',
+                      },
+                    }}
+                  />
+                </CardContent>
+              </Card>
+          </Box>
+        </Box>
 
         {/* 액션 버튼 */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>

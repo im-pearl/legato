@@ -113,7 +113,7 @@ function AppSidebar({ activeMenu = 'case-review', onMenuChange, open, onToggle }
         {open ? (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flex: 1, pl: 2 }}>
             <Typography variant="h6" fontWeight={700} color="text.primary" noWrap>
-              사건 심사 AI
+              심사 AI demo
             </Typography>
           </Box>
         ) : (
