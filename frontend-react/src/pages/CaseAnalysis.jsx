@@ -210,19 +210,16 @@ function CaseAnalysis() {
         </Paper>
 
         {/* 메인 2열 레이아웃 */}
-        <Box sx={{ display: 'flex', gap: 3, mb: 3, flexDirection: { xs: 'column', md: 'row' } }}>
+        <Box sx={{ display: 'flex', gap: 3, mb: 3, flexDirection: { xs: 'column', md: 'row' }, height: { md: 'calc(100vh - 250px)' } }}>
           {/* 왼쪽 열: 의뢰서 & 상담 결과지 */}
-          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 3 }}>
+          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 3, overflowY: 'auto', minHeight: 0 }}>
             {/* 의뢰서 */}
-            <Card>
+            <Card sx={{ flexShrink: 0 }}>
                 <CardContent>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
                     <Typography variant="h6" fontWeight={600}>
                       의뢰서
                     </Typography>
-                    <Link href="#" underline="hover" fontSize="0.875rem" fontWeight={500}>
-                      자세히 보기
-                    </Link>
                   </Box>
 
                   <Box sx={{ mb: 2, pb: 2, borderBottom: 1, borderColor: 'grey.200' }}>
@@ -282,15 +279,12 @@ function CaseAnalysis() {
               </Card>
 
               {/* 상담 결과지 */}
-              <Card>
+              <Card sx={{ flexShrink: 0 }}>
                 <CardContent>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
                     <Typography variant="h6" fontWeight={600}>
                       상담 결과지
                     </Typography>
-                    <Link href="#" underline="hover" fontSize="0.875rem" fontWeight={500}>
-                      자세히 보기
-                    </Link>
                   </Box>
 
                   {Object.entries(consultationGroups).map(([groupName, items]) => (
@@ -327,9 +321,9 @@ function CaseAnalysis() {
           </Box>
 
           {/* 오른쪽 열: 자료 업로드 & 심사역 작성 */}
-          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 3 }}>
+          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 3, overflowY: 'auto', minHeight: 0 }}>
             {/* 자료 업로드 */}
-            <Card>
+            <Card sx={{ flexShrink: 0 }}>
                 <CardContent>
                   <Typography variant="h6" fontWeight={600} mb={2}>
                     자료 업로드
@@ -426,7 +420,7 @@ function CaseAnalysis() {
               </Card>
 
               {/* 심사역 작성 */}
-              <Card>
+              <Card sx={{ flexShrink: 0 }}>
                 <CardContent>
                   <Typography variant="h6" fontWeight={600} mb={2}>
                     심사역 작성
@@ -437,11 +431,6 @@ function CaseAnalysis() {
                     rows={6}
                     placeholder="사건에 대한 심사 내용을 작성해주세요..."
                     variant="outlined"
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        bgcolor: 'grey.50',
-                      },
-                    }}
                   />
                 </CardContent>
               </Card>
