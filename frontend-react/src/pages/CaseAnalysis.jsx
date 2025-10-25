@@ -200,7 +200,7 @@ function CaseAnalysis() {
         </Paper>
 
         {/* 메인 2열 레이아웃 */}
-        <Box sx={{ display: 'flex', gap: 3, mb: 3, flexDirection: { xs: 'column', md: 'row' }, height: { md: 'calc(100vh - 250px)' } }}>
+        <Box sx={{ display: 'flex', gap: 3, mb: 3, flexDirection: { xs: 'column', md: 'row' }, height: { md: 'calc(100vh - 180px)' } }}>
           {/* 왼쪽 열: 의뢰서 & 상담 결과지 */}
           <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 3, overflowY: 'auto', minHeight: 0 }}>
             {/* 의뢰서 */}
