@@ -11,7 +11,6 @@ import {
 } from '@mui/material';
 import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import AppSidebar, { DrawerHeader } from '../components/common/AppSidebar';
-import ProgressBar from '../components/common/ProgressBar';
 import LoadingModal from '../components/common/LoadingModal';
 
 function CaseIssues() {
@@ -22,13 +21,6 @@ function CaseIssues() {
     { content: '계약상 대금이 00,000,000 원으로 정해졌다고 볼 수 있는지 여부' },
     { content: '상대방에게 부당이득반환책임이 성립하는지 여부' },
   ]);
-
-  const progressSteps = [
-    { id: 'step1', label: '신청지 검토' },
-    { id: 'step2', label: '쟁점 추출' },
-    { id: 'step3', label: '판례 검색' },
-    { id: 'step4', label: '최종 검토' },
-  ];
 
   const factsContent = `1. 의뢰인은 상대방으로부터 **시 **구 **번지 오피스텔 신축설계(면적 00,000,000 m2 규모)의 건축설계(건축심의, 경관심의, 건축인허가, 구조 심의) 용역(이하 '이 사건 용역')을 의뢰받아 완료하였음. (계약서 없음)
 
@@ -83,7 +75,7 @@ function CaseIssues() {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <AppSidebar activeMenu="case-review" open={drawerOpen} onToggle={() => setDrawerOpen(!drawerOpen)} />
+      <AppSidebar open={drawerOpen} onToggle={() => setDrawerOpen(!drawerOpen)} />
 
       <Box
         component="main"
@@ -94,8 +86,6 @@ function CaseIssues() {
           minHeight: '100vh',
         }}
       >
-        <ProgressBar steps={progressSteps} completedSteps={['step1']} activeStep="step2" />
-
         {/* 사실관계 섹션 */}
         <Card sx={{ mb: 3 }}>
           <CardContent>

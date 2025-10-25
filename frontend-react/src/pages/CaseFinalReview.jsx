@@ -22,7 +22,6 @@ import {
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import AppSidebar, { DrawerHeader } from '../components/common/AppSidebar';
-import ProgressBar from '../components/common/ProgressBar';
 
 function CaseFinalReview() {
   const navigate = useNavigate();
@@ -42,13 +41,6 @@ function CaseFinalReview() {
   const [conclusion, setConclusion] = useState(
     '의뢰인의 계약상 설계용역대금청구는 계약서가 없고 의뢰인이 일방적으로 작성한 견적서만으로는 계약 내용이 확정되었다고 보기 어려워 기각될 가능성이 높습니다...'
   );
-
-  const progressSteps = [
-    { id: 'step1', label: '신청지 검토' },
-    { id: 'step2', label: '쟁점 추출' },
-    { id: 'step3', label: '판례 검색' },
-    { id: 'step4', label: '최종 검토' },
-  ];
 
   const clientName = '김건축';
   const requestNumber = 'CS-20250314-0042';
@@ -126,7 +118,7 @@ function CaseFinalReview() {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <AppSidebar activeMenu="case-review" open={drawerOpen} onToggle={() => setDrawerOpen(!drawerOpen)} />
+      <AppSidebar open={drawerOpen} onToggle={() => setDrawerOpen(!drawerOpen)} />
 
       <Box
         component="main"
@@ -137,8 +129,6 @@ function CaseFinalReview() {
           minHeight: '100vh',
         }}
       >
-        <ProgressBar steps={progressSteps} completedSteps={['step1', 'step2', 'step3']} activeStep="step4" />
-
         {/* 사실관계 */}
         <Card sx={{ mb: 3 }}>
           <CardContent>

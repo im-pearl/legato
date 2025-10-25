@@ -18,7 +18,6 @@ import {
 } from '@mui/material';
 import { Search as SearchIcon } from '@mui/icons-material';
 import AppSidebar, { DrawerHeader } from '../components/common/AppSidebar';
-import ProgressBar from '../components/common/ProgressBar';
 import LoadingModal from '../components/common/LoadingModal';
 
 function CaseSearch() {
@@ -28,13 +27,6 @@ function CaseSearch() {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [searchType, setSearchType] = useState('all');
   const [searchCourt, setSearchCourt] = useState('all');
-
-  const progressSteps = [
-    { id: 'step1', label: '신청지 검토' },
-    { id: 'step2', label: '쟁점 추출' },
-    { id: 'step3', label: '판례 검색' },
-    { id: 'step4', label: '최종 검토' },
-  ];
 
   const [issues, setIssues] = useState([
     {
@@ -136,7 +128,7 @@ function CaseSearch() {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <AppSidebar activeMenu="case-review" open={drawerOpen} onToggle={() => setDrawerOpen(!drawerOpen)} />
+      <AppSidebar open={drawerOpen} onToggle={() => setDrawerOpen(!drawerOpen)} />
 
       <Box
         component="main"
@@ -147,8 +139,6 @@ function CaseSearch() {
           minHeight: '100vh',
         }}
       >
-        <ProgressBar steps={progressSteps} completedSteps={['step1', 'step2']} activeStep="step3" />
-
         {/* 사실관계 */}
         <Card sx={{ mb: 3 }}>
           <CardContent>

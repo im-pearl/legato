@@ -21,7 +21,6 @@ import {
   Close as CloseIcon,
 } from '@mui/icons-material';
 import AppSidebar, { DrawerHeader } from '../components/common/AppSidebar';
-import ProgressBar from '../components/common/ProgressBar';
 import LoadingModal from '../components/common/LoadingModal';
 
 function CaseAnalysis() {
@@ -68,13 +67,6 @@ function CaseAnalysis() {
       highlights: [],
     },
   ]);
-
-  const progressSteps = [
-    { id: 'review', label: '사건 검토' },
-    { id: 'analysis', label: '쟁점 분석' },
-    { id: 'proposal', label: '제안서 작성' },
-    { id: 'final', label: '최종 검토' },
-  ];
 
   const requestBasicInfo = {
     '의뢰서 작성일': '2025년 3월 14일',
@@ -157,7 +149,7 @@ function CaseAnalysis() {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <AppSidebar activeMenu="case-review" open={drawerOpen} onToggle={() => setDrawerOpen(!drawerOpen)} />
+      <AppSidebar open={drawerOpen} onToggle={() => setDrawerOpen(!drawerOpen)} />
 
       <Box
         component="main"
@@ -168,8 +160,6 @@ function CaseAnalysis() {
           minHeight: '100vh',
         }}
       >
-        <ProgressBar steps={progressSteps} completedSteps={[]} activeStep="review" />
-
         {/* 하이라이터 툴바 */}
         <Paper sx={{ p: 2, mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
           <Typography variant="body2" fontWeight={500} color="grey.700">

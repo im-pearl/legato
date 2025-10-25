@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { styled, useTheme } from '@mui/material/styles';
 import {
   Drawer as MuiDrawer,
@@ -11,6 +12,10 @@ import {
   Box,
   IconButton,
   Divider,
+  Stepper,
+  Step,
+  StepLabel,
+  StepButton,
 } from '@mui/material';
 import {
   Description as DescriptionIcon,
@@ -70,41 +75,29 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   ...theme.mixins.toolbar,
 }));
 
-function AppSidebar({ activeMenu = 'case-review', onMenuChange, open, onToggle }) {
+function AppSidebar({ open, onToggle }) {
   const theme = useTheme();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const categories = [
-    {
-      title: '카테고리',
-      items: [
-        {
-          id: 'case-review',
-          label: '사건 검토',
-          icon: <DescriptionIcon />,
-        },
-        {
-          id: 'investment-review',
-          label: '투자 심사',
-          icon: <AccountBalanceIcon />,
-        },
-      ],
-    },
-    {
-      title: '설정',
-      items: [
-        {
-          id: 'templates',
-          label: '프롬프트 수정',
-          icon: <ContentPasteIcon />,
-        },
-        {
-          id: 'account-settings',
-          label: '계정 설정',
-          icon: <SettingsIcon />,
-        },
-      ],
-    },
+  const steps = [
+    { label: '사실관계 검토', path: '/case-analysis' },
+    { label: '쟁점 분석', path: '/case-issues' },
+    { label: '판례 리서치', path: '/case-search' },
+    { label: '심사보고서 작성', path: '/case-final-review' },
   ];
+
+  // 현재 URL 기반으로 active step 결정
+  const getActiveStep = () => {
+    const stepIndex = steps.findIndex((step) => location.pathname === step.path);
+    return stepIndex !== -1 ? stepIndex : -1;
+  };
+
+  const activeStep = getActiveStep();
+
+  const handleStepClick = (stepPath) => {
+    navigate(stepPath);
+  };
 
   return (
     <Drawer variant="permanent" open={open}>
@@ -129,75 +122,88 @@ function AppSidebar({ activeMenu = 'case-review', onMenuChange, open, onToggle }
       </DrawerHeader>
       <Divider />
 
-      {/* 네비게이션 */}
-      {categories.map((category, categoryIndex) => (
-        <Box key={categoryIndex}>
-          {open && (
-            <Typography
-              variant="caption"
-              sx={{
-                px: 3,
-                mt: 2,
-                mb: 1,
-                display: 'block',
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                color: 'grey.600',
-                fontWeight: 600,
-              }}
-            >
-              {category.title}
-            </Typography>
-          )}
-          <List sx={{ px: open ? 1.5 : 0.5 }}>
-            {category.items.map((item) => (
-              <ListItem key={item.id} disablePadding sx={{ display: 'block', mb: 0.5 }}>
-                <ListItemButton
-                  selected={activeMenu === item.id}
-                  onClick={() => onMenuChange && onMenuChange(item.id)}
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
-                    borderRadius: 1.5,
-                    '&.Mui-selected': {
-                      backgroundColor: 'primary.100',
-                      color: 'primary.600',
-                      fontWeight: 600,
-                      '&:hover': {
-                        backgroundColor: 'primary.100',
-                      },
-                    },
-                    '&:hover': {
-                      backgroundColor: 'grey.100',
-                    },
-                  }}
-                >
-                  <ListItemIcon
+      {/* Vertical Stepper */}
+      {open ? (
+        <Box sx={{ px: 2, py: 3 }}>
+          <Stepper activeStep={activeStep} orientation="vertical">
+            {steps.map((step, index) => (
+              <Step key={step.label}>
+                <StepButton onClick={() => handleStepClick(step.path)}>
+                  <StepLabel
                     sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
-                      color: activeMenu === item.id ? 'primary.600' : 'inherit',
+                      '& .MuiStepLabel-label': {
+                        fontSize: '0.9rem',
+                        fontWeight: activeStep === index ? 600 : 400,
+                      },
                     }}
                   >
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={item.label}
-                    sx={{ opacity: open ? 1 : 0 }}
-                    primaryTypographyProps={{
-                      fontSize: '0.95rem',
-                      fontWeight: activeMenu === item.id ? 600 : 400,
-                    }}
-                  />
-                </ListItemButton>
-              </ListItem>
+                    {step.label}
+                  </StepLabel>
+                </StepButton>
+              </Step>
             ))}
-          </List>
-          {categoryIndex < categories.length - 1 && <Divider sx={{ my: 1 }} />}
+          </Stepper>
         </Box>
-      ))}
+      ) : (
+        <Box sx={{ px: 1, py: 2 }}>
+          {steps.map((step, index) => (
+            <IconButton
+              key={step.label}
+              onClick={() => handleStepClick(step.path)}
+              sx={{
+                width: '100%',
+                mb: 1,
+                color: activeStep === index ? 'primary.main' : 'grey.600',
+                bgcolor: activeStep === index ? 'primary.50' : 'transparent',
+                '&:hover': {
+                  bgcolor: activeStep === index ? 'primary.100' : 'grey.100',
+                },
+              }}
+            >
+              <Typography variant="h6" fontWeight={600}>
+                {index + 1}
+              </Typography>
+            </IconButton>
+          ))}
+        </Box>
+      )}
+
+      <Box sx={{ flexGrow: 1 }} />
+      <Divider />
+
+      {/* 설정 메뉴 */}
+      <List sx={{ px: open ? 1.5 : 0.5, py: 1 }}>
+        <ListItem disablePadding sx={{ display: 'block', mb: 0.5 }}>
+          <ListItemButton
+            sx={{
+              minHeight: 48,
+              justifyContent: open ? 'initial' : 'center',
+              px: 2.5,
+              borderRadius: 1.5,
+              '&:hover': {
+                backgroundColor: 'grey.100',
+              },
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                mr: open ? 3 : 'auto',
+                justifyContent: 'center',
+              }}
+            >
+              <SettingsIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="설정"
+              sx={{ opacity: open ? 1 : 0 }}
+              primaryTypographyProps={{
+                fontSize: '0.95rem',
+              }}
+            />
+          </ListItemButton>
+        </ListItem>
+      </List>
     </Drawer>
   );
 }
