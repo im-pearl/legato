@@ -17,12 +17,13 @@ import {
   IconButton,
 } from '@mui/material';
 import { Search as SearchIcon } from '@mui/icons-material';
-import AppSidebar from '../components/common/AppSidebar';
+import AppSidebar, { DrawerHeader } from '../components/common/AppSidebar';
 import ProgressBar from '../components/common/ProgressBar';
 import LoadingModal from '../components/common/LoadingModal';
 
 function CaseSearch() {
   const navigate = useNavigate();
+  const [drawerOpen, setDrawerOpen] = useState(true);
   const [showLoadingModal, setShowLoadingModal] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [searchType, setSearchType] = useState('all');
@@ -134,16 +135,16 @@ function CaseSearch() {
 5. 이에 의뢰인은 대금 잔금 약 1억 원을 상대방에게 청구하고자 함.`;
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'grey.50' }}>
-      <AppSidebar activeMenu="case-review" onMenuChange={handleMenuChange} />
+    <Box sx={{ display: 'flex' }}>
+      <AppSidebar activeMenu="case-review" open={drawerOpen} onToggle={() => setDrawerOpen(!drawerOpen)} />
 
       <Box
         component="main"
         sx={{
           flexGrow: 1,
-          ml: '240px',
           p: 3,
-          maxWidth: 1200,
+          bgcolor: 'grey.50',
+          minHeight: '100vh',
         }}
       >
         <ProgressBar steps={progressSteps} completedSteps={['step1', 'step2']} activeStep="step3" />

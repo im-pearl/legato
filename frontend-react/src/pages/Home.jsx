@@ -1,20 +1,27 @@
+import { useState } from 'react';
 import { Box, Container, Typography, Card, CardContent, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import AppSidebar, { DrawerHeader } from '../components/common/AppSidebar';
 
 function Home() {
   const navigate = useNavigate();
+  const [drawerOpen, setDrawerOpen] = useState(true);
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        background: 'linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%)',
-        padding: 2,
-      }}
-    >
+    <Box sx={{ display: 'flex' }}>
+      <AppSidebar activeMenu="case-review" open={drawerOpen} onToggle={() => setDrawerOpen(!drawerOpen)} />
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          minHeight: '100vh',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          background: 'linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%)',
+          padding: 2,
+        }}
+      >
       <Container maxWidth="md">
         <Card
           sx={{
@@ -133,6 +140,7 @@ function Home() {
           </CardContent>
         </Card>
       </Container>
+      </Box>
     </Box>
   );
 }

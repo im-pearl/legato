@@ -21,11 +21,12 @@ import {
   LinearProgress,
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
-import AppSidebar from '../components/common/AppSidebar';
+import AppSidebar, { DrawerHeader } from '../components/common/AppSidebar';
 import ProgressBar from '../components/common/ProgressBar';
 
 function CaseFinalReview() {
   const navigate = useNavigate();
+  const [drawerOpen, setDrawerOpen] = useState(true);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [winProbability, setWinProbability] = useState(75);
   const [executionProbability, setExecutionProbability] = useState(80);
@@ -124,16 +125,16 @@ function CaseFinalReview() {
   };
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'grey.50' }}>
-      <AppSidebar activeMenu="case-review" onMenuChange={handleMenuChange} />
+    <Box sx={{ display: 'flex' }}>
+      <AppSidebar activeMenu="case-review" open={drawerOpen} onToggle={() => setDrawerOpen(!drawerOpen)} />
 
       <Box
         component="main"
         sx={{
           flexGrow: 1,
-          ml: '240px',
           p: 3,
-          maxWidth: 1200,
+          bgcolor: 'grey.50',
+          minHeight: '100vh',
         }}
       >
         <ProgressBar steps={progressSteps} completedSteps={['step1', 'step2', 'step3']} activeStep="step4" />
