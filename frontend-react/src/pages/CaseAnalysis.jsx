@@ -282,9 +282,9 @@ function CaseAnalysis() {
                       <Typography variant="subtitle2" fontWeight={600} color="grey.700" mb={1.5}>
                         {groupName}
                       </Typography>
-                      <Grid container spacing={2}>
+                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                         {items.map((item, index) => (
-                          <Grid item xs={groupName === '상담 내용' ? 12 : 6} key={index}>
+                          <Box key={index}>
                             <Typography variant="caption" color="grey.600" display="block">
                               {item.label}
                             </Typography>
@@ -297,13 +297,15 @@ function CaseAnalysis() {
                                 '&:hover': { bgcolor: 'grey.100' },
                                 cursor: 'text',
                                 userSelect: 'text',
+                                whiteSpace: 'pre-wrap',
+                                wordBreak: 'break-word',
                               }}
                             >
                               {item.value}
                             </Typography>
-                          </Grid>
+                          </Box>
                         ))}
-                      </Grid>
+                      </Box>
                     </Box>
                   ))}
                 </CardContent>
