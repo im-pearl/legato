@@ -18,6 +18,7 @@ import {
 } from '@mui/material';
 import { Search as SearchIcon } from '@mui/icons-material';
 import AppSidebar, { DrawerHeader } from '../components/common/AppSidebar';
+import AppHeader from '../components/common/AppHeader';
 import LoadingModal from '../components/common/LoadingModal';
 
 function CaseSearch() {
@@ -131,14 +132,23 @@ function CaseSearch() {
       <AppSidebar open={drawerOpen} onToggle={() => setDrawerOpen(!drawerOpen)} />
 
       <Box
-        component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
-          bgcolor: 'grey.50',
+          display: 'flex',
+          flexDirection: 'column',
           minHeight: '100vh',
         }}
       >
+        <AppHeader caseNumber="12345" caseTitle="강제추행 피해자입니다" />
+
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            p: 3,
+            bgcolor: 'white',
+          }}
+        >
         {/* 사실관계 */}
         <Card variant="outlined" sx={{ mb: 3 }}>
           <CardContent>
@@ -299,6 +309,7 @@ function CaseSearch() {
           isVisible={showLoadingModal}
           message="AI가 승소가능성 및 집행가능성을 검토하고 있습니다."
         />
+        </Box>
       </Box>
     </Box>
   );

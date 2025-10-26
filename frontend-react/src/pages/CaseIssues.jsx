@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import AppSidebar, { DrawerHeader } from '../components/common/AppSidebar';
+import AppHeader from '../components/common/AppHeader';
 import LoadingModal from '../components/common/LoadingModal';
 
 function CaseIssues() {
@@ -78,14 +79,23 @@ function CaseIssues() {
       <AppSidebar open={drawerOpen} onToggle={() => setDrawerOpen(!drawerOpen)} />
 
       <Box
-        component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
-          bgcolor: 'grey.50',
+          display: 'flex',
+          flexDirection: 'column',
           minHeight: '100vh',
         }}
       >
+        <AppHeader caseNumber="12345" caseTitle="강제추행 피해자입니다" />
+
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            p: 3,
+            bgcolor: 'white',
+          }}
+        >
         {/* 사실관계 섹션 */}
         <Card variant="outlined" sx={{ mb: 3 }}>
           <CardContent>
@@ -219,6 +229,7 @@ function CaseIssues() {
           isVisible={showLoadingModal}
           message="AI가 사실관계와 쟁점을 기반으로 판례를 검색하고 있습니다."
         />
+        </Box>
       </Box>
     </Box>
   );

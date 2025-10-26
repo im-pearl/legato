@@ -22,6 +22,7 @@ import {
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import AppSidebar, { DrawerHeader } from '../components/common/AppSidebar';
+import AppHeader from '../components/common/AppHeader';
 
 function CaseFinalReview() {
   const navigate = useNavigate();
@@ -121,14 +122,23 @@ function CaseFinalReview() {
       <AppSidebar open={drawerOpen} onToggle={() => setDrawerOpen(!drawerOpen)} />
 
       <Box
-        component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
-          bgcolor: 'grey.50',
+          display: 'flex',
+          flexDirection: 'column',
           minHeight: '100vh',
         }}
       >
+        <AppHeader caseNumber="12345" caseTitle="강제추행 피해자입니다" />
+
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            p: 3,
+            bgcolor: 'white',
+          }}
+        >
         {/* 사실관계 */}
         <Card variant="outlined" sx={{ mb: 3 }}>
           <CardContent>
@@ -487,6 +497,7 @@ function CaseFinalReview() {
             </Button>
           </DialogActions>
         </Dialog>
+        </Box>
       </Box>
     </Box>
   );

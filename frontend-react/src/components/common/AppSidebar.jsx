@@ -26,7 +26,7 @@ import {
   Menu as MenuIcon,
 } from '@mui/icons-material';
 
-const drawerWidth = 240;
+const drawerWidth = 200;
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -107,7 +107,7 @@ function AppSidebar({ open, onToggle }) {
         {open ? (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flex: 1, pl: 2 }}>
             <Typography variant="h6" fontWeight={700} color="text.primary" noWrap>
-              심사 AI demo
+              심사 AI 데모
             </Typography>
           </Box>
         ) : (

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Box, Container, Typography, Card, CardContent, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import AppSidebar, { DrawerHeader } from '../components/common/AppSidebar';
+import AppHeader from '../components/common/AppHeader';
 
 function Home() {
   const navigate = useNavigate();
@@ -9,19 +10,29 @@ function Home() {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <AppSidebar activeMenu="case-review" open={drawerOpen} onToggle={() => setDrawerOpen(!drawerOpen)} />
+      <AppSidebar open={drawerOpen} onToggle={() => setDrawerOpen(!drawerOpen)} />
+      
       <Box
-        component="main"
         sx={{
           flexGrow: 1,
-          minHeight: '100vh',
           display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          background: 'linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%)',
-          padding: 2,
+          flexDirection: 'column',
+          minHeight: '100vh',
         }}
       >
+        <AppHeader caseNumber="12345" caseTitle="강제추행 피해자입니다" />
+        
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            background: 'linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%)',
+            padding: 2,
+          }}
+        >
       <Container maxWidth="md">
         <Card
           sx={{
@@ -95,7 +106,6 @@ function Home() {
                     flex: 1,
                     minWidth: 200,
                     maxWidth: 250,
-                    bgcolor: 'grey.50',
                     transition: 'all 0.3s ease',
                     '&:hover': {
                       transform: 'translateY(-5px)',
@@ -140,6 +150,7 @@ function Home() {
           </CardContent>
         </Card>
       </Container>
+        </Box>
       </Box>
     </Box>
   );
