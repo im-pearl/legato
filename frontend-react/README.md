@@ -76,7 +76,6 @@ npm run build
 ### 공통 컴포넌트
 
 - **AppSidebar** - 고정 사이드바 (MUI Drawer)
-- **ProgressBar** - 4단계 프로그레스 표시 (MUI Stepper)
 - **LoadingModal** - AI 처리 중 로딩 모달 (MUI Backdrop + CircularProgress)
 
 ## 🎨 디자인 특징

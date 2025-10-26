@@ -35,7 +35,7 @@ const theme = createTheme({
       950: '#17181A',
     },
     background: {
-      default: '#F8F9FA',
+      default: '#FFFFFF',
       paper: '#FFFFFF',
     },
   },
@@ -49,13 +49,13 @@ const theme = createTheme({
       'sans-serif',
     ].join(','),
     h1: {
-      fontWeight: 700,
+      fontWeight: 600,
     },
     h2: {
-      fontWeight: 600,
+      fontWeight: 500,
     },
     h3: {
-      fontWeight: 600,
+      fontWeight: 500,
     },
     button: {
       textTransform: 'none',
@@ -78,23 +78,6 @@ const theme = createTheme({
           '&:hover': {
             boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
           },
-        },
-      },
-    },
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-          borderRadius: 12,
-          border: '1px solid #E9ECEF',
-        },
-      },
-    },
-    MuiDrawer: {
-      styleOverrides: {
-        paper: {
-          border: 'none',
-          borderRight: '1px solid #E5E7EB',
         },
       },
     },

@@ -25,14 +25,6 @@
   "legal_opinion": "전체적인 법적 의견. 승소 가능성에 대한 종합적 판단",
   "win_probability": 75,
   "win_probability_reason": "승소 가능성을 해당 %로 판단한 구체적 근거. 유리한 요소와 불리한 요소를 종합적으로 설명",
-  "execution_probability": 80,
-  "execution_probability_reason": "집행 가능성을 해당 %로 판단한 구체적 근거. 상대방의 재산 상태, 집행 가능성 등",
-  "conclusion": "최종 결론 및 전망",
-  "recommendations": [
-    "의뢰인에게 제안할 구체적 사항 1",
-    "의뢰인에게 제안할 구체적 사항 2",
-    "주의사항이나 추가 검토 필요 사항"
-  ]
 }
 ```
 

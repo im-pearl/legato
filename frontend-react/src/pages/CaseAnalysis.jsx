@@ -21,6 +21,7 @@ import {
   Close as CloseIcon,
 } from '@mui/icons-material';
 import AppSidebar, { DrawerHeader } from '../components/common/AppSidebar';
+import AppHeader from '../components/common/AppHeader';
 import LoadingModal from '../components/common/LoadingModal';
 
 function CaseAnalysis() {
@@ -152,14 +153,23 @@ function CaseAnalysis() {
       <AppSidebar open={drawerOpen} onToggle={() => setDrawerOpen(!drawerOpen)} />
 
       <Box
-        component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
-          bgcolor: 'grey.50',
+          display: 'flex',
+          flexDirection: 'column',
           minHeight: '100vh',
         }}
       >
+        <AppHeader caseNumber="12345" caseTitle="강제추행 피해자입니다" />
+
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            p: 3,
+            bgcolor: 'white',
+          }}
+        >
         {/* 하이라이터 툴바 */}
         <Paper variant="outlined" sx={{ p: 2, mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
           <Typography variant="body2" fontWeight={500} color="grey.700">
@@ -318,7 +328,7 @@ function CaseAnalysis() {
             <Card variant="outlined" sx={{ flexShrink: 0 }}>
                 <CardContent>
                   <Typography variant="h6" fontWeight={600} mb={2}>
-                    자료 업로드
+                    증거 리스트
                   </Typography>
 
                   <Box
@@ -443,6 +453,7 @@ function CaseAnalysis() {
           isVisible={showLoadingModal}
           message="AI가 사실관계를 정리하고 쟁점을 추출하고 있습니다."
         />
+        </Box>
       </Box>
     </Box>
   );

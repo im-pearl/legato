@@ -11,7 +11,6 @@ import {
   Typography,
   Box,
   IconButton,
-  Divider,
   Stepper,
   Step,
   StepLabel,
@@ -36,6 +35,7 @@ const openedMixin = (theme) => ({
     duration: theme.transitions.duration.enteringScreen,
   }),
   overflowX: 'hidden',
+  backgroundColor: theme.palette.grey[50],
 });
 
 const closedMixin = (theme) => ({
@@ -45,6 +45,7 @@ const closedMixin = (theme) => ({
   }),
   overflowX: 'hidden',
   width: `calc(${theme.spacing(7)} + 1px)`,
+  backgroundColor: theme.palette.grey[50],
   [theme.breakpoints.up('sm')]: {
     width: `calc(${theme.spacing(8)} + 1px)`,
   },
@@ -72,7 +73,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'flex-end',
   padding: theme.spacing(0, 1),
-  ...theme.mixins.toolbar,
+  minHeight: 56,
 }));
 
 function AppSidebar({ open, onToggle }) {
@@ -120,7 +121,6 @@ function AppSidebar({ open, onToggle }) {
           </IconButton>
         )}
       </DrawerHeader>
-      <Divider />
 
       {/* Vertical Stepper */}
       {open && (
@@ -147,17 +147,16 @@ function AppSidebar({ open, onToggle }) {
       )}
 
       <Box sx={{ flexGrow: 1 }} />
-      <Divider />
 
       {/* 설정 메뉴 */}
       <List sx={{ px: open ? 1.5 : 0.5, py: 1 }}>
-        <ListItem disablePadding sx={{ display: 'block', mb: 0.5 }}>
+        <ListItem disablePadding sx={{ display: 'block' }}>
           <ListItemButton
             sx={{
-              minHeight: 48,
+              minHeight: 40,
               justifyContent: open ? 'initial' : 'center',
-              px: 2.5,
-              borderRadius: 1.5,
+              px: 2,
+              borderRadius: 1,
               '&:hover': {
                 backgroundColor: 'grey.100',
               },
@@ -166,17 +165,19 @@ function AppSidebar({ open, onToggle }) {
             <ListItemIcon
               sx={{
                 minWidth: 0,
-                mr: open ? 3 : 'auto',
+                mr: open ? 2 : 'auto',
                 justifyContent: 'center',
+                color: 'grey.600',
               }}
             >
-              <SettingsIcon />
+              <SettingsIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText
               primary="설정"
               sx={{ opacity: open ? 1 : 0 }}
               primaryTypographyProps={{
-                fontSize: '0.95rem',
+                fontSize: '0.875rem',
+                color: 'grey.700',
               }}
             />
           </ListItemButton>
