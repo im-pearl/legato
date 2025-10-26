@@ -212,14 +212,14 @@ function CaseIssues() {
 
         {/* 액션 버튼 */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
-          <Button variant="outlined" onClick={goBack}>
+          <Button size="large" variant="outlined" onClick={goBack}>
             이전으로
           </Button>
           <Box sx={{ display: 'flex', gap: 1.5 }}>
-            <Button variant="outlined" onClick={saveTemp}>
+            <Button size="large" variant="outlined" onClick={saveTemp}>
               임시저장
             </Button>
-            <Button variant="contained" onClick={searchCases}>
+            <Button size="large" variant="contained" onClick={searchCases}>
               판례검색
             </Button>
           </Box>

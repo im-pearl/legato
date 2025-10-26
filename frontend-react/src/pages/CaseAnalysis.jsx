@@ -342,7 +342,6 @@ function CaseAnalysis() {
                       borderRadius: 2,
                       textAlign: 'center',
                       cursor: 'pointer',
-                      bgcolor: 'grey.50',
                       transition: 'all 0.2s',
                       '&:hover': {
                         borderColor: 'primary.main',
@@ -441,10 +440,10 @@ function CaseAnalysis() {
 
         {/* 액션 버튼 */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
-          <Button variant="outlined" onClick={saveTemp}>
+          <Button size="large" variant="outlined" onClick={saveTemp}>
             임시저장
           </Button>
-          <Button variant="contained" onClick={analyzeIssues}>
+          <Button size="large" variant="contained" onClick={analyzeIssues}>
             쟁점분석
           </Button>
         </Box>

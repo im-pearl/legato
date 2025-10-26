@@ -139,10 +139,6 @@ function Home() {
               onClick={() => navigate('/case-analysis')}
               sx={{
                 mt: 2,
-                px: 3,
-                py: 1.5,
-                fontSize: '1rem',
-                fontWeight: 600,
               }}
             >
               목업 페이지 가기

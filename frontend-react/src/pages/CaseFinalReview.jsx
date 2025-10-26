@@ -302,14 +302,14 @@ function CaseFinalReview() {
 
         {/* 액션 버튼 */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
-          <Button variant="outlined" onClick={goBack}>
+          <Button size="large" variant="outlined" onClick={goBack}>
             이전으로
           </Button>
           <Box sx={{ display: 'flex', gap: 1.5 }}>
-            <Button variant="outlined" onClick={saveTemp}>
+            <Button size="large" variant="outlined" onClick={saveTemp}>
               임시저장
             </Button>
-            <Button variant="contained" onClick={openPreviewModal}>
+            <Button size="large" variant="contained" onClick={openPreviewModal}>
               저장
             </Button>
           </Box>
@@ -492,7 +492,7 @@ function CaseFinalReview() {
           </DialogContent>
 
           <DialogActions>
-            <Button variant="contained" onClick={confirmSave}>
+            <Button size="large" variant="contained" onClick={confirmSave}>
               제출
             </Button>
           </DialogActions>

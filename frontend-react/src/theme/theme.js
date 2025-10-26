@@ -70,8 +70,6 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 6,
-          padding: '10px 20px',
-          minWidth: 100,
         },
         contained: {
           boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',

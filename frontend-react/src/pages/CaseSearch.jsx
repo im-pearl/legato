@@ -11,12 +11,13 @@ import {
   Select,
   FormControl,
   Chip,
-  Switch,
+  Checkbox,
   Paper,
   InputAdornment,
   IconButton,
+  Popover,
 } from '@mui/material';
-import { Search as SearchIcon } from '@mui/icons-material';
+import { Search as SearchIcon, FilterList as FilterListIcon } from '@mui/icons-material';
 import AppSidebar, { DrawerHeader } from '../components/common/AppSidebar';
 import AppHeader from '../components/common/AppHeader';
 import LoadingModal from '../components/common/LoadingModal';
@@ -28,6 +29,7 @@ function CaseSearch() {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [searchType, setSearchType] = useState('all');
   const [searchCourt, setSearchCourt] = useState('all');
+  const [filterAnchorEl, setFilterAnchorEl] = useState(null);
 
   const [issues, setIssues] = useState([
     {
@@ -92,6 +94,16 @@ function CaseSearch() {
     }
     alert(`"${searchKeyword}" 키워드로 판례 검색을 요청했습니다.`);
   };
+
+  const handleFilterClick = (event) => {
+    setFilterAnchorEl(event.currentTarget);
+  };
+
+  const handleFilterClose = () => {
+    setFilterAnchorEl(null);
+  };
+
+  const isFilterOpen = Boolean(filterAnchorEl);
 
   const goBack = () => {
     navigate('/case-issues');
@@ -200,33 +212,37 @@ function CaseSearch() {
                       variant="outlined"
                       key={precedentIndex}
                       sx={{
-                        p: 2,
+                        p: 2.5,
                         borderColor: precedent.selected ? 'primary.main' : 'grey.300',
                         bgcolor: precedent.selected ? 'primary.50' : 'white',
                         transition: 'all 0.2s',
+                        position: 'relative',
                       }}
                     >
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1.5 }}>
-                        <Typography variant="body2" fontWeight={600} color="primary.main">
-                          {precedent.caseNumber}
-                        </Typography>
-                        <Switch
-                          size="small"
+                      <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
+                        <Checkbox
                           checked={precedent.selected}
                           onChange={() => togglePrecedentSelection(issueIndex, precedentIndex)}
+                          sx={{ p: 0, mt: -0.5 }}
                         />
+                        <Box sx={{ flex: 1 }}>
+                          <Typography variant="body2" fontWeight={600} color="primary.main" mb={1}>
+                            {precedent.caseNumber}
+                          </Typography>
+                          <Typography variant="body2" color="grey.800" sx={{ lineHeight: 1.6, mb: 1.5 }}>
+                            {precedent.summary}
+                          </Typography>
+                        </Box>
                       </Box>
-                      <Typography variant="body2" color="grey.800" sx={{ mb: 1.5, lineHeight: 1.5 }}>
-                        {precedent.summary}
-                      </Typography>
-                      <Button
-                        size="small"
-                        variant="outlined"
-                        onClick={() => viewFullPrecedent(precedent)}
-                        sx={{ fontSize: '0.75rem' }}
-                      >
-                        전문보기
-                      </Button>
+                      <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          onClick={() => viewFullPrecedent(precedent)}
+                        >
+                          전문보기
+                        </Button>
+                      </Box>
                     </Paper>
                   ))}
                 </Box>
@@ -248,7 +264,7 @@ function CaseSearch() {
               <Typography variant="subtitle1" fontWeight={600} color="grey.800" mb={2}>
                 추가 판례 검색
               </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <Box sx={{ display: 'flex', gap: 1 }}>
                 <TextField
                   fullWidth
                   placeholder="자연어로 검색하세요"
@@ -267,39 +283,80 @@ function CaseSearch() {
                     ),
                   }}
                 />
-                <Box sx={{ display: 'flex', gap: 2 }}>
-                  <FormControl fullWidth size="small">
-                    <Select value={searchType} onChange={(e) => setSearchType(e.target.value)}>
-                      <MenuItem value="all">전체</MenuItem>
-                      <MenuItem value="title">제목</MenuItem>
-                      <MenuItem value="content">내용</MenuItem>
-                      <MenuItem value="caseNumber">사건번호</MenuItem>
-                    </Select>
-                  </FormControl>
-                  <FormControl fullWidth size="small">
-                    <Select value={searchCourt} onChange={(e) => setSearchCourt(e.target.value)}>
-                      <MenuItem value="all">모든 법원</MenuItem>
-                      <MenuItem value="supreme">대법원</MenuItem>
-                      <MenuItem value="high">고등법원</MenuItem>
-                      <MenuItem value="district">지방법원</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Box>
+                <IconButton
+                  onClick={handleFilterClick}
+                  sx={{
+                    border: 1,
+                    borderColor: 'grey.300',
+                    borderRadius: 1,
+                    bgcolor: isFilterOpen ? 'grey.100' : 'white',
+                    '&:hover': {
+                      bgcolor: 'grey.100',
+                    },
+                  }}
+                >
+                  <FilterListIcon />
+                </IconButton>
               </Box>
+
+              <Popover
+                open={isFilterOpen}
+                anchorEl={filterAnchorEl}
+                onClose={handleFilterClose}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                sx={{ mt: 1 }}
+              >
+                <Box sx={{ p: 3, minWidth: 300 }}>
+                  <Typography variant="subtitle2" fontWeight={600} mb={2}>
+                    검색 필터
+                  </Typography>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <FormControl fullWidth size="small">
+                      <Typography variant="caption" color="grey.700" mb={0.5}>
+                        검색 타입
+                      </Typography>
+                      <Select value={searchType} onChange={(e) => setSearchType(e.target.value)}>
+                        <MenuItem value="all">전체</MenuItem>
+                        <MenuItem value="title">제목</MenuItem>
+                        <MenuItem value="content">내용</MenuItem>
+                        <MenuItem value="caseNumber">사건번호</MenuItem>
+                      </Select>
+                    </FormControl>
+                    <FormControl fullWidth size="small">
+                      <Typography variant="caption" color="grey.700" mb={0.5}>
+                        법원
+                      </Typography>
+                      <Select value={searchCourt} onChange={(e) => setSearchCourt(e.target.value)}>
+                        <MenuItem value="all">모든 법원</MenuItem>
+                        <MenuItem value="supreme">대법원</MenuItem>
+                        <MenuItem value="high">고등법원</MenuItem>
+                        <MenuItem value="district">지방법원</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Box>
+                </Box>
+              </Popover>
             </Paper>
           </CardContent>
         </Card>
 
         {/* 액션 버튼 */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
-          <Button variant="outlined" onClick={goBack}>
+          <Button size="large" variant="outlined" onClick={goBack}>
             이전으로
           </Button>
           <Box sx={{ display: 'flex', gap: 1.5 }}>
-            <Button variant="outlined" onClick={saveTemp}>
+            <Button size="large" variant="outlined" onClick={saveTemp}>
               임시저장
             </Button>
-            <Button variant="contained" onClick={finalReview}>
+            <Button size="large" variant="contained" onClick={finalReview}>
               최종 검토
             </Button>
           </Box>
