@@ -1,83 +1,15 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { styled, useTheme } from '@mui/material/styles';
+import { Box, Text, IconButton, Button } from '@chakra-ui/react';
 import {
-  Drawer as MuiDrawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-  Box,
-  IconButton,
-  Stepper,
-  Step,
-  StepLabel,
-  StepButton,
-} from '@mui/material';
-import {
-  Description as DescriptionIcon,
-  AccountBalance as AccountBalanceIcon,
-  ContentPaste as ContentPasteIcon,
-  Settings as SettingsIcon,
-  ChevronLeft as ChevronLeftIcon,
-  ChevronRight as ChevronRightIcon,
-  Menu as MenuIcon,
-} from '@mui/icons-material';
+  LuSettings,
+  LuChevronLeft,
+  LuMenu,
+} from 'react-icons/lu';
 
-const drawerWidth = 200;
-
-const openedMixin = (theme) => ({
-  width: drawerWidth,
-  transition: theme.transitions.create('width', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
-  }),
-  overflowX: 'hidden',
-  backgroundColor: theme.palette.grey[50],
-});
-
-const closedMixin = (theme) => ({
-  transition: theme.transitions.create('width', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  overflowX: 'hidden',
-  width: `calc(${theme.spacing(7)} + 1px)`,
-  backgroundColor: theme.palette.grey[50],
-  [theme.breakpoints.up('sm')]: {
-    width: `calc(${theme.spacing(8)} + 1px)`,
-  },
-});
-
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
-    width: drawerWidth,
-    flexShrink: 0,
-    whiteSpace: 'nowrap',
-    boxSizing: 'border-box',
-    ...(open && {
-      ...openedMixin(theme),
-      '& .MuiDrawer-paper': openedMixin(theme),
-    }),
-    ...(!open && {
-      ...closedMixin(theme),
-      '& .MuiDrawer-paper': closedMixin(theme),
-    }),
-  }),
-);
-
-const DrawerHeader = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-end',
-  padding: theme.spacing(0, 1),
-  minHeight: 56,
-}));
+const drawerWidth = '200px';
 
 function AppSidebar({ open, onToggle }) {
-  const theme = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -88,7 +20,6 @@ function AppSidebar({ open, onToggle }) {
     { label: '심사보고서 작성', path: '/case-final-review' },
   ];
 
-  // 현재 URL 기반으로 active step 결정
   const getActiveStep = () => {
     const stepIndex = steps.findIndex((step) => location.pathname === step.path);
     return stepIndex !== -1 ? stepIndex : -1;
@@ -101,92 +32,126 @@ function AppSidebar({ open, onToggle }) {
   };
 
   return (
-    <Drawer variant="permanent" open={open}>
+    <Box
+      as="nav"
+      position="fixed"
+      left={0}
+      top={0}
+      h="100vh"
+      w={open ? drawerWidth : '65px'}
+      bg="gray.50"
+      borderRightWidth="1px"
+      borderColor="gray.200"
+      transition="width 0.3s"
+      zIndex={10}
+    >
       {/* 헤더 - 토글 버튼 */}
-      <DrawerHeader>
+      <Box
+        h="56px"
+        display="flex"
+        alignItems="center"
+        px={2}
+        borderBottomWidth="1px"
+        borderColor="gray.200"
+      >
         {open ? (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flex: 1, pl: 2 }}>
-            <Typography variant="h6" fontWeight={700} color="text.primary" noWrap>
+          <>
+            <Text flex={1} fontSize="lg" fontWeight={700} color="gray.900" pl={2}>
               심사 AI 데모
-            </Typography>
-          </Box>
+            </Text>
+            <IconButton
+              onClick={onToggle}
+              size="sm"
+              variant="ghost"
+              aria-label="사이드바 닫기"
+            >
+              <LuChevronLeft />
+            </IconButton>
+          </>
         ) : (
-          <IconButton onClick={onToggle} sx={{ mx: 'auto' }}>
-            <MenuIcon />
+          <IconButton
+            onClick={onToggle}
+            size="sm"
+            variant="ghost"
+            mx="auto"
+            aria-label="사이드바 열기"
+          >
+            <LuMenu />
           </IconButton>
         )}
-        {open && (
-          <IconButton onClick={onToggle}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-          </IconButton>
-        )}
-      </DrawerHeader>
+      </Box>
 
-      {/* Vertical Stepper */}
+      {/* Vertical Stepper - 수동 구현 */}
       {open && (
-        <Box sx={{ px: 2, py: 3 }}>
-          <Stepper activeStep={activeStep} orientation="vertical">
-            {steps.map((step, index) => (
-              <Step key={step.label}>
-                <StepButton onClick={() => handleStepClick(step.path)}>
-                  <StepLabel
-                    sx={{
-                      '& .MuiStepLabel-label': {
-                        fontSize: '0.9rem',
-                        fontWeight: activeStep === index ? 600 : 400,
-                      },
-                    }}
-                  >
-                    {step.label}
-                  </StepLabel>
-                </StepButton>
-              </Step>
-            ))}
-          </Stepper>
+        <Box px={4} py={6}>
+          {steps.map((step, index) => (
+            <Box key={step.label} mb={4}>
+              <Box
+                display="flex"
+                alignItems="center"
+                gap={3}
+                cursor="pointer"
+                onClick={() => handleStepClick(step.path)}
+                _hover={{ bg: 'gray.100' }}
+                borderRadius="md"
+                px={2}
+                py={2}
+              >
+                <Box
+                  w="32px"
+                  h="32px"
+                  borderRadius="full"
+                  bg={activeStep === index ? 'teal.500' : activeStep > index ? 'teal.500' : 'gray.300'}
+                  color="white"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  fontWeight={600}
+                  fontSize="sm"
+                  flexShrink={0}
+                >
+                  {index + 1}
+                </Box>
+                <Text
+                  fontSize="0.9rem"
+                  fontWeight={activeStep === index ? 600 : 400}
+                  color={activeStep === index ? 'gray.900' : 'gray.600'}
+                >
+                  {step.label}
+                </Text>
+              </Box>
+              {index < steps.length - 1 && (
+                <Box
+                  w="2px"
+                  h="20px"
+                  bg={activeStep > index ? 'teal.500' : 'gray.300'}
+                  ml="15px"
+                  my={1}
+                />
+              )}
+            </Box>
+          ))}
         </Box>
       )}
 
-      <Box sx={{ flexGrow: 1 }} />
+      <Box flex={1} />
 
       {/* 설정 메뉴 */}
-      <List sx={{ px: open ? 1.5 : 0.5, py: 1 }}>
-        <ListItem disablePadding sx={{ display: 'block' }}>
-          <ListItemButton
-            sx={{
-              minHeight: 40,
-              justifyContent: open ? 'initial' : 'center',
-              px: 2,
-              borderRadius: 1,
-              '&:hover': {
-                backgroundColor: 'grey.100',
-              },
-            }}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: open ? 2 : 'auto',
-                justifyContent: 'center',
-                color: 'grey.600',
-              }}
-            >
-              <SettingsIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText
-              primary="설정"
-              sx={{ opacity: open ? 1 : 0 }}
-              primaryTypographyProps={{
-                fontSize: '0.875rem',
-                color: 'grey.700',
-              }}
-            />
-          </ListItemButton>
-        </ListItem>
-      </List>
-    </Drawer>
+      <Box px={open ? 3 : 1} py={2}>
+        <Button
+          variant="ghost"
+          size="sm"
+          w="full"
+          justifyContent={open ? 'flex-start' : 'center'}
+          px={open ? 3 : 0}
+        >
+          <LuSettings />
+          {open && <Text ml={2}>설정</Text>}
+        </Button>
+      </Box>
+    </Box>
   );
 }
 
-export { DrawerHeader };
+export const DrawerHeader = Box;
 export default AppSidebar;
-

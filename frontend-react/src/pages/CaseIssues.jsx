@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Card,
-  CardContent,
   Button,
-  Typography,
-  TextField,
+  Text,
+  Textarea,
   IconButton,
-} from '@mui/material';
-import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
+  Input,
+  Stack,
+} from '@chakra-ui/react';
+import { LuPlus, LuTrash2 } from 'react-icons/lu';
 import AppSidebar, { DrawerHeader } from '../components/common/AppSidebar';
 import AppHeader from '../components/common/AppHeader';
 import LoadingModal from '../components/common/LoadingModal';
@@ -75,151 +76,127 @@ function CaseIssues() {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box display="flex">
       <AppSidebar open={drawerOpen} onToggle={() => setDrawerOpen(!drawerOpen)} />
 
       <Box
-        sx={{
-          flexGrow: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          minHeight: '100vh',
-        }}
+        flexGrow={1}
+        display="flex"
+        flexDirection="column"
+        minH="100vh"
+        ml={drawerOpen ? '200px' : '65px'}
+        transition="margin-left 0.3s"
       >
         <AppHeader caseNumber="12345" caseTitle="강제추행 피해자입니다" />
 
         <Box
-          component="main"
-          sx={{
-            flexGrow: 1,
-            p: 3,
-            bgcolor: 'white',
-          }}
+          as="main"
+          flexGrow={1}
+          p={6}
+          bg="white"
         >
         {/* 사실관계 섹션 */}
-        <Card variant="outlined" sx={{ mb: 3 }}>
-          <CardContent>
-            <Typography variant="h6" fontWeight={600} mb={2}>
+        <Card.Root variant="outline" mb={6}>
+          <Card.Body>
+            <Text fontSize="lg" fontWeight={600} mb={4}>
               사실관계
-            </Typography>
-            <TextField
-              multiline
-              fullWidth
-              minRows={10}
+            </Text>
+            <Textarea
               defaultValue={factsContent}
-              sx={{
-                '& .MuiInputBase-root': {
-                  fontFamily: 'inherit',
-                  fontSize: '0.95rem',
-                  lineHeight: 1.5,
-                },
-              }}
+              minRows={10}
+              fontFamily="inherit"
+              fontSize="0.95rem"
+              lineHeight={1.5}
             />
-          </CardContent>
-        </Card>
+          </Card.Body>
+        </Card.Root>
 
         {/* 쟁점 섹션 */}
-        <Card variant="outlined" sx={{ mb: 3 }}>
-          <CardContent>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Typography variant="h6" fontWeight={600}>
+        <Card.Root variant="outline" mb={6}>
+          <Card.Body>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
+              <Text fontSize="lg" fontWeight={600}>
                 쟁점
-              </Typography>
+              </Text>
               <Button
-                variant="contained"
-                size="small"
-                startIcon={<AddIcon />}
+                size="sm"
+                colorPalette="teal"
                 onClick={addNewIssue}
-                sx={{ minWidth: 'auto' }}
               >
+                <LuPlus />
                 추가
               </Button>
             </Box>
 
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Stack gap={4}>
               {issues.map((issue, index) => (
                 <Box
                   key={index}
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: 2,
-                    p: 2,
-                    border: 1,
-                    borderColor: 'grey.300',
-                    borderRadius: 1.5,
-                    bgcolor: 'white',
-                    transition: 'all 0.2s',
-                    '&:focus-within': {
-                      borderColor: 'primary.main',
-                      boxShadow: 1,
-                    },
+                  display="flex"
+                  alignItems="flex-start"
+                  gap={4}
+                  p={4}
+                  borderWidth="1px"
+                  borderColor="gray.300"
+                  borderRadius="lg"
+                  bg="white"
+                  transition="all 0.2s"
+                  _focusWithin={{
+                    borderColor: 'teal.500',
+                    boxShadow: 'sm',
                   }}
                 >
                   <Box
-                    sx={{
-                      width: 28,
-                      height: 28,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      bgcolor: 'grey.500',
-                      color: 'white',
-                      borderRadius: 1,
-                      fontWeight: 500,
-                      flexShrink: 0,
-                      fontSize: '0.9rem',
-                    }}
+                    w="28px"
+                    h="28px"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    bg="gray.500"
+                    color="white"
+                    borderRadius="md"
+                    fontWeight={500}
+                    flexShrink={0}
+                    fontSize="0.9rem"
                   >
                     {index + 1}
                   </Box>
 
-                  <TextField
-                    fullWidth
-                    multiline
+                  <Textarea
                     value={issue.content}
                     onChange={(e) => updateIssue(index, e.target.value)}
-                    variant="standard"
-                    InputProps={{
-                      disableUnderline: true,
-                    }}
-                    sx={{
-                      '& .MuiInputBase-root': {
-                        fontSize: '0.95rem',
-                        lineHeight: 1.5,
-                      },
-                    }}
+                    variant="plain"
+                    fontSize="0.95rem"
+                    lineHeight={1.5}
+                    flex={1}
                   />
 
                   <IconButton
-                    size="small"
+                    size="sm"
+                    variant="ghost"
+                    colorPalette="red"
                     onClick={() => deleteIssue(index)}
-                    sx={{
-                      color: 'error.main',
-                      flexShrink: 0,
-                      '&:hover': {
-                        bgcolor: 'error.lighter',
-                      },
-                    }}
+                    flexShrink={0}
+                    aria-label="삭제"
                   >
-                    <DeleteIcon />
+                    <LuTrash2 />
                   </IconButton>
                 </Box>
               ))}
-            </Box>
-          </CardContent>
-        </Card>
+            </Stack>
+          </Card.Body>
+        </Card.Root>
 
         {/* 액션 버튼 */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
-          <Button size="large" variant="outlined" onClick={goBack}>
+        <Box display="flex" justifyContent="space-between" gap={4}>
+          <Button size="lg" variant="outline" onClick={goBack}>
             이전으로
           </Button>
-          <Box sx={{ display: 'flex', gap: 1.5 }}>
-            <Button size="large" variant="outlined" onClick={saveTemp}>
+          <Box display="flex" gap={3}>
+            <Button size="lg" variant="outline" onClick={saveTemp}>
               임시저장
             </Button>
-            <Button size="large" variant="contained" onClick={searchCases}>
+            <Button size="lg" colorPalette="teal" onClick={searchCases}>
               판례검색
             </Button>
           </Box>
@@ -236,4 +213,3 @@ function CaseIssues() {
 }
 
 export default CaseIssues;
-

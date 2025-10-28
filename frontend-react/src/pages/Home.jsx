@@ -1,4 +1,4 @@
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Text, Button } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
 function Home() {
@@ -6,28 +6,24 @@ function Home() {
 
   return (
     <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh',
-        bgcolor: 'white',
-      }}
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      minH="100vh"
+      bg="white"
     >
       <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 4,
-        }}
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        gap={8}
       >
-        <Typography variant="h4" fontWeight={600} color="grey.800">
+        <Text fontSize="3xl" fontWeight={600} color="gray.800">
           심사 AI 데모
-        </Typography>
+        </Text>
         <Button
-          variant="contained"
-          size="large"
+          size="lg"
+          colorPalette="teal"
           onClick={() => navigate('/case-analysis')}
         >
           데모 페이지 가기

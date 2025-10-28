@@ -3,33 +3,23 @@ import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Card,
-  CardContent,
   Button,
-  Typography,
-  TextField,
-  Slider,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  IconButton,
-  Table,
-  TableBody,
-  TableRow,
-  TableCell,
-  Paper,
-  LinearProgress,
-} from '@mui/material';
-import { Close as CloseIcon } from '@mui/icons-material';
+  Text,
+  Textarea,
+  Stack,
+  For,
+} from '@chakra-ui/react';
+import { Slider } from '@chakra-ui/react';
 import AppSidebar, { DrawerHeader } from '../components/common/AppSidebar';
 import AppHeader from '../components/common/AppHeader';
+import PreviewReportModal from '../components/finalreview/PreviewReportModal';
 
 function CaseFinalReview() {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
-  const [winProbability, setWinProbability] = useState(75);
-  const [executionProbability, setExecutionProbability] = useState(80);
+  const [winProbability, setWinProbability] = useState([75]);
+  const [executionProbability, setExecutionProbability] = useState([80]);
 
   const [winProbabilityDescription, setWinProbabilityDescription] = useState(
     '계약서가 없고 상대방의 확인 서명이 없는 견적서만으로는 계약상 대금청구가 인정되기 어려우나, 부당이득반환청구는 실제 제공된 용역의 가치에 기초하여 인정될 가능성이 높습니다...'
@@ -92,10 +82,6 @@ function CaseFinalReview() {
 
 5. 이에 의뢰인은 대금 잔금 약 1억 원을 상대방에게 청구하고자 함.`;
 
-  const handleMenuChange = (menuId) => {
-    console.log('메뉴 변경:', menuId);
-  };
-
   const goBack = () => {
     navigate('/case-search');
   };
@@ -118,388 +104,215 @@ function CaseFinalReview() {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <AppSidebar open={drawerOpen} onToggle={() => setDrawerOpen(!drawerOpen)} />
-
-      <Box
-        sx={{
-          flexGrow: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          minHeight: '100vh',
-        }}
-      >
-        <AppHeader caseNumber="12345" caseTitle="강제추행 피해자입니다" />
+    <>
+      <Box display="flex">
+        <AppSidebar open={drawerOpen} onToggle={() => setDrawerOpen(!drawerOpen)} />
 
         <Box
-          component="main"
-          sx={{
-            flexGrow: 1,
-            p: 3,
-            bgcolor: 'white',
-          }}
+          flexGrow={1}
+          display="flex"
+          flexDirection="column"
+          minH="100vh"
+          ml={drawerOpen ? '200px' : '65px'}
+          transition="margin-left 0.3s"
         >
+          <AppHeader caseNumber="12345" caseTitle="강제추행 피해자입니다" />
+
+          <Box
+            as="main"
+            flexGrow={1}
+            p={6}
+            bg="white"
+          >
         {/* 사실관계 */}
-        <Card variant="outlined" sx={{ mb: 3 }}>
-          <CardContent>
-            <Typography variant="h6" fontWeight={600} mb={2}>
+        <Card.Root variant="outline" mb={6}>
+          <Card.Body>
+            <Text fontSize="lg" fontWeight={600} mb={4}>
               사실관계
-            </Typography>
-            <Typography variant="body2" color="grey.800" sx={{ whiteSpace: 'pre-line', lineHeight: 1.6 }}>
+            </Text>
+            <Text fontSize="sm" color="gray.800" whiteSpace="pre-line" lineHeight={1.6}>
               {factsContent}
-            </Typography>
-          </CardContent>
-        </Card>
+            </Text>
+          </Card.Body>
+        </Card.Root>
 
         {/* 쟁점 및 포섭 */}
-        {issues.map((issue, issueIndex) => (
-          <Card key={issueIndex} variant="outlined" sx={{ mb: 3 }}>
-            <CardContent>
-              <Typography variant="h6" fontWeight={600} mb={2}>
-                쟁점 {issueIndex + 1}
-              </Typography>
+        <For each={issues}>
+          {(issue, issueIndex) => (
+            <Card.Root key={issueIndex} variant="outline" mb={6}>
+              <Card.Body>
+                <Text fontSize="lg" fontWeight={600} mb={4}>
+                  쟁점 {issueIndex + 1}
+                </Text>
 
-              <Paper variant="outlined" sx={{ p: 2, mb: 3, bgcolor: 'primary.50' }}>
-                <Typography variant="body2" color="grey.800" lineHeight={1.5}>
-                  {issue.content}
-                </Typography>
-              </Paper>
+                <Box p={4} mb={6} borderWidth="1px" borderRadius="md" bg="teal.50">
+                  <Text fontSize="sm" color="gray.800" lineHeight={1.5}>
+                    {issue.content}
+                  </Text>
+                </Box>
 
-              <Typography variant="subtitle1" fontWeight={600} color="grey.800" mb={2}>
-                관련 판례
-              </Typography>
-              <Box sx={{ mb: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
-                {issue.precedents.map((precedent, precedentIndex) => (
-                  <Paper variant="outlined" key={precedentIndex} sx={{ p: 2 }}>
-                    <Typography variant="body2" fontWeight={600} color="primary.main" mb={1}>
-                      {precedent.caseNumber}
-                    </Typography>
-                    <Typography variant="body2" color="grey.800" lineHeight={1.5}>
-                      {precedent.summary}
-                    </Typography>
-                  </Paper>
-                ))}
-              </Box>
+                <Text fontSize="md" fontWeight={600} color="gray.800" mb={4}>
+                  관련 판례
+                </Text>
+                <Stack gap={4} mb={6}>
+                  <For each={issue.precedents}>
+                    {(precedent, index) => (
+                      <Box key={index} p={4} borderWidth="1px" borderRadius="md">
+                        <Text fontSize="sm" fontWeight={600} color="teal.600" mb={2}>
+                          {precedent.caseNumber}
+                        </Text>
+                        <Text fontSize="sm" color="gray.800" lineHeight={1.5}>
+                          {precedent.summary}
+                        </Text>
+                      </Box>
+                    )}
+                  </For>
+                </Stack>
 
-              <Typography variant="subtitle1" fontWeight={600} color="grey.800" mb={2}>
-                판단
-              </Typography>
-              <TextField
-                fullWidth
-                multiline
-                minRows={4}
-                defaultValue={issue.subsumption}
-                sx={{
-                  '& .MuiInputBase-root': {
-                    fontFamily: 'inherit',
-                    fontSize: '0.95rem',
-                    lineHeight: 1.5,
-                  },
-                }}
-              />
-            </CardContent>
-          </Card>
-        ))}
+                <Text fontSize="md" fontWeight={600} color="gray.800" mb={4}>
+                  판단
+                </Text>
+                <Textarea
+                  defaultValue={issue.subsumption}
+                  rows={4}
+                  fontFamily="inherit"
+                  fontSize="0.95rem"
+                  lineHeight={1.5}
+                />
+              </Card.Body>
+            </Card.Root>
+          )}
+        </For>
 
         {/* 결론 */}
-        <Card variant="outlined" sx={{ mb: 3 }}>
-          <CardContent>
-            <Typography variant="h6" fontWeight={600} mb={2}>
+        <Card.Root variant="outline" mb={6}>
+          <Card.Body>
+            <Text fontSize="lg" fontWeight={600} mb={4}>
               결론
-            </Typography>
-            <TextField
-              fullWidth
-              multiline
-              minRows={5}
+            </Text>
+            <Textarea
               value={conclusion}
               onChange={(e) => setConclusion(e.target.value)}
-              sx={{
-                '& .MuiInputBase-root': {
-                  fontFamily: 'inherit',
-                  fontSize: '0.95rem',
-                  lineHeight: 1.5,
-                },
-              }}
+              rows={5}
+              fontFamily="inherit"
+              fontSize="0.95rem"
+              lineHeight={1.5}
             />
-          </CardContent>
-        </Card>
+          </Card.Body>
+        </Card.Root>
 
         {/* 승소가능성 */}
-        <Card variant="outlined" sx={{ mb: 3 }}>
-          <CardContent>
-            <Typography variant="h6" fontWeight={600} mb={3}>
+        <Card.Root variant="outline" mb={6}>
+          <Card.Body>
+            <Text fontSize="lg" fontWeight={600} mb={6}>
               승소가능성
-            </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, mb: 3 }}>
-              <Slider
+            </Text>
+            <Box mb={6}>
+              <Slider.Root
                 value={winProbability}
-                onChange={(_, value) => setWinProbability(value)}
+                onValueChange={(e) => setWinProbability(e.value)}
                 min={0}
                 max={100}
                 step={5}
-                valueLabelDisplay="auto"
-                valueLabelFormat={(value) => `${value}%`}
-                sx={{ flex: 1 }}
-              />
-              <Typography variant="h5" fontWeight={600} color="primary.main" sx={{ minWidth: 70, textAlign: 'center' }}>
-                {winProbability}%
-              </Typography>
+                colorPalette="teal"
+              >
+                <Box display="flex" justifyContent="space-between" mb={2}>
+                  <Slider.Label fontSize="sm" fontWeight={500}>승소 확률</Slider.Label>
+                  <Slider.ValueText fontSize="sm" fontWeight={600} color="teal.600" />
+                </Box>
+                <Slider.Control>
+                  <Slider.Track>
+                    <Slider.Range />
+                  </Slider.Track>
+                  <Slider.Thumbs />
+                </Slider.Control>
+              </Slider.Root>
             </Box>
-            <TextField
-              fullWidth
-              multiline
-              minRows={4}
+            <Textarea
               value={winProbabilityDescription}
               onChange={(e) => setWinProbabilityDescription(e.target.value)}
-              sx={{
-                '& .MuiInputBase-root': {
-                  fontFamily: 'inherit',
-                  fontSize: '0.95rem',
-                  lineHeight: 1.5,
-                },
-              }}
+              rows={4}
+              fontFamily="inherit"
+              fontSize="0.95rem"
+              lineHeight={1.5}
             />
-          </CardContent>
-        </Card>
+          </Card.Body>
+        </Card.Root>
 
         {/* 집행가능성 */}
-        <Card variant="outlined" sx={{ mb: 3 }}>
-          <CardContent>
-            <Typography variant="h6" fontWeight={600} mb={3}>
+        <Card.Root variant="outline" mb={6}>
+          <Card.Body>
+            <Text fontSize="lg" fontWeight={600} mb={6}>
               집행가능성
-            </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, mb: 3 }}>
-              <Slider
+            </Text>
+            <Box mb={6}>
+              <Slider.Root
                 value={executionProbability}
-                onChange={(_, value) => setExecutionProbability(value)}
+                onValueChange={(e) => setExecutionProbability(e.value)}
                 min={0}
                 max={100}
                 step={5}
-                valueLabelDisplay="auto"
-                valueLabelFormat={(value) => `${value}%`}
-                sx={{ flex: 1 }}
-              />
-              <Typography variant="h5" fontWeight={600} color="primary.main" sx={{ minWidth: 70, textAlign: 'center' }}>
-                {executionProbability}%
-              </Typography>
+                colorPalette="teal"
+              >
+                <Box display="flex" justifyContent="space-between" mb={2}>
+                  <Slider.Label fontSize="sm" fontWeight={500}>집행 확률</Slider.Label>
+                  <Slider.ValueText fontSize="sm" fontWeight={600} color="teal.600" />
+                </Box>
+                <Slider.Control>
+                  <Slider.Track>
+                    <Slider.Range />
+                  </Slider.Track>
+                  <Slider.Thumbs />
+                </Slider.Control>
+              </Slider.Root>
             </Box>
-            <TextField
-              fullWidth
-              multiline
-              minRows={4}
+            <Textarea
               value={executionProbabilityDescription}
               onChange={(e) => setExecutionProbabilityDescription(e.target.value)}
-              sx={{
-                '& .MuiInputBase-root': {
-                  fontFamily: 'inherit',
-                  fontSize: '0.95rem',
-                  lineHeight: 1.5,
-                },
-              }}
+              rows={4}
+              fontFamily="inherit"
+              fontSize="0.95rem"
+              lineHeight={1.5}
             />
-          </CardContent>
-        </Card>
+          </Card.Body>
+        </Card.Root>
 
         {/* 액션 버튼 */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
-          <Button size="large" variant="outlined" onClick={goBack}>
+        <Box display="flex" justifyContent="space-between" gap={4}>
+          <Button size="lg" variant="outline" onClick={goBack}>
             이전으로
           </Button>
-          <Box sx={{ display: 'flex', gap: 1.5 }}>
-            <Button size="large" variant="outlined" onClick={saveTemp}>
+          <Box display="flex" gap={3}>
+            <Button size="lg" variant="outline" onClick={saveTemp}>
               임시저장
             </Button>
-            <Button size="large" variant="contained" onClick={openPreviewModal}>
+            <Button size="lg" colorPalette="teal" onClick={openPreviewModal}>
               저장
             </Button>
           </Box>
         </Box>
-
-        {/* 보고서 미리보기 모달 */}
-        <Dialog
-          open={showPreviewModal}
-          onClose={closePreviewModal}
-          maxWidth="md"
-          fullWidth
-          PaperProps={{
-            sx: {
-              maxHeight: '90vh',
-            },
-          }}
-        >
-          <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h6" fontWeight={600}>
-              사건 심사 보고서
-            </Typography>
-            <IconButton onClick={closePreviewModal} size="small">
-              <CloseIcon />
-            </IconButton>
-          </DialogTitle>
-
-          <DialogContent dividers>
-            {/* 보고서 헤더 */}
-            <Table size="small" sx={{ mb: 3 }}>
-              <TableBody>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: 600, bgcolor: 'grey.100', width: '15%' }}>의뢰인</TableCell>
-                  <TableCell sx={{ width: '35%' }}>{clientName}</TableCell>
-                  <TableCell sx={{ fontWeight: 600, bgcolor: 'grey.100', width: '15%' }}>신청지 번호</TableCell>
-                  <TableCell sx={{ width: '35%' }}>{requestNumber}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: 600, bgcolor: 'grey.100' }}>상담 변호사</TableCell>
-                  <TableCell>{lawyerName}</TableCell>
-                  <TableCell sx={{ fontWeight: 600, bgcolor: 'grey.100' }}>접수일</TableCell>
-                  <TableCell>{receiptDate}</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-
-            {/* 사건 요약 */}
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" fontWeight={600} color="primary.main" mb={1.5} pb={0.5} borderBottom={1} borderColor="grey.200">
-                사건 요약
-              </Typography>
-              <Typography variant="body2" lineHeight={1.6}>
-                본 사건은 설계용역 대금 청구에 관한 사건으로, 의뢰인이 상대방으로부터 오피스텔 신축설계 용역을 의뢰받아 완료하였으나, 계약서 없이 진행되어 설계용역대금에 대한 다툼이 발생한 사안입니다...
-              </Typography>
-            </Box>
-
-            {/* 사실관계 */}
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" fontWeight={600} color="primary.main" mb={1.5} pb={0.5} borderBottom={1} borderColor="grey.200">
-                사실관계
-              </Typography>
-              <Typography variant="body2" lineHeight={1.6} sx={{ whiteSpace: 'pre-line' }}>
-                {factsContent}
-              </Typography>
-            </Box>
-
-            {/* 법리 검토 */}
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" fontWeight={600} color="primary.main" mb={1.5} pb={0.5} borderBottom={1} borderColor="grey.200">
-                법리 검토
-              </Typography>
-              {issues.map((issue, index) => (
-                <Box key={index} sx={{ mb: 3, pb: 3, borderBottom: index < issues.length - 1 ? '1px dashed' : 'none', borderColor: 'grey.200' }}>
-                  <Typography variant="subtitle1" fontWeight={600} mb={1}>
-                    {index + 1}. {issue.content}
-                  </Typography>
-                  <Typography variant="body2" lineHeight={1.6} mb={2}>
-                    {issue.subsumption}
-                  </Typography>
-                  <Typography variant="subtitle2" fontWeight={600} mb={1}>
-                    관련 판례
-                  </Typography>
-                  <ul style={{ paddingLeft: '1.5rem', margin: 0 }}>
-                    {issue.precedents.map((precedent, pIndex) => (
-                      <li key={pIndex}>
-                        <Typography variant="body2" color="grey.700">
-                          {precedent.caseNumber}
-                        </Typography>
-                      </li>
-                    ))}
-                  </ul>
-                </Box>
-              ))}
-            </Box>
-
-            {/* 결론 */}
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" fontWeight={600} color="primary.main" mb={1.5} pb={0.5} borderBottom={1} borderColor="grey.200">
-                결론
-              </Typography>
-              <Typography variant="body2" lineHeight={1.6}>
-                {conclusion}
-              </Typography>
-            </Box>
-
-            {/* 승소가능성 */}
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" fontWeight={600} color="primary.main" mb={1.5} pb={0.5} borderBottom={1} borderColor="grey.200">
-                승소가능성 평가
-              </Typography>
-              <Box sx={{ mb: 2 }}>
-                <Box sx={{ height: 32, bgcolor: 'grey.200', borderRadius: 2, overflow: 'hidden', position: 'relative' }}>
-                  <LinearProgress
-                    variant="determinate"
-                    value={winProbability}
-                    sx={{
-                      height: '100%',
-                      bgcolor: 'transparent',
-                      '& .MuiLinearProgress-bar': {
-                        bgcolor: 'primary.main',
-                      },
-                    }}
-                  />
-                  <Typography
-                    variant="body2"
-                    fontWeight={600}
-                    color="white"
-                    sx={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%)',
-                    }}
-                  >
-                    {winProbability}%
-                  </Typography>
-                </Box>
-              </Box>
-              <Typography variant="body2" lineHeight={1.6}>
-                {winProbabilityDescription}
-              </Typography>
-            </Box>
-
-            {/* 집행가능성 */}
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" fontWeight={600} color="primary.main" mb={1.5} pb={0.5} borderBottom={1} borderColor="grey.200">
-                집행가능성 평가
-              </Typography>
-              <Box sx={{ mb: 2 }}>
-                <Box sx={{ height: 32, bgcolor: 'grey.200', borderRadius: 2, overflow: 'hidden', position: 'relative' }}>
-                  <LinearProgress
-                    variant="determinate"
-                    value={executionProbability}
-                    sx={{
-                      height: '100%',
-                      bgcolor: 'transparent',
-                      '& .MuiLinearProgress-bar': {
-                        bgcolor: 'primary.main',
-                      },
-                    }}
-                  />
-                  <Typography
-                    variant="body2"
-                    fontWeight={600}
-                    color="white"
-                    sx={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%)',
-                    }}
-                  >
-                    {executionProbability}%
-                  </Typography>
-                </Box>
-              </Box>
-              <Typography variant="body2" lineHeight={1.6}>
-                {executionProbabilityDescription}
-              </Typography>
-            </Box>
-          </DialogContent>
-
-          <DialogActions>
-            <Button size="large" variant="contained" onClick={confirmSave}>
-              제출
-            </Button>
-          </DialogActions>
-        </Dialog>
         </Box>
       </Box>
-    </Box>
+      </Box>
+
+      {/* 보고서 미리보기 모달 */}
+      <PreviewReportModal
+        isOpen={showPreviewModal}
+        onClose={closePreviewModal}
+        onConfirm={confirmSave}
+        clientName={clientName}
+        requestNumber={requestNumber}
+        lawyerName={lawyerName}
+        receiptDate={receiptDate}
+        factsContent={factsContent}
+        issues={issues}
+        conclusion={conclusion}
+        winProbability={winProbability}
+        executionProbability={executionProbability}
+        winProbabilityDescription={winProbabilityDescription}
+        executionProbabilityDescription={executionProbabilityDescription}
+      />
+    </>
   );
 }
 

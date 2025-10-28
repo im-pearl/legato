@@ -1,57 +1,65 @@
-import { Backdrop, Box, CircularProgress, Paper, Typography } from '@mui/material';
+import { Portal, Box, Text, Spinner } from '@chakra-ui/react';
 
 function LoadingModal({ isVisible = false, message = '잠시만 기다려주세요...' }) {
+  if (!isVisible) return null;
+
   return (
-    <Backdrop
-      sx={{
-        color: '#fff',
-        zIndex: (theme) => theme.zIndex.drawer + 1000,
-        backdropFilter: 'blur(4px)',
-      }}
-      open={isVisible}
-    >
-      <Paper
-        elevation={10}
-        sx={{
-          p: 5,
-          borderRadius: 4,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 3,
-          maxWidth: 400,
-          width: '90%',
-          animation: 'fadeIn 0.3s ease',
-          '@keyframes fadeIn': {
-            from: {
-              opacity: 0,
-              transform: 'translateY(-10px)',
-            },
-            to: {
-              opacity: 1,
-              transform: 'translateY(0)',
-            },
-          },
-        }}
+    <Portal>
+      <Box
+        position="fixed"
+        top={0}
+        left={0}
+        right={0}
+        bottom={0}
+        bg="blackAlpha.600"
+        backdropFilter="blur(4px)"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        zIndex={2000}
       >
-        <CircularProgress
-          size={60}
-          thickness={4}
-          sx={{
-            color: 'primary.main',
+        <Box
+          bg="white"
+          p={10}
+          borderRadius="xl"
+          boxShadow="xl"
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          gap={6}
+          maxW="400px"
+          w="90%"
+          animation="fadeIn 0.3s ease"
+          css={{
+            '@keyframes fadeIn': {
+              from: {
+                opacity: 0,
+                transform: 'translateY(-10px)',
+              },
+              to: {
+                opacity: 1,
+                transform: 'translateY(0)',
+              },
+            },
           }}
-        />
-        <Typography
-          variant="body1"
-          color="text.primary"
-          textAlign="center"
-          fontWeight={500}
-          sx={{ lineHeight: 1.5 }}
         >
-          {message}
-        </Typography>
-      </Paper>
-    </Backdrop>
+          <Spinner
+            size="xl"
+            color="teal.500"
+            thickness="4px"
+          />
+          <Text
+            fontSize="md"
+            color="gray.900"
+            textAlign="center"
+            fontWeight={500}
+            lineHeight={1.5}
+          >
+            {message}
+          </Text>
+        </Box>
+      </Box>
+    </Portal>
   );
 }
 

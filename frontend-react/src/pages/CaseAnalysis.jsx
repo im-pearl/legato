@@ -3,23 +3,21 @@ import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Card,
-  CardContent,
   Button,
-  Typography,
+  Text,
   Grid,
-  Link,
+  GridItem,
   IconButton,
-  Paper,
   Stack,
-  TextField,
-} from '@mui/material';
+  Input,
+  Textarea,
+} from '@chakra-ui/react';
 import {
-  CloudUpload as CloudUploadIcon,
-  Delete as DeleteIcon,
-  Edit as EditIcon,
-  InsertDriveFile as FileIcon,
-  Close as CloseIcon,
-} from '@mui/icons-material';
+  LuCloudUpload,
+  LuTrash2,
+  LuPencil,
+  LuFile,
+} from 'react-icons/lu';
 import AppSidebar, { DrawerHeader } from '../components/common/AppSidebar';
 import AppHeader from '../components/common/AppHeader';
 import LoadingModal from '../components/common/LoadingModal';
@@ -149,301 +147,283 @@ function CaseAnalysis() {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box display="flex">
       <AppSidebar open={drawerOpen} onToggle={() => setDrawerOpen(!drawerOpen)} />
 
       <Box
-        sx={{
-          flexGrow: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          minHeight: '100vh',
-        }}
+        flexGrow={1}
+        display="flex"
+        flexDirection="column"
+        minH="100vh"
+        ml={drawerOpen ? '200px' : '65px'}
+        transition="margin-left 0.3s"
       >
         <AppHeader caseNumber="12345" caseTitle="강제추행 피해자입니다" />
 
         <Box
-          component="main"
-          sx={{
-            flexGrow: 1,
-            p: 3,
-            bgcolor: 'white',
-          }}
+          as="main"
+          flexGrow={1}
+          p={6}
+          bg="white"
         >
         {/* 하이라이터 툴바 */}
-        <Paper variant="outlined" sx={{ p: 2, mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Typography variant="body2" fontWeight={500} color="grey.700">
-            하이라이터
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 1.5 }}>
-            <Box
-              sx={{
-                width: 28,
-                height: 28,
-                borderRadius: '50%',
-                bgcolor: 'rgba(255, 217, 102, 0.5)',
-                border: activeHighlight === 'yellow' ? '2px solid rgba(255, 167, 38, 0.8)' : '2px solid transparent',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                '&:hover': {
-                  transform: 'scale(1.1)',
-                },
-              }}
-              onClick={() => setActiveHighlight('yellow')}
-            />
-            <Box
-              sx={{
-                width: 28,
-                height: 28,
-                borderRadius: '50%',
-                bgcolor: 'rgba(150, 230, 150, 0.5)',
-                border: activeHighlight === 'green' ? '2px solid rgba(76, 175, 80, 0.8)' : '2px solid transparent',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                '&:hover': {
-                  transform: 'scale(1.1)',
-                },
-              }}
-              onClick={() => setActiveHighlight('green')}
-            />
-          </Box>
-        </Paper>
+        <Card.Root variant="outline" mb={6}>
+          <Card.Body p={4} display="flex" alignItems="center" gap={4}>
+            <Text fontSize="sm" fontWeight={500} color="gray.700">
+              하이라이터
+            </Text>
+            <Box display="flex" gap={3}>
+              <Box
+                w="28px"
+                h="28px"
+                borderRadius="full"
+                bg="rgba(255, 217, 102, 0.5)"
+                borderWidth="2px"
+                borderColor={activeHighlight === 'yellow' ? 'rgba(255, 167, 38, 0.8)' : 'transparent'}
+                cursor="pointer"
+                transition="all 0.2s"
+                _hover={{ transform: 'scale(1.1)' }}
+                onClick={() => setActiveHighlight('yellow')}
+              />
+              <Box
+                w="28px"
+                h="28px"
+                borderRadius="full"
+                bg="rgba(150, 230, 150, 0.5)"
+                borderWidth="2px"
+                borderColor={activeHighlight === 'green' ? 'rgba(76, 175, 80, 0.8)' : 'transparent'}
+                cursor="pointer"
+                transition="all 0.2s"
+                _hover={{ transform: 'scale(1.1)' }}
+                onClick={() => setActiveHighlight('green')}
+              />
+            </Box>
+          </Card.Body>
+        </Card.Root>
 
         {/* 메인 2열 레이아웃 */}
-        <Box sx={{ display: 'flex', gap: 3, mb: 3, flexDirection: { xs: 'column', md: 'row' }, height: { md: 'calc(100vh - 180px)' } }}>
+        <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }} gap={6} mb={6}>
           {/* 왼쪽 열: 의뢰서 & 상담 결과지 */}
-          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 3, overflowY: 'auto', minHeight: 0 }}>
-            {/* 의뢰서 */}
-            <Card variant="outlined" sx={{ flexShrink: 0 }}>
-                <CardContent>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                    <Typography variant="h6" fontWeight={600}>
+          <GridItem>
+            <Stack gap={6}>
+              {/* 의뢰서 */}
+              <Card.Root variant="outline">
+                <Card.Body>
+                  <Box display="flex" justifyContent="space-between" mb={4}>
+                    <Text fontSize="lg" fontWeight={600}>
                       의뢰서
-                    </Typography>
+                    </Text>
                   </Box>
 
-                  <Box sx={{ mb: 2, pb: 2, borderBottom: 1, borderColor: 'grey.200' }}>
-                    <Typography variant="subtitle2" fontWeight={600} color="grey.700" mb={1.5}>
+                  <Box mb={4} pb={4} borderBottomWidth="1px" borderColor="gray.200">
+                    <Text fontSize="sm" fontWeight={600} color="gray.700" mb={3}>
                       의뢰서 정보
-                    </Typography>
-                    <Grid container spacing={2}>
+                    </Text>
+                    <Grid templateColumns="repeat(2, 1fr)" gap={4}>
                       {Object.entries(requestBasicInfo).map(([label, value]) => (
-                        <Grid item xs={6} key={label}>
-                          <Typography variant="caption" color="grey.600" display="block">
+                        <GridItem key={label}>
+                          <Text fontSize="xs" color="gray.600" mb={1}>
                             {label}
-                          </Typography>
-                          <Typography variant="body2" fontWeight={500}>
+                          </Text>
+                          <Text fontSize="sm" fontWeight={500}>
                             {value}
-                          </Typography>
-                        </Grid>
+                          </Text>
+                        </GridItem>
                       ))}
                     </Grid>
                   </Box>
 
-                  <Box sx={{ mb: 2, pb: 2, borderBottom: 1, borderColor: 'grey.200' }}>
-                    <Typography variant="subtitle2" fontWeight={600} color="grey.700" mb={1}>
+                  <Box mb={4} pb={4} borderBottomWidth="1px" borderColor="gray.200">
+                    <Text fontSize="sm" fontWeight={600} color="gray.700" mb={2}>
                       의뢰서 제목
-                    </Typography>
-                    <Typography variant="body2" color="grey.800">
+                    </Text>
+                    <Text fontSize="sm" color="gray.800">
                       계약서 작성 없이 설계용역을 했는데 터무니없이 낮은 금액을 받았어요
-                    </Typography>
+                    </Text>
                   </Box>
 
                   <Box>
-                    <Typography variant="subtitle2" fontWeight={600} color="grey.700" mb={1.5}>
+                    <Text fontSize="sm" fontWeight={600} color="gray.700" mb={3}>
                       질문 및 답변
-                    </Typography>
+                    </Text>
                     {qaItems.map((item, index) => (
-                      <Box key={index} sx={{ mb: 1.5 }}>
-                        <Typography variant="body2" fontWeight={500} color="grey.800" mb={0.5}>
+                      <Box key={index} mb={3}>
+                        <Text fontSize="sm" fontWeight={500} color="gray.800" mb={1}>
                           {index + 1}. {item.question}
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          color="grey.700"
-                          sx={{
-                            p: 1,
-                            borderRadius: 1,
-                            bgcolor: 'white',
-                            '&:hover': { bgcolor: 'grey.100' },
-                            cursor: 'text',
-                            userSelect: 'text',
-                          }}
+                        </Text>
+                        <Text
+                          fontSize="sm"
+                          color="gray.700"
+                          p={2}
+                          borderRadius="md"
+                          bg="white"
+                          _hover={{ bg: 'gray.100' }}
+                          cursor="text"
+                          userSelect="text"
                         >
                           {item.answer}
-                        </Typography>
+                        </Text>
                       </Box>
                     ))}
                   </Box>
-                </CardContent>
-              </Card>
+                </Card.Body>
+              </Card.Root>
 
               {/* 상담 결과지 */}
-              <Card variant="outlined" sx={{ flexShrink: 0 }}>
-                <CardContent>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                    <Typography variant="h6" fontWeight={600}>
+              <Card.Root variant="outline">
+                <Card.Body>
+                  <Box display="flex" justifyContent="space-between" mb={4}>
+                    <Text fontSize="lg" fontWeight={600}>
                       상담 결과지
-                    </Typography>
+                    </Text>
                   </Box>
 
                   {Object.entries(consultationGroups).map(([groupName, items]) => (
-                    <Box key={groupName} sx={{ mb: 2, pb: 2, borderBottom: 1, borderColor: 'grey.200' }}>
-                      <Typography variant="subtitle2" fontWeight={600} color="grey.700" mb={1.5}>
+                    <Box key={groupName} mb={4} pb={4} borderBottomWidth="1px" borderColor="gray.200">
+                      <Text fontSize="sm" fontWeight={600} color="gray.700" mb={3}>
                         {groupName}
-                      </Typography>
-                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                      </Text>
+                      <Stack gap={4}>
                         {items.map((item, index) => (
                           <Box key={index}>
-                            <Typography variant="caption" color="grey.600" display="block">
+                            <Text fontSize="xs" color="gray.600" mb={1}>
                               {item.label}
-                            </Typography>
-                            <Typography
-                              variant="body2"
-                              color="grey.800"
-                              sx={{
-                                p: 0.75,
-                                borderRadius: 1,
-                                '&:hover': { bgcolor: 'grey.100' },
-                                cursor: 'text',
-                                userSelect: 'text',
-                                whiteSpace: 'pre-wrap',
-                                wordBreak: 'break-word',
-                              }}
+                            </Text>
+                            <Text
+                              fontSize="sm"
+                              color="gray.800"
+                              p={2}
+                              borderRadius="md"
+                              _hover={{ bg: 'gray.100' }}
+                              cursor="text"
+                              userSelect="text"
+                              whiteSpace="pre-wrap"
+                              wordBreak="break-word"
                             >
                               {item.value}
-                            </Typography>
+                            </Text>
                           </Box>
                         ))}
-                      </Box>
+                      </Stack>
                     </Box>
                   ))}
-                </CardContent>
-              </Card>
-          </Box>
+                </Card.Body>
+              </Card.Root>
+            </Stack>
+          </GridItem>
 
           {/* 오른쪽 열: 자료 업로드 & 심사역 작성 */}
-          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 3, overflowY: 'auto', minHeight: 0 }}>
-            {/* 자료 업로드 */}
-            <Card variant="outlined" sx={{ flexShrink: 0 }}>
-                <CardContent>
-                  <Typography variant="h6" fontWeight={600} mb={2}>
+          <GridItem>
+            <Stack gap={6}>
+              {/* 자료 업로드 */}
+              <Card.Root variant="outline">
+                <Card.Body>
+                  <Text fontSize="lg" fontWeight={600} mb={4}>
                     증거 리스트
-                  </Typography>
+                  </Text>
 
                   <Box
                     onClick={() => fileInputRef.current?.click()}
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={handleFileDrop}
-                    sx={{
-                      p: 4,
-                      border: '2px dashed',
-                      borderColor: 'grey.300',
-                      borderRadius: 2,
-                      textAlign: 'center',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s',
-                      '&:hover': {
-                        borderColor: 'primary.main',
-                        bgcolor: 'primary.50',
-                      },
+                    p={8}
+                    borderWidth="2px"
+                    borderStyle="dashed"
+                    borderColor="gray.300"
+                    borderRadius="lg"
+                    textAlign="center"
+                    cursor="pointer"
+                    transition="all 0.2s"
+                    _hover={{
+                      borderColor: 'teal.500',
+                      bg: 'teal.50',
                     }}
                   >
-                    <CloudUploadIcon sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
-                    <Typography variant="body1" fontWeight={500} color="grey.700">
+                    <LuCloudUpload size={40} color="teal" style={{ margin: '0 auto 8px' }} />
+                    <Text fontSize="md" fontWeight={500} color="gray.700">
                       클릭하거나 파일을 여기에 끌어다 놓으세요
-                    </Typography>
-                    <Typography variant="caption" color="grey.600">
+                    </Text>
+                    <Text fontSize="xs" color="gray.600">
                       PDF, DOCX, JPG, PNG 파일 (최대 20MB)
-                    </Typography>
-                    <input
+                    </Text>
+                    <Input
                       ref={fileInputRef}
                       type="file"
                       multiple
-                      style={{ display: 'none' }}
+                      display="none"
                       onChange={handleFileSelect}
                     />
                   </Box>
 
                   {files.length > 0 && (
-                    <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                    <Stack gap={3} mt={4}>
                       {files.map((file, index) => (
-                        <Paper
-                          variant="outlined"
+                        <Box
                           key={index}
-                          sx={{
-                            p: 1.5,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            bgcolor: file.highlight ? 'primary.50' : 'white',
-                            borderColor: file.highlight ? 'primary.200' : 'grey.300',
-                          }}
+                          p={3}
+                          borderWidth="1px"
+                          borderRadius="md"
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="space-between"
+                          bg={file.highlight ? 'teal.50' : 'white'}
+                          borderColor={file.highlight ? 'teal.200' : 'gray.300'}
                         >
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                            <FileIcon sx={{ color: 'grey.600' }} />
-                            <Typography variant="body2" fontWeight={500}>
+                          <Box display="flex" alignItems="center" gap={3}>
+                            <LuFile size={20} color="gray" />
+                            <Text fontSize="sm" fontWeight={500}>
                               {file.name}
-                            </Typography>
+                            </Text>
                           </Box>
-                          <Box sx={{ display: 'flex', gap: 0.5 }}>
+                          <Box display="flex" gap={1}>
                             <IconButton
-                              size="small"
+                              size="sm"
+                              variant={file.highlight ? 'solid' : 'ghost'}
+                              colorPalette={file.highlight ? 'teal' : 'gray'}
                               onClick={() => toggleFileHighlight(index)}
-                              sx={{
-                                color: file.highlight ? 'primary.main' : 'grey.500',
-                                bgcolor: file.highlight ? 'primary.100' : 'transparent',
-                                '&:hover': {
-                                  bgcolor: file.highlight ? 'primary.100' : 'grey.100',
-                                },
-                              }}
+                              aria-label="하이라이트"
                             >
-                              <EditIcon fontSize="small" />
+                              <LuPencil />
                             </IconButton>
                             <IconButton
-                              size="small"
+                              size="sm"
+                              variant="ghost"
+                              colorPalette="red"
                               onClick={() => removeFile(index)}
-                              sx={{
-                                color: 'error.main',
-                                '&:hover': {
-                                  bgcolor: 'error.lighter',
-                                },
-                              }}
+                              aria-label="삭제"
                             >
-                              <DeleteIcon fontSize="small" />
+                              <LuTrash2 />
                             </IconButton>
                           </Box>
-                        </Paper>
+                        </Box>
                       ))}
-                    </Box>
+                    </Stack>
                   )}
-                </CardContent>
-              </Card>
+                </Card.Body>
+              </Card.Root>
 
               {/* 심사역 작성 */}
-              <Card variant="outlined" sx={{ flexShrink: 0 }}>
-                <CardContent>
-                  <Typography variant="h6" fontWeight={600} mb={2}>
+              <Card.Root variant="outline">
+                <Card.Body>
+                  <Text fontSize="lg" fontWeight={600} mb={4}>
                     심사역 작성
-                  </Typography>
-                  <TextField
-                    fullWidth
-                    multiline
-                    rows={6}
+                  </Text>
+                  <Textarea
                     placeholder="사건에 대한 심사 내용을 작성해주세요..."
-                    variant="outlined"
+                    rows={6}
                   />
-                </CardContent>
-              </Card>
-          </Box>
-        </Box>
+                </Card.Body>
+              </Card.Root>
+            </Stack>
+          </GridItem>
+        </Grid>
 
         {/* 액션 버튼 */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
-          <Button size="large" variant="outlined" onClick={saveTemp}>
+        <Box display="flex" justifyContent="space-between" gap={4}>
+          <Button size="lg" variant="outline" onClick={saveTemp}>
             임시저장
           </Button>
-          <Button size="large" variant="contained" onClick={analyzeIssues}>
+          <Button size="lg" colorPalette="teal" onClick={analyzeIssues}>
             쟁점분석
           </Button>
         </Box>
@@ -459,4 +439,3 @@ function CaseAnalysis() {
 }
 
 export default CaseAnalysis;
-
