@@ -1,7 +1,10 @@
 import { Box, Card, Text, Stack, Grid, GridItem, Editable } from '@chakra-ui/react';
+import { useState } from 'react';
 import HighlightableText from '../common/HighlightableText';
 
-function ConsultationResult({ groups, onHighlight, onRemoveHighlight }) {
+function ConsultationResult({ groups, onChange, onHighlight, onRemoveHighlight }) {
+  const [editingKey, setEditingKey] = useState(null);
+  
   // 기초 정보와 비용 정보는 2열 그리드로, 상담 내용은 Editable로
   const isStaticGroup = (groupName) => {
     return groupName === '기초 정보' || groupName === '비용 정보';
@@ -45,39 +48,52 @@ function ConsultationResult({ groups, onHighlight, onRemoveHighlight }) {
             ) : (
               // 상담 내용: Editable
               <Stack gap={4}>
-                {items.map((item, index) => (
-                  <Box key={index}>
-                    <Text fontSize="xs" color="gray.600" mb={1}>
-                      {item.label}
-                    </Text>
-                    <Editable.Root defaultValue={item.value} activationMode="dblclick">
-                      <Editable.Preview
-                        fontSize="sm"
-                        color="gray.800"
-                        p={2}
-                        borderRadius="md"
-                        _hover={{ bg: 'gray.100' }}
-                        cursor="text"
-                        whiteSpace="pre-wrap"
-                        wordBreak="break-word"
-                        userSelect="text"
+                {items.map((item, idx) => {
+                  const itemKey = `${groupName}-${idx}`;
+                  return (
+                    <Box key={idx}>
+                      <Text fontSize="xs" color="gray.600" mb={1}>
+                        {item.label}
+                      </Text>
+                      <Editable.Root 
+                        value={item.value}
+                        onValueChange={(e) => onChange && onChange(groupName, idx, e.value)}
+                        onEdit={() => setEditingKey(itemKey)}
+                        onCancel={() => setEditingKey(null)}
+                        onSubmit={() => setEditingKey(null)}
+                        activationMode="dblclick"
                       >
-                        <HighlightableText
-                          text={item.value}
-                          highlights={item.highlights || []}
-                          onHighlight={(selection) => onHighlight && onHighlight(groupName, index, selection)}
-                          onRemoveHighlight={(highlightIdx) => onRemoveHighlight && onRemoveHighlight(groupName, index, highlightIdx)}
+                        <Editable.Preview
+                          fontSize="sm"
+                          color="gray.800"
+                          p={2}
+                          borderRadius="md"
+                          _hover={{ bg: 'gray.100' }}
+                          cursor="text"
+                          whiteSpace="pre-wrap"
+                          wordBreak="break-word"
+                        >
+                          {editingKey === itemKey ? (
+                            item.value
+                          ) : (
+                            <HighlightableText
+                              text={item.value}
+                              highlights={item.highlights || []}
+                              onHighlight={(selection) => onHighlight && onHighlight(groupName, idx, selection)}
+                              onRemoveHighlight={(highlightIdx) => onRemoveHighlight && onRemoveHighlight(groupName, idx, highlightIdx)}
+                            />
+                          )}
+                        </Editable.Preview>
+                        <Editable.Textarea
+                          fontSize="sm"
+                          color="gray.800"
+                          p={2}
+                          borderRadius="md"
                         />
-                      </Editable.Preview>
-                      <Editable.Textarea
-                        fontSize="sm"
-                        color="gray.800"
-                        p={2}
-                        borderRadius="md"
-                      />
-                    </Editable.Root>
-                  </Box>
-                ))}
+                      </Editable.Root>
+                    </Box>
+                  );
+                })}
               </Stack>
             )}
           </Box>

@@ -152,6 +152,15 @@ function FactReview() {
     }, 1500);
   };
 
+  // 의뢰서 값 변경 핸들러
+  const handleRequestChange = (itemIndex, newValue) => {
+    setQaItems((prev) =>
+      prev.map((item, idx) =>
+        idx === itemIndex ? { ...item, answer: newValue } : item
+      )
+    );
+  };
+
   // 의뢰서 하이라이트 핸들러
   const handleRequestHighlight = (itemIndex, selection) => {
     setQaItems((prev) =>
@@ -177,6 +186,16 @@ function FactReview() {
           : item
       )
     );
+  };
+
+  // 상담결과지 값 변경 핸들러
+  const handleConsultationChange = (groupName, itemIndex, newValue) => {
+    setConsultationGroups((prev) => ({
+      ...prev,
+      [groupName]: prev[groupName].map((item, idx) =>
+        idx === itemIndex ? { ...item, value: newValue } : item
+      ),
+    }));
   };
 
   // 상담결과지 하이라이트 핸들러
@@ -244,11 +263,13 @@ function FactReview() {
                       basicInfo={requestBasicInfo}
                       title="계약서 작성 없이 설계용역을 했는데 터무니없이 낮은 금액을 받았어요"
                       qaItems={qaItems}
+                      onChange={handleRequestChange}
                       onHighlight={handleRequestHighlight}
                       onRemoveHighlight={handleRequestRemoveHighlight}
                     />
-                    <ConsultationResult 
+                    <ConsultationResult
                       groups={consultationGroups}
+                      onChange={handleConsultationChange}
                       onHighlight={handleConsultationHighlight}
                       onRemoveHighlight={handleConsultationRemoveHighlight}
                     />
@@ -287,11 +308,11 @@ function FactReview() {
                     cursor="pointer"
                     transition="all 0.2s"
                     _hover={{
-                      borderColor: 'teal.500',
-                      bg: 'teal.50',
+                      borderColor: 'gray.400',
+                      bg: 'gray.50',
                     }}
                   >
-                    <LuCloudUpload size={40} color="teal" style={{ margin: '0 auto 8px' }} />
+                    <LuCloudUpload size={40} color="gray" style={{ margin: '0 auto 8px' }} />
                     <Text fontSize="md" fontWeight={500} color="gray.700">
                       클릭하거나 파일을 여기에 끌어다 놓으세요
                     </Text>
@@ -318,8 +339,8 @@ function FactReview() {
                           display="flex"
                           alignItems="center"
                           justifyContent="space-between"
-                          bg={file.highlight ? 'teal.50' : 'white'}
-                          borderColor={file.highlight ? 'teal.200' : 'gray.300'}
+                          bg={file.highlight ? 'gray.50' : 'white'}
+                          borderColor={file.highlight ? 'gray.400' : 'gray.300'}
                         >
                           <Box display="flex" alignItems="center" gap={3}>
                             <LuFile size={20} color="gray" />
@@ -331,7 +352,7 @@ function FactReview() {
                             <IconButton
                               size="sm"
                               variant={file.highlight ? 'solid' : 'ghost'}
-                              colorPalette={file.highlight ? 'teal' : 'gray'}
+                              colorPalette={file.highlight ? 'gray' : 'gray'}
                               onClick={() => toggleFileHighlight(index)}
                               aria-label="하이라이트"
                             >
@@ -381,7 +402,7 @@ function FactReview() {
           <Button size="lg" variant="outline" onClick={saveTemp}>
             임시저장
           </Button>
-          <Button size="lg" colorPalette="teal" onClick={analyzeIssues}>
+          <Button size="lg" onClick={analyzeIssues}>
             쟁점분석
           </Button>
         </Box>

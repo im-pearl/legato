@@ -184,7 +184,6 @@ function HighlightableText({ text, highlights = [], onHighlight, onRemoveHighlig
             variant="ghost"
             onClick={handleAddHighlight}
             aria-label="하이라이트"
-            colorPalette="yellow"
           >
             <LuHighlighter />
           </IconButton>

@@ -145,7 +145,7 @@ function FinalReview() {
                   쟁점 {issueIndex + 1}
                 </Text>
 
-                <Box p={4} mb={6} borderWidth="1px" borderRadius="md" bg="teal.50">
+                <Box p={4} mb={6} borderWidth="1px" borderRadius="md" bg="gray.50">
                   <Text fontSize="sm" color="gray.800" lineHeight={1.5}>
                     {issue.content}
                   </Text>
@@ -158,7 +158,7 @@ function FinalReview() {
                   <For each={issue.precedents}>
                     {(precedent, index) => (
                       <Box key={index} p={4} borderWidth="1px" borderRadius="md">
-                        <Text fontSize="sm" fontWeight={600} color="teal.600" mb={2}>
+                        <Text fontSize="sm" fontWeight={600} color="gray.900" mb={2}>
                           {precedent.caseNumber}
                         </Text>
                         <Text fontSize="sm" color="gray.800" lineHeight={1.5}>
@@ -214,11 +214,10 @@ function FinalReview() {
                 min={0}
                 max={100}
                 step={5}
-                colorPalette="teal"
               >
                 <Box display="flex" justifyContent="space-between" mb={2}>
                   <Slider.Label fontSize="sm" fontWeight={500}>승소 확률</Slider.Label>
-                  <Slider.ValueText fontSize="sm" fontWeight={600} color="teal.600" />
+                  <Slider.ValueText fontSize="sm" fontWeight={600} color="gray.900" />
                 </Box>
                 <Slider.Control>
                   <Slider.Track>
@@ -252,11 +251,10 @@ function FinalReview() {
                 min={0}
                 max={100}
                 step={5}
-                colorPalette="teal"
               >
                 <Box display="flex" justifyContent="space-between" mb={2}>
                   <Slider.Label fontSize="sm" fontWeight={500}>집행 확률</Slider.Label>
-                  <Slider.ValueText fontSize="sm" fontWeight={600} color="teal.600" />
+                  <Slider.ValueText fontSize="sm" fontWeight={600} color="gray.900" />
                 </Box>
                 <Slider.Control>
                   <Slider.Track>
