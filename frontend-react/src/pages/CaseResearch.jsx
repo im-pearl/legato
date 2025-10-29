@@ -12,7 +12,6 @@ import {
   CheckboxCard,
   NativeSelectRoot,
   NativeSelectField,
-  createListCollection,
 } from '@chakra-ui/react';
 import {
   PopoverRoot,
@@ -21,11 +20,11 @@ import {
   PopoverBody,
 } from '@chakra-ui/react';
 import { LuSearch, LuFilter } from 'react-icons/lu';
-import AppSidebar, { DrawerHeader } from '../components/common/AppSidebar';
+import AppSidebar from '../components/common/AppSidebar';
 import AppHeader from '../components/common/AppHeader';
 import LoadingModal from '../components/common/LoadingModal';
 
-function CaseSearch() {
+function CaseResearch() {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [showLoadingModal, setShowLoadingModal] = useState(false);
@@ -64,10 +63,6 @@ function CaseSearch() {
     },
   ]);
 
-  const handleMenuChange = (menuId) => {
-    console.log('메뉴 변경:', menuId);
-  };
-
   const togglePrecedentSelection = (issueIndex, precedentIndex) => {
     const newIssues = [...issues];
     newIssues[issueIndex].precedents[precedentIndex].selected =
@@ -98,7 +93,7 @@ function CaseSearch() {
   };
 
   const goBack = () => {
-    navigate('/case-issues');
+    navigate('/issue-identification');
   };
 
   const saveTemp = () => {
@@ -113,7 +108,7 @@ function CaseSearch() {
     setShowLoadingModal(true);
     setTimeout(() => {
       setShowLoadingModal(false);
-      navigate('/case-final-review');
+      navigate('/final-review');
     }, 1500);
   };
 
@@ -342,4 +337,5 @@ function CaseSearch() {
   );
 }
 
-export default CaseSearch;
+export default CaseResearch;
+

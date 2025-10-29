@@ -14,10 +14,10 @@ function AppSidebar({ open, onToggle }) {
   const location = useLocation();
 
   const steps = [
-    { label: '사실관계 검토', path: '/case-analysis' },
-    { label: '쟁점 분석', path: '/case-issues' },
-    { label: '판례 리서치', path: '/case-search' },
-    { label: '심사보고서 작성', path: '/case-final-review' },
+    { label: '사실관계 검토', path: '/fact-review' },
+    { label: '쟁점 분석', path: '/issue-identification' },
+    { label: '판례 리서치', path: '/case-research' },
+    { label: '심사보고서 작성', path: '/final-review' },
   ];
 
   const getActiveStep = () => {

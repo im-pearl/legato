@@ -7,15 +7,14 @@ import {
   Text,
   Textarea,
   IconButton,
-  Input,
   Stack,
 } from '@chakra-ui/react';
 import { LuPlus, LuTrash2 } from 'react-icons/lu';
-import AppSidebar, { DrawerHeader } from '../components/common/AppSidebar';
+import AppSidebar from '../components/common/AppSidebar';
 import AppHeader from '../components/common/AppHeader';
 import LoadingModal from '../components/common/LoadingModal';
 
-function CaseIssues() {
+function IssueIdentification() {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [showLoadingModal, setShowLoadingModal] = useState(false);
@@ -39,10 +38,6 @@ function CaseIssues() {
 
 5. 이에 의뢰인은 대금 잔금 약 1억 원을 상대방에게 청구하고자 함.`;
 
-  const handleMenuChange = (menuId) => {
-    console.log('메뉴 변경:', menuId);
-  };
-
   const addNewIssue = () => {
     setIssues([...issues, { content: '쟁점 내용을 입력하세요.' }]);
   };
@@ -60,7 +55,7 @@ function CaseIssues() {
   };
 
   const goBack = () => {
-    navigate('/case-analysis');
+    navigate('/fact-review');
   };
 
   const saveTemp = () => {
@@ -71,7 +66,7 @@ function CaseIssues() {
     setShowLoadingModal(true);
     setTimeout(() => {
       setShowLoadingModal(false);
-      navigate('/case-search');
+      navigate('/case-research');
     }, 1500);
   };
 
@@ -212,4 +207,5 @@ function CaseIssues() {
   );
 }
 
-export default CaseIssues;
+export default IssueIdentification;
+

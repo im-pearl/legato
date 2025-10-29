@@ -1,9 +1,9 @@
 import { createBrowserRouter } from 'react-router-dom';
 import Home from '../pages/Home';
-import CaseAnalysis from '../pages/CaseAnalysis';
-import CaseIssues from '../pages/CaseIssues';
-import CaseSearch from '../pages/CaseSearch';
-import CaseFinalReview from '../pages/CaseFinalReview';
+import FactReview from '../pages/FactReview';
+import IssueIdentification from '../pages/IssueIdentification';
+import CaseResearch from '../pages/CaseResearch';
+import FinalReview from '../pages/FinalReview';
 
 const router = createBrowserRouter([
   {
@@ -11,20 +11,20 @@ const router = createBrowserRouter([
     element: <Home />,
   },
   {
-    path: '/case-analysis',
-    element: <CaseAnalysis />,
+    path: '/fact-review',
+    element: <FactReview />,
   },
   {
-    path: '/case-issues',
-    element: <CaseIssues />,
+    path: '/issue-identification',
+    element: <IssueIdentification />,
   },
   {
-    path: '/case-search',
-    element: <CaseSearch />,
+    path: '/case-research',
+    element: <CaseResearch />,
   },
   {
-    path: '/case-final-review',
-    element: <CaseFinalReview />,
+    path: '/final-review',
+    element: <FinalReview />,
   },
 ]);
 

@@ -24,7 +24,7 @@ function Home() {
         <Button
           size="lg"
           colorPalette="teal"
-          onClick={() => navigate('/case-analysis')}
+          onClick={() => navigate('/fact-review')}
         >
           데모 페이지 가기
         </Button>

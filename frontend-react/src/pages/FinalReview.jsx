@@ -10,11 +10,11 @@ import {
   For,
 } from '@chakra-ui/react';
 import { Slider } from '@chakra-ui/react';
-import AppSidebar, { DrawerHeader } from '../components/common/AppSidebar';
+import AppSidebar from '../components/common/AppSidebar';
 import AppHeader from '../components/common/AppHeader';
-import PreviewReportModal from '../components/finalreview/PreviewReportModal';
+import PreviewReportModal from '../components/final-review/PreviewReportModal';
 
-function CaseFinalReview() {
+function FinalReview() {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -83,7 +83,7 @@ function CaseFinalReview() {
 5. 이에 의뢰인은 대금 잔금 약 1억 원을 상대방에게 청구하고자 함.`;
 
   const goBack = () => {
-    navigate('/case-search');
+    navigate('/case-research');
   };
 
   const saveTemp = () => {
@@ -316,4 +316,5 @@ function CaseFinalReview() {
   );
 }
 
-export default CaseFinalReview;
+export default FinalReview;
+

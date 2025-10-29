@@ -18,52 +18,47 @@ import {
   LuPencil,
   LuFile,
 } from 'react-icons/lu';
-import AppSidebar, { DrawerHeader } from '../components/common/AppSidebar';
+import AppSidebar from '../components/common/AppSidebar';
 import AppHeader from '../components/common/AppHeader';
 import LoadingModal from '../components/common/LoadingModal';
+import RequestForm from '../components/fact-review/RequestForm';
+import ConsultationResult from '../components/fact-review/ConsultationResult';
 
-function CaseAnalysis() {
+function FactReview() {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [showLoadingModal, setShowLoadingModal] = useState(false);
-  const [activeHighlight, setActiveHighlight] = useState('yellow');
   const [files, setFiles] = useState([
     { name: '과거_설계_계약서.pdf', highlight: false },
     { name: '지급내역.png', highlight: false },
   ]);
 
-  const [qaItems, setQaItems] = useState([
+  const [qaItems] = useState([
     {
       question: '의뢰인이 청구하고자 하는 금액은 얼마인가요?',
       answer: '1억 원',
-      highlights: [],
     },
     {
       question: '문제가 발생한 연도는 언제인가요?',
       answer: '2025',
-      highlights: [],
     },
     {
       question: '의뢰인이 겪고 있는 상황은 무엇인가요?',
       answer: '건축사사무소를 운영하며, 설계계약서 없이 진행된 건축허가 후 잔금 미지급 문제가 발생했습니다.',
-      highlights: [],
     },
     {
       question: '상대방의 입장은 무엇인가요?',
       answer: '잔금 지급 의사 없음',
-      highlights: [],
     },
     {
       question: '변호사님에게 어떤 도움을 받고 싶으신가요?',
       answer: '소송 진행 및 분쟁/합의 지원',
-      highlights: [],
     },
     {
       question: '사건내용',
       answer: '설계용역 대금 회수와 관련하여 잔금이 미지급된 문제로 인해 법적 대응이 필요한 상황입니다.',
-      highlights: [],
     },
   ]);
 
@@ -74,39 +69,33 @@ function CaseAnalysis() {
 
   const consultationGroups = {
     '기초 정보': [
-      { label: '의뢰인 닉네임', value: '김건축', highlights: [] },
-      { label: '의뢰인 연락처', value: '010-****-****', highlights: [] },
-      { label: '변호사', value: '박변호', highlights: [] },
-      { label: '변호사 연락처', value: '010-****-****', highlights: [] },
+      { label: '의뢰인 닉네임', value: '김건축' },
+      { label: '의뢰인 연락처', value: '010-****-****' },
+      { label: '변호사', value: '박변호' },
+      { label: '변호사 연락처', value: '010-****-****' },
     ],
     '상담 내용': [
-      { label: '사건명', value: '건축설계용역 미수금 회수', highlights: [] },
+      { label: '사건명', value: '건축설계용역 미수금 회수' },
       {
         label: '사실관계',
         value:
           '소송의뢰인은 건축설계용역을 수행했으나, 상대방은 잔금 일부만 지급하고 나머지는 지급 거부하고 있습니다.',
-        highlights: [],
       },
-      { label: '상담 결과', value: '소송 진행 및 분쟁, 합의 지원 필요', highlights: [] },
+      { label: '상담 결과', value: '소송 진행 및 분쟁, 합의 지원 필요' },
       {
         label: '관련 법리',
         value:
           '상법 제61조는 상인이 그 영업범위 내에서 타인을 위하여 행위를 한 때에는 이에 대하여 상당한 보수를 청구할 수 있다라고 규정하고 있다...',
-        highlights: [],
       },
-      { label: '증거 판단', value: '업무 수행 증거 및 일부 지급 증거 존재', highlights: [] },
-      { label: '불리 요소', value: '계약서 미작성으로 지급 기준 불명확', highlights: [] },
-      { label: '승소 예상 금액', value: '3억7천만원', highlights: [] },
-      { label: '집행 방안', value: '상대방 보유 부동산 등을 통한 집행 가능', highlights: [] },
+      { label: '증거 판단', value: '업무 수행 증거 및 일부 지급 증거 존재' },
+      { label: '불리 요소', value: '계약서 미작성으로 지급 기준 불명확' },
+      { label: '승소 예상 금액', value: '3억7천만원' },
+      { label: '집행 방안', value: '상대방 보유 부동산 등을 통한 집행 가능' },
     ],
     '비용 정보': [
-      { label: '착수금', value: '000,000원', highlights: [] },
-      { label: '성공보수', value: '회수 금액의 0%', highlights: [] },
+      { label: '착수금', value: '000,000원' },
+      { label: '성공보수', value: '회수 금액의 0%' },
     ],
-  };
-
-  const handleMenuChange = (menuId) => {
-    console.log('메뉴 변경:', menuId);
   };
 
   const handleFileSelect = (event) => {
@@ -142,7 +131,7 @@ function CaseAnalysis() {
     setShowLoadingModal(true);
     setTimeout(() => {
       setShowLoadingModal(false);
-      navigate('/case-issues');
+      navigate('/issue-identification');
     }, 1500);
   };
 
@@ -166,149 +155,17 @@ function CaseAnalysis() {
           p={6}
           bg="white"
         >
-        {/* 하이라이터 툴바 */}
-        <Card.Root variant="outline" mb={6}>
-          <Card.Body p={4} display="flex" alignItems="center" gap={4}>
-            <Text fontSize="sm" fontWeight={500} color="gray.700">
-              하이라이터
-            </Text>
-            <Box display="flex" gap={3}>
-              <Box
-                w="28px"
-                h="28px"
-                borderRadius="full"
-                bg="rgba(255, 217, 102, 0.5)"
-                borderWidth="2px"
-                borderColor={activeHighlight === 'yellow' ? 'rgba(255, 167, 38, 0.8)' : 'transparent'}
-                cursor="pointer"
-                transition="all 0.2s"
-                _hover={{ transform: 'scale(1.1)' }}
-                onClick={() => setActiveHighlight('yellow')}
-              />
-              <Box
-                w="28px"
-                h="28px"
-                borderRadius="full"
-                bg="rgba(150, 230, 150, 0.5)"
-                borderWidth="2px"
-                borderColor={activeHighlight === 'green' ? 'rgba(76, 175, 80, 0.8)' : 'transparent'}
-                cursor="pointer"
-                transition="all 0.2s"
-                _hover={{ transform: 'scale(1.1)' }}
-                onClick={() => setActiveHighlight('green')}
-              />
-            </Box>
-          </Card.Body>
-        </Card.Root>
-
         {/* 메인 2열 레이아웃 */}
         <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }} gap={6} mb={6}>
           {/* 왼쪽 열: 의뢰서 & 상담 결과지 */}
           <GridItem>
             <Stack gap={6}>
-              {/* 의뢰서 */}
-              <Card.Root variant="outline">
-                <Card.Body>
-                  <Box display="flex" justifyContent="space-between" mb={4}>
-                    <Text fontSize="lg" fontWeight={600}>
-                      의뢰서
-                    </Text>
-                  </Box>
-
-                  <Box mb={4} pb={4} borderBottomWidth="1px" borderColor="gray.200">
-                    <Text fontSize="sm" fontWeight={600} color="gray.700" mb={3}>
-                      의뢰서 정보
-                    </Text>
-                    <Grid templateColumns="repeat(2, 1fr)" gap={4}>
-                      {Object.entries(requestBasicInfo).map(([label, value]) => (
-                        <GridItem key={label}>
-                          <Text fontSize="xs" color="gray.600" mb={1}>
-                            {label}
-                          </Text>
-                          <Text fontSize="sm" fontWeight={500}>
-                            {value}
-                          </Text>
-                        </GridItem>
-                      ))}
-                    </Grid>
-                  </Box>
-
-                  <Box mb={4} pb={4} borderBottomWidth="1px" borderColor="gray.200">
-                    <Text fontSize="sm" fontWeight={600} color="gray.700" mb={2}>
-                      의뢰서 제목
-                    </Text>
-                    <Text fontSize="sm" color="gray.800">
-                      계약서 작성 없이 설계용역을 했는데 터무니없이 낮은 금액을 받았어요
-                    </Text>
-                  </Box>
-
-                  <Box>
-                    <Text fontSize="sm" fontWeight={600} color="gray.700" mb={3}>
-                      질문 및 답변
-                    </Text>
-                    {qaItems.map((item, index) => (
-                      <Box key={index} mb={3}>
-                        <Text fontSize="sm" fontWeight={500} color="gray.800" mb={1}>
-                          {index + 1}. {item.question}
-                        </Text>
-                        <Text
-                          fontSize="sm"
-                          color="gray.700"
-                          p={2}
-                          borderRadius="md"
-                          bg="white"
-                          _hover={{ bg: 'gray.100' }}
-                          cursor="text"
-                          userSelect="text"
-                        >
-                          {item.answer}
-                        </Text>
-                      </Box>
-                    ))}
-                  </Box>
-                </Card.Body>
-              </Card.Root>
-
-              {/* 상담 결과지 */}
-              <Card.Root variant="outline">
-                <Card.Body>
-                  <Box display="flex" justifyContent="space-between" mb={4}>
-                    <Text fontSize="lg" fontWeight={600}>
-                      상담 결과지
-                    </Text>
-                  </Box>
-
-                  {Object.entries(consultationGroups).map(([groupName, items]) => (
-                    <Box key={groupName} mb={4} pb={4} borderBottomWidth="1px" borderColor="gray.200">
-                      <Text fontSize="sm" fontWeight={600} color="gray.700" mb={3}>
-                        {groupName}
-                      </Text>
-                      <Stack gap={4}>
-                        {items.map((item, index) => (
-                          <Box key={index}>
-                            <Text fontSize="xs" color="gray.600" mb={1}>
-                              {item.label}
-                            </Text>
-                            <Text
-                              fontSize="sm"
-                              color="gray.800"
-                              p={2}
-                              borderRadius="md"
-                              _hover={{ bg: 'gray.100' }}
-                              cursor="text"
-                              userSelect="text"
-                              whiteSpace="pre-wrap"
-                              wordBreak="break-word"
-                            >
-                              {item.value}
-                            </Text>
-                          </Box>
-                        ))}
-                      </Stack>
-                    </Box>
-                  ))}
-                </Card.Body>
-              </Card.Root>
+              <RequestForm
+                basicInfo={requestBasicInfo}
+                title="계약서 작성 없이 설계용역을 했는데 터무니없이 낮은 금액을 받았어요"
+                qaItems={qaItems}
+              />
+              <ConsultationResult groups={consultationGroups} />
             </Stack>
           </GridItem>
 
@@ -438,4 +295,5 @@ function CaseAnalysis() {
   );
 }
 
-export default CaseAnalysis;
+export default FactReview;
+
