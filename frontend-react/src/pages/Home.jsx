@@ -23,7 +23,7 @@ function Home() {
         </Text>
         <Button
           size="lg"
-          colorPalette="teal"
+          colorPalette="gray"
           onClick={() => navigate('/fact-review')}
         >
           데모 페이지 가기

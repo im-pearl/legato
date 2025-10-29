@@ -45,7 +45,7 @@ function LoadingModal({ isVisible = false, message = '잠시만 기다려주세�
         >
           <Spinner
             size="xl"
-            color="teal.500"
+            color="gray.900"
             thickness="4px"
           />
           <Text

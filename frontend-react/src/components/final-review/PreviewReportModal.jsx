@@ -53,7 +53,7 @@ function PreviewReportModal({
 
               {/* 사건 요약 */}
               <Box mb={6}>
-                <Text fontSize="lg" fontWeight={600} color="teal.600" mb={3} pb={1} borderBottomWidth="1px" borderColor="gray.200">
+                <Text fontSize="lg" fontWeight={600} color="gray.900" mb={3} pb={1} borderBottomWidth="1px" borderColor="gray.200">
                   사건 요약
                 </Text>
                 <Text fontSize="sm" lineHeight={1.6}>
@@ -63,7 +63,7 @@ function PreviewReportModal({
 
               {/* 사실관계 */}
               <Box mb={6}>
-                <Text fontSize="lg" fontWeight={600} color="teal.600" mb={3} pb={1} borderBottomWidth="1px" borderColor="gray.200">
+                <Text fontSize="lg" fontWeight={600} color="gray.900" mb={3} pb={1} borderBottomWidth="1px" borderColor="gray.200">
                   사실관계
                 </Text>
                 <Text fontSize="sm" lineHeight={1.6} whiteSpace="pre-line">
@@ -73,7 +73,7 @@ function PreviewReportModal({
 
               {/* 법리 검토 */}
               <Box mb={6}>
-                <Text fontSize="lg" fontWeight={600} color="teal.600" mb={3} pb={1} borderBottomWidth="1px" borderColor="gray.200">
+                <Text fontSize="lg" fontWeight={600} color="gray.900" mb={3} pb={1} borderBottomWidth="1px" borderColor="gray.200">
                   법리 검토
                 </Text>
                 <For each={issues}>
@@ -106,7 +106,7 @@ function PreviewReportModal({
 
               {/* 결론 */}
               <Box mb={6}>
-                <Text fontSize="lg" fontWeight={600} color="teal.600" mb={3} pb={1} borderBottomWidth="1px" borderColor="gray.200">
+                <Text fontSize="lg" fontWeight={600} color="gray.900" mb={3} pb={1} borderBottomWidth="1px" borderColor="gray.200">
                   결론
                 </Text>
                 <Text fontSize="sm" lineHeight={1.6}>
@@ -116,16 +116,16 @@ function PreviewReportModal({
 
               {/* 승소가능성 */}
               <Box mb={6}>
-                <Text fontSize="lg" fontWeight={600} color="teal.600" mb={3} pb={1} borderBottomWidth="1px" borderColor="gray.200">
+                <Text fontSize="lg" fontWeight={600} color="gray.900" mb={3} pb={1} borderBottomWidth="1px" borderColor="gray.200">
                   승소가능성 평가
                 </Text>
                 <Box mb={4}>
-                  <Progress.Root value={winProbability[0]} colorPalette="teal" size="lg">
+                  <Progress.Root value={winProbability[0]} colorPalette="gray" size="lg">
                     <Progress.Track>
                       <Progress.Range />
                     </Progress.Track>
                   </Progress.Root>
-                  <Text textAlign="center" fontWeight={600} mt={2} color="teal.600">
+                  <Text textAlign="center" fontWeight={600} mt={2} color="gray.900">
                     {winProbability[0]}%
                   </Text>
                 </Box>
@@ -136,16 +136,16 @@ function PreviewReportModal({
 
               {/* 집행가능성 */}
               <Box mb={6}>
-                <Text fontSize="lg" fontWeight={600} color="teal.600" mb={3} pb={1} borderBottomWidth="1px" borderColor="gray.200">
+                <Text fontSize="lg" fontWeight={600} color="gray.900" mb={3} pb={1} borderBottomWidth="1px" borderColor="gray.200">
                   집행가능성 평가
                 </Text>
                 <Box mb={4}>
-                  <Progress.Root value={executionProbability[0]} colorPalette="teal" size="lg">
+                  <Progress.Root value={executionProbability[0]} colorPalette="gray" size="lg">
                     <Progress.Track>
                       <Progress.Range />
                     </Progress.Track>
                   </Progress.Root>
-                  <Text textAlign="center" fontWeight={600} mt={2} color="teal.600">
+                  <Text textAlign="center" fontWeight={600} mt={2} color="gray.900">
                     {executionProbability[0]}%
                   </Text>
                 </Box>
@@ -156,7 +156,7 @@ function PreviewReportModal({
             </Dialog.Body>
 
             <Dialog.Footer>
-              <Button size="lg" colorPalette="teal" onClick={onConfirm}>
+              <Button size="lg" colorPalette="gray" onClick={onConfirm}>
                 제출
               </Button>
             </Dialog.Footer>

@@ -20,8 +20,8 @@ function AppHeader({ caseNumber, caseTitle }) {
       <Box
         px={2}
         py={1}
-        bg="teal.50"
-        color="teal.700"
+        bg="gray.100"
+        color="gray.900"
         fontWeight={600}
         fontSize="0.875rem"
         borderRadius="md"

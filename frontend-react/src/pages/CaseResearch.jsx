@@ -195,12 +195,12 @@ function CaseResearch() {
                       checked={precedent.selected}
                       onCheckedChange={() => togglePrecedentSelection(issueIndex, precedentIndex)}
                       size="lg"
-                      colorPalette="teal"
+                      colorPalette="gray"
                     >
                       <CheckboxCard.HiddenInput />
                       <CheckboxCard.Control>
                         <CheckboxCard.Content>
-                          <CheckboxCard.Label fontWeight={600} color="teal.600" mb={2}>
+                          <CheckboxCard.Label fontWeight={600} color="gray.900" mb={2}>
                             {precedent.caseNumber}
                           </CheckboxCard.Label>
                           <CheckboxCard.Description fontSize="sm" color="gray.800" lineHeight={1.6} mb={3}>
@@ -228,7 +228,7 @@ function CaseResearch() {
             <Box display="flex" justifyContent="flex-end" mb={4}>
               <Text fontSize="sm" color="gray.700">
                 선택된 판례 수 :{' '}
-                <Text as="span" color="teal.600" fontWeight={500}>
+                <Text as="span" color="gray.900" fontWeight={500}>
                   {getSelectedPrecedentsCount()}
                 </Text>
               </Text>
@@ -251,7 +251,7 @@ function CaseResearch() {
                 />
                 <IconButton
                   onClick={searchPrecedents}
-                  colorPalette="teal"
+                  colorPalette="gray"
                   aria-label="검색"
                 >
                   <LuSearch />
@@ -321,7 +321,7 @@ function CaseResearch() {
             <Button size="lg" variant="outline" onClick={saveTemp}>
               임시저장
             </Button>
-            <Button size="lg" colorPalette="teal" onClick={finalReview}>
+            <Button size="lg" colorPalette="gray" onClick={finalReview}>
               최종 검토
             </Button>
           </Box>

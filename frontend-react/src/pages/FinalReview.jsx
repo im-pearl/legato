@@ -284,7 +284,7 @@ function FinalReview() {
             <Button size="lg" variant="outline" onClick={saveTemp}>
               임시저장
             </Button>
-            <Button size="lg" colorPalette="teal" onClick={openPreviewModal}>
+            <Button size="lg" colorPalette="gray" onClick={openPreviewModal}>
               저장
             </Button>
           </Box>

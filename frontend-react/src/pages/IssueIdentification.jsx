@@ -115,7 +115,7 @@ function IssueIdentification() {
               </Text>
               <Button
                 size="sm"
-                colorPalette="teal"
+                colorPalette="gray"
                 onClick={addNewIssue}
               >
                 <LuPlus />
@@ -137,7 +137,7 @@ function IssueIdentification() {
                   bg="white"
                   transition="all 0.2s"
                   _focusWithin={{
-                    borderColor: 'teal.500',
+                    borderColor: 'gray.400',
                     boxShadow: 'sm',
                   }}
                 >
@@ -191,7 +191,7 @@ function IssueIdentification() {
             <Button size="lg" variant="outline" onClick={saveTemp}>
               임시저장
             </Button>
-            <Button size="lg" colorPalette="teal" onClick={searchCases}>
+            <Button size="lg" colorPalette="gray" onClick={searchCases}>
               판례검색
             </Button>
           </Box>
