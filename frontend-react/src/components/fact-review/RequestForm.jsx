@@ -1,4 +1,4 @@
-import { Box, Card, Text, Grid, GridItem } from '@chakra-ui/react';
+import { Box, Card, Text, Grid, GridItem, Editable } from '@chakra-ui/react';
 
 function RequestForm({ basicInfo, title, qaItems }) {
   return (
@@ -20,7 +20,7 @@ function RequestForm({ basicInfo, title, qaItems }) {
                 <Text fontSize="xs" color="gray.600" mb={1}>
                   {label}
                 </Text>
-                <Text fontSize="sm" fontWeight={500}>
+                <Text fontSize="sm">
                   {value}
                 </Text>
               </GridItem>
@@ -46,18 +46,24 @@ function RequestForm({ basicInfo, title, qaItems }) {
               <Text fontSize="sm" fontWeight={500} color="gray.800" mb={1}>
                 {index + 1}. {item.question}
               </Text>
-              <Text
-                fontSize="sm"
-                color="gray.700"
-                p={2}
-                borderRadius="md"
-                bg="white"
-                _hover={{ bg: 'gray.100' }}
-                cursor="text"
-                userSelect="text"
-              >
-                {item.answer}
-              </Text>
+              <Editable.Root defaultValue={item.answer}>
+                <Editable.Preview
+                  fontSize="sm"
+                  color="gray.700"
+                  p={2}
+                  borderRadius="md"
+                  _hover={{ bg: 'gray.100' }}
+                  cursor="text"
+                  whiteSpace="pre-wrap"
+                  wordBreak="break-word"
+                />
+                <Editable.Textarea
+                  fontSize="sm"
+                  color="gray.700"
+                  p={2}
+                  borderRadius="md"
+                />
+              </Editable.Root>
             </Box>
           ))}
         </Box>

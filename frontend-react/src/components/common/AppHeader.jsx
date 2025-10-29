@@ -4,6 +4,8 @@ function AppHeader({ caseNumber, caseTitle }) {
   return (
     <Box
       as="header"
+      position="sticky"
+      top={0}
       h="56px"
       bg="white"
       borderBottomWidth="1px"
@@ -13,6 +15,7 @@ function AppHeader({ caseNumber, caseTitle }) {
       px={3}
       gap={1.5}
       flexShrink={0}
+      zIndex={100}
     >
       <Box
         px={2}
