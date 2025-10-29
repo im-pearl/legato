@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { prepareDataForLLM } from '../utils/highlightUtils';
 import {
   Box,
   Card,
@@ -36,30 +37,36 @@ function FactReview() {
     { name: '지급내역.png', highlight: false },
   ]);
 
-  const [qaItems] = useState([
+  const [qaItems, setQaItems] = useState([
     {
       question: '의뢰인이 청구하고자 하는 금액은 얼마인가요?',
       answer: '1억 원',
+      highlights: [],
     },
     {
       question: '문제가 발생한 연도는 언제인가요?',
       answer: '2025',
+      highlights: [],
     },
     {
       question: '의뢰인이 겪고 있는 상황은 무엇인가요?',
       answer: '건축사사무소를 운영하며, 설계계약서 없이 진행된 건축허가 후 잔금 미지급 문제가 발생했습니다.',
+      highlights: [],
     },
     {
       question: '상대방의 입장은 무엇인가요?',
       answer: '잔금 지급 의사 없음',
+      highlights: [],
     },
     {
       question: '변호사님에게 어떤 도움을 받고 싶으신가요?',
       answer: '소송 진행 및 분쟁/합의 지원',
+      highlights: [],
     },
     {
       question: '사건내용',
       answer: '설계용역 대금 회수와 관련하여 잔금이 미지급된 문제로 인해 법적 대응이 필요한 상황입니다.',
+      highlights: [],
     },
   ]);
 
@@ -68,7 +75,7 @@ function FactReview() {
     '사건 분류': '일반 민사',
   };
 
-  const consultationGroups = {
+  const [consultationGroups, setConsultationGroups] = useState({
     '기초 정보': [
       { label: '의뢰인 닉네임', value: '김건축' },
       { label: '의뢰인 연락처', value: '010-****-****' },
@@ -76,28 +83,30 @@ function FactReview() {
       { label: '변호사 연락처', value: '010-****-****' },
     ],
     '상담 내용': [
-      { label: '사건명', value: '건축설계용역 미수금 회수' },
+      { label: '사건명', value: '건축설계용역 미수금 회수', highlights: [] },
       {
         label: '사실관계',
         value:
           '소송의뢰인은 건축설계용역을 수행했으나, 상대방은 잔금 일부만 지급하고 나머지는 지급 거부하고 있습니다.',
+        highlights: [],
       },
-      { label: '상담 결과', value: '소송 진행 및 분쟁, 합의 지원 필요' },
+      { label: '상담 결과', value: '소송 진행 및 분쟁, 합의 지원 필요', highlights: [] },
       {
         label: '관련 법리',
         value:
           '상법 제61조는 상인이 그 영업범위 내에서 타인을 위하여 행위를 한 때에는 이에 대하여 상당한 보수를 청구할 수 있다라고 규정하고 있다...',
+        highlights: [],
       },
-      { label: '증거 판단', value: '업무 수행 증거 및 일부 지급 증거 존재' },
-      { label: '불리 요소', value: '계약서 미작성으로 지급 기준 불명확' },
-      { label: '승소 예상 금액', value: '3억7천만원' },
-      { label: '집행 방안', value: '상대방 보유 부동산 등을 통한 집행 가능' },
+      { label: '증거 판단', value: '업무 수행 증거 및 일부 지급 증거 존재', highlights: [] },
+      { label: '불리 요소', value: '계약서 미작성으로 지급 기준 불명확', highlights: [] },
+      { label: '승소 예상 금액', value: '3억7천만원', highlights: [] },
+      { label: '집행 방안', value: '상대방 보유 부동산 등을 통한 집행 가능', highlights: [] },
     ],
     '비용 정보': [
       { label: '착수금', value: '000,000원' },
       { label: '성공보수', value: '회수 금액의 0%' },
     ],
-  };
+  });
 
   const handleFileSelect = (event) => {
     const selectedFiles = Array.from(event.target.files);
@@ -129,11 +138,74 @@ function FactReview() {
   };
 
   const analyzeIssues = () => {
+    // LLM 전송용 데이터 준비
+    const llmData = prepareDataForLLM(qaItems, consultationGroups);
+    console.log('LLM 전송 데이터:', llmData);
+    
+    // TODO: 실제 API 호출
+    // await sendToLLM(llmData);
+    
     setShowLoadingModal(true);
     setTimeout(() => {
       setShowLoadingModal(false);
       navigate('/issue-identification');
     }, 1500);
+  };
+
+  // 의뢰서 하이라이트 핸들러
+  const handleRequestHighlight = (itemIndex, selection) => {
+    setQaItems((prev) =>
+      prev.map((item, idx) =>
+        idx === itemIndex
+          ? {
+              ...item,
+              highlights: [...(item.highlights || []), selection],
+            }
+          : item
+      )
+    );
+  };
+
+  const handleRequestRemoveHighlight = (itemIndex, highlightIdx) => {
+    setQaItems((prev) =>
+      prev.map((item, idx) =>
+        idx === itemIndex
+          ? {
+              ...item,
+              highlights: item.highlights.filter((_, hIdx) => hIdx !== highlightIdx),
+            }
+          : item
+      )
+    );
+  };
+
+  // 상담결과지 하이라이트 핸들러
+  const handleConsultationHighlight = (groupName, itemIndex, selection) => {
+    setConsultationGroups((prev) => ({
+      ...prev,
+      [groupName]: prev[groupName].map((item, idx) =>
+        idx === itemIndex
+          ? {
+              ...item,
+              highlights: [...(item.highlights || []), selection],
+            }
+          : item
+      ),
+    }));
+  };
+
+  const handleConsultationRemoveHighlight = (groupName, itemIndex, highlightIdx) => {
+    setConsultationGroups((prev) => ({
+      ...prev,
+      [groupName]: prev[groupName].map((item, idx) =>
+        idx === itemIndex
+          ? {
+              ...item,
+              highlights: (item.highlights || []).filter((_, hIdx) => hIdx !== highlightIdx),
+            }
+          : item
+      ),
+    }));
   };
 
   return (
@@ -172,8 +244,14 @@ function FactReview() {
                       basicInfo={requestBasicInfo}
                       title="계약서 작성 없이 설계용역을 했는데 터무니없이 낮은 금액을 받았어요"
                       qaItems={qaItems}
+                      onHighlight={handleRequestHighlight}
+                      onRemoveHighlight={handleRequestRemoveHighlight}
                     />
-                    <ConsultationResult groups={consultationGroups} />
+                    <ConsultationResult 
+                      groups={consultationGroups}
+                      onHighlight={handleConsultationHighlight}
+                      onRemoveHighlight={handleConsultationRemoveHighlight}
+                    />
                   </Stack>
                 </ScrollArea.Content>
               </ScrollArea.Viewport>

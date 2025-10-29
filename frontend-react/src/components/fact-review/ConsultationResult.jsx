@@ -1,6 +1,7 @@
 import { Box, Card, Text, Stack, Grid, GridItem, Editable } from '@chakra-ui/react';
+import HighlightableText from '../common/HighlightableText';
 
-function ConsultationResult({ groups }) {
+function ConsultationResult({ groups, onHighlight, onRemoveHighlight }) {
   // 기초 정보와 비용 정보는 2열 그리드로, 상담 내용은 Editable로
   const isStaticGroup = (groupName) => {
     return groupName === '기초 정보' || groupName === '비용 정보';
@@ -49,7 +50,7 @@ function ConsultationResult({ groups }) {
                     <Text fontSize="xs" color="gray.600" mb={1}>
                       {item.label}
                     </Text>
-                    <Editable.Root defaultValue={item.value}>
+                    <Editable.Root defaultValue={item.value} activationMode="dblclick">
                       <Editable.Preview
                         fontSize="sm"
                         color="gray.800"
@@ -59,7 +60,15 @@ function ConsultationResult({ groups }) {
                         cursor="text"
                         whiteSpace="pre-wrap"
                         wordBreak="break-word"
-                      />
+                        userSelect="text"
+                      >
+                        <HighlightableText
+                          text={item.value}
+                          highlights={item.highlights || []}
+                          onHighlight={(selection) => onHighlight && onHighlight(groupName, index, selection)}
+                          onRemoveHighlight={(highlightIdx) => onRemoveHighlight && onRemoveHighlight(groupName, index, highlightIdx)}
+                        />
+                      </Editable.Preview>
                       <Editable.Textarea
                         fontSize="sm"
                         color="gray.800"

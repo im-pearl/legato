@@ -1,6 +1,7 @@
 import { Box, Card, Text, Grid, GridItem, Editable } from '@chakra-ui/react';
+import HighlightableText from '../common/HighlightableText';
 
-function RequestForm({ basicInfo, title, qaItems }) {
+function RequestForm({ basicInfo, title, qaItems, onHighlight, onRemoveHighlight }) {
   return (
     <Card.Root variant="outline">
       <Card.Body>
@@ -46,7 +47,7 @@ function RequestForm({ basicInfo, title, qaItems }) {
               <Text fontSize="sm" fontWeight={500} color="gray.800" mb={1}>
                 {index + 1}. {item.question}
               </Text>
-              <Editable.Root defaultValue={item.answer}>
+              <Editable.Root defaultValue={item.answer} activationMode="dblclick">
                 <Editable.Preview
                   fontSize="sm"
                   color="gray.700"
@@ -56,7 +57,15 @@ function RequestForm({ basicInfo, title, qaItems }) {
                   cursor="text"
                   whiteSpace="pre-wrap"
                   wordBreak="break-word"
-                />
+                  userSelect="text"
+                >
+                  <HighlightableText
+                    text={item.answer}
+                    highlights={item.highlights || []}
+                    onHighlight={(selection) => onHighlight && onHighlight(index, selection)}
+                    onRemoveHighlight={(highlightIdx) => onRemoveHighlight && onRemoveHighlight(index, highlightIdx)}
+                  />
+                </Editable.Preview>
                 <Editable.Textarea
                   fontSize="sm"
                   color="gray.700"
