@@ -11,6 +11,7 @@ import {
   Stack,
   Input,
   Textarea,
+  ScrollArea,
 } from '@chakra-ui/react';
 import {
   LuCloudUpload,
@@ -156,22 +157,38 @@ function FactReview() {
           bg="white"
         >
         {/* 메인 2열 레이아웃 */}
-        <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }} gap={6} mb={6}>
+        <Grid 
+          templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }} 
+          gap={6} 
+          mb={6}
+        >
           {/* 왼쪽 열: 의뢰서 & 상담 결과지 */}
           <GridItem>
-            <Stack gap={6}>
-              <RequestForm
-                basicInfo={requestBasicInfo}
-                title="계약서 작성 없이 설계용역을 했는데 터무니없이 낮은 금액을 받았어요"
-                qaItems={qaItems}
-              />
-              <ConsultationResult groups={consultationGroups} />
-            </Stack>
+            <ScrollArea.Root maxHeight="calc(100vh - 180px)">
+              <ScrollArea.Viewport>
+                <ScrollArea.Content paddingEnd="3">
+                  <Stack gap={6}>
+                    <RequestForm
+                      basicInfo={requestBasicInfo}
+                      title="계약서 작성 없이 설계용역을 했는데 터무니없이 낮은 금액을 받았어요"
+                      qaItems={qaItems}
+                    />
+                    <ConsultationResult groups={consultationGroups} />
+                  </Stack>
+                </ScrollArea.Content>
+              </ScrollArea.Viewport>
+              <ScrollArea.Scrollbar>
+                <ScrollArea.Thumb />
+              </ScrollArea.Scrollbar>
+            </ScrollArea.Root>
           </GridItem>
 
           {/* 오른쪽 열: 자료 업로드 & 심사역 작성 */}
           <GridItem>
-            <Stack gap={6}>
+            <ScrollArea.Root maxHeight="calc(100vh - 180px)" variant="always">
+              <ScrollArea.Viewport>
+                <ScrollArea.Content paddingEnd="3">
+                  <Stack gap={6}>
               {/* 자료 업로드 */}
               <Card.Root variant="outline">
                 <Card.Body>
@@ -271,7 +288,13 @@ function FactReview() {
                   />
                 </Card.Body>
               </Card.Root>
-            </Stack>
+                  </Stack>
+                </ScrollArea.Content>
+              </ScrollArea.Viewport>
+              <ScrollArea.Scrollbar>
+                <ScrollArea.Thumb />
+              </ScrollArea.Scrollbar>
+            </ScrollArea.Root>
           </GridItem>
         </Grid>
 
