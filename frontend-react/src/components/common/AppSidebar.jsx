@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Box, Text, IconButton, Button } from '@chakra-ui/react';
+import { Box, Text, IconButton } from '@chakra-ui/react';
+import { Avatar } from '@chakra-ui/react';
 import {
-  LuSettings,
   LuChevronLeft,
   LuMenu,
 } from 'react-icons/lu';
@@ -44,6 +44,8 @@ function AppSidebar({ open, onToggle }) {
       borderColor="gray.200"
       transition="width 0.3s"
       zIndex={10}
+      display="flex"
+      flexDirection="column"
     >
       {/* 헤더 - 토글 버튼 */}
       <Box
@@ -81,7 +83,7 @@ function AppSidebar({ open, onToggle }) {
         )}
       </Box>
 
-      {/* Vertical Stepper - 수동 구현 */}
+      {/* Vertical Stepper */}
       {open && (
         <Box px={4} py={6}>
           {steps.map((step, index) => (
@@ -98,22 +100,24 @@ function AppSidebar({ open, onToggle }) {
                 py={2}
               >
                 <Box
-                  w="32px"
-                  h="32px"
+                  w="24px"
+                  h="24px"
                   borderRadius="full"
-                  bg={activeStep === index ? 'teal.500' : activeStep > index ? 'teal.500' : 'gray.300'}
-                  color="white"
+                  bg={activeStep >= index ? 'gray.900' : 'white'}
+                  borderWidth="2px"
+                  borderColor={activeStep >= index ? 'gray.900' : 'gray.300'}
+                  color={activeStep >= index ? 'white' : 'gray.400'}
                   display="flex"
                   alignItems="center"
                   justifyContent="center"
                   fontWeight={600}
-                  fontSize="sm"
+                  fontSize="11px"
                   flexShrink={0}
                 >
                   {index + 1}
                 </Box>
                 <Text
-                  fontSize="0.9rem"
+                  fontSize="0.875rem"
                   fontWeight={activeStep === index ? 600 : 400}
                   color={activeStep === index ? 'gray.900' : 'gray.600'}
                 >
@@ -124,8 +128,8 @@ function AppSidebar({ open, onToggle }) {
                 <Box
                   w="2px"
                   h="20px"
-                  bg={activeStep > index ? 'teal.500' : 'gray.300'}
-                  ml="15px"
+                  bg={activeStep > index ? 'gray.900' : 'gray.300'}
+                  ml="11px"
                   my={1}
                 />
               )}
@@ -136,19 +140,33 @@ function AppSidebar({ open, onToggle }) {
 
       <Box flex={1} />
 
-      {/* 설정 메뉴 */}
-      <Box px={open ? 3 : 1} py={2}>
-        <Button
-          variant="ghost"
-          size="sm"
-          w="full"
-          justifyContent={open ? 'flex-start' : 'center'}
-          px={open ? 3 : 0}
+      {/* 사용자 프로필 */}
+      {open && (
+        <Box
+          px={4}
+          py={3}
         >
-          <LuSettings />
-          {open && <Text ml={2}>설정</Text>}
-        </Button>
-      </Box>
+          <Box
+            display="flex"
+            alignItems="center"
+            gap={3}
+            cursor="pointer"
+            _hover={{ bg: 'gray.100' }}
+            p={2}
+            borderRadius="lg"
+            transition="all 0.2s"
+          >
+            <Avatar.Root size="sm" bg="gray.900" color="white">
+              <Avatar.Fallback name="정범환" />
+            </Avatar.Root>
+            <Box>
+              <Text fontSize="0.875rem" fontWeight={600} color="gray.900">
+                정범환 변호사
+              </Text>
+            </Box>
+          </Box>
+        </Box>
+      )}
     </Box>
   );
 }
