@@ -98,9 +98,8 @@ function IssueIdentification() {
             </Text>
             <Textarea
               defaultValue={factsContent}
-              minRows={10}
+              rows={10}
               fontFamily="inherit"
-              fontSize="0.95rem"
               lineHeight={1.5}
             />
           </Card.Body>
@@ -161,6 +160,7 @@ function IssueIdentification() {
                     value={issue.content}
                     onChange={(e) => updateIssue(index, e.target.value)}
                     variant="plain"
+                    rows={1}
                     fontSize="0.95rem"
                     lineHeight={1.5}
                     flex={1}
