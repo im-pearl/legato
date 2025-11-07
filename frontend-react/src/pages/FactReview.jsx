@@ -412,7 +412,7 @@ function FactReview() {
             임시저장
           </Button>
           <Button size="lg" onClick={analyzeIssues}>
-            쟁점분석
+            확인
           </Button>
         </Box>
 

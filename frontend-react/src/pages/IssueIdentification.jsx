@@ -122,8 +122,8 @@ function IssueIdentification() {
                 쟁점
               </Text>
               <Button
-                size="sm"
-                colorPalette="gray"
+                size="xs"
+                variant="subtle"
                 onClick={addNewIssue}
               >
                 <LuPlus />
@@ -136,7 +136,7 @@ function IssueIdentification() {
                 <Box
                   key={index}
                   display="flex"
-                  alignItems="center"
+                  alignItems="flex-start"
                   gap={4}
                   p={4}
                   borderWidth="1px"
@@ -152,6 +152,7 @@ function IssueIdentification() {
                   <Box
                     w="24px"
                     h="24px"
+                    mt="6px"
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
@@ -201,7 +202,7 @@ function IssueIdentification() {
               임시저장
             </Button>
             <Button size="lg" colorPalette="gray" onClick={searchCases}>
-              판례검색
+              확인
             </Button>
           </Box>
         </Box>

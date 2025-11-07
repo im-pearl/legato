@@ -334,7 +334,7 @@ function CaseResearch() {
               임시저장
             </Button>
             <Button size="lg" colorPalette="gray" onClick={finalReview}>
-              최종 검토
+              확인
             </Button>
           </Box>
         </Box>
