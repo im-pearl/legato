@@ -218,18 +218,19 @@ function CaseResearch() {
                           <CheckboxCard.Description fontSize="sm" color="gray.800" lineHeight={1.6} mb={3}>
                             {precedent.summary}
                           </CheckboxCard.Description>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              viewFullPrecedent(precedent);
+                            }}
+                          >
+                            전문보기
+                          </Button>
                         </CheckboxCard.Content>
                         <CheckboxCard.Indicator />
                       </CheckboxCard.Control>
-                      <CheckboxCard.Addon justifyContent="flex-end">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => viewFullPrecedent(precedent)}
-                        >
-                          전문보기
-                        </Button>
-                      </CheckboxCard.Addon>
                     </CheckboxCard.Root>
                   ))}
                 </Box>
