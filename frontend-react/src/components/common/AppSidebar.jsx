@@ -92,8 +92,6 @@ function AppSidebar({ open, onToggle }) {
       <Box
         px={3}
         py={3}
-        borderTopWidth="1px"
-        borderColor="gray.200"
       >
         <Box
           display="flex"

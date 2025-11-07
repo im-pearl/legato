@@ -177,27 +177,30 @@ function CaseResearch() {
             {issues.map((issue, issueIndex) => (
               <Box
                 key={issueIndex}
-                mb={6}
-                pb={6}
-                borderBottomWidth={issueIndex < issues.length - 1 ? '1px' : '0'}
-                borderBottomStyle="dashed"
-                borderColor="gray.300"
+                mb={issueIndex < issues.length - 1 ? 8 : 0}
               >
-                <Box display="flex" alignItems="flex-start" mb={4}>
-                  <Badge
-                    size="sm"
-                    colorPalette="gray"
-                    mr={4}
-                    fontWeight={500}
+                <Box display="flex" alignItems="flex-start" gap={3} mb={4}>
+                  <Box
+                    w="24px"
+                    h="24px"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    bg="gray.900"
+                    color="white"
+                    borderRadius="full"
+                    fontWeight={600}
+                    flexShrink={0}
+                    fontSize="0.75rem"
                   >
                     {issueIndex + 1}
-                  </Badge>
-                  <Text fontSize="md" color="gray.800" fontWeight={400}>
+                  </Box>
+                  <Text fontSize="md" color="gray.800" fontWeight={500} flex={1}>
                     {issue.content}
                   </Text>
                 </Box>
 
-                <Box ml={10} display="flex" flexDirection="column" gap={4}>
+                <Box ml={8} display="flex" flexDirection="column" gap={4}>
                   {issue.precedents.map((precedent, precedentIndex) => (
                     <CheckboxCard.Root
                       key={precedentIndex}

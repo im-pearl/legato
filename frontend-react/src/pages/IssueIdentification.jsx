@@ -136,7 +136,7 @@ function IssueIdentification() {
                 <Box
                   key={index}
                   display="flex"
-                  alignItems="flex-start"
+                  alignItems="center"
                   gap={4}
                   p={4}
                   borderWidth="1px"
@@ -150,17 +150,17 @@ function IssueIdentification() {
                   }}
                 >
                   <Box
-                    w="28px"
-                    h="28px"
+                    w="24px"
+                    h="24px"
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
-                    bg="gray.500"
+                    bg="gray.900"
                     color="white"
-                    borderRadius="md"
-                    fontWeight={500}
+                    borderRadius="full"
+                    fontWeight={600}
                     flexShrink={0}
-                    fontSize="0.9rem"
+                    fontSize="0.75rem"
                   >
                     {index + 1}
                   </Box>
