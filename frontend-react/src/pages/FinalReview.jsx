@@ -14,11 +14,14 @@ import AppSidebar from '../components/common/AppSidebar';
 import AppHeader from '../components/common/AppHeader';
 import StepsBar from '../components/common/StepsBar';
 import PreviewReportModal from '../components/final-review/PreviewReportModal';
+import PrecedentModal from '../components/case-research/PrecedentModal';
 
 function FinalReview() {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [showPrecedentModal, setShowPrecedentModal] = useState(false);
+  const [selectedPrecedent, setSelectedPrecedent] = useState(null);
   const [winProbability, setWinProbability] = useState([30, 75]);
   const [executionProbability, setExecutionProbability] = useState([40, 80]);
 
@@ -104,6 +107,11 @@ function FinalReview() {
     closePreviewModal();
   };
 
+  const viewFullPrecedent = (precedent) => {
+    setSelectedPrecedent(precedent);
+    setShowPrecedentModal(true);
+  };
+
   return (
     <>
       <Box display="flex">
@@ -150,26 +158,30 @@ function FinalReview() {
           {(issue, issueIndex) => (
             <Card.Root key={issueIndex} variant="outline" mb={6}>
               <Card.Body>
-                <Text fontSize="lg" fontWeight={600} mb={4}>
-                  쟁점 {issueIndex + 1}
+                <Text fontSize="lg" fontWeight={600} mb={2} color="gray.900">
+                  쟁점 {issueIndex + 1}. {issue.content}
                 </Text>
 
-                <Box p={4} mb={6} borderWidth="1px" borderRadius="md" bg="gray.50">
-                  <Text fontSize="sm" color="gray.800" lineHeight={1.5}>
-                    {issue.content}
-                  </Text>
-                </Box>
-
-                <Text fontSize="md" fontWeight={600} color="gray.800" mb={4}>
+                <Text fontSize="md" fontWeight={600} color="gray.800" mb={4} mt={6}>
                   관련 판례
                 </Text>
                 <Stack gap={4} mb={6}>
                   <For each={issue.precedents}>
                     {(precedent, index) => (
                       <Box key={index} p={4} borderWidth="1px" borderRadius="md">
-                        <Text fontSize="sm" fontWeight={600} color="gray.900" mb={2}>
-                          {precedent.caseNumber}
-                        </Text>
+                        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                          <Text fontSize="md" fontWeight={500} color="gray.900" flex={1}>
+                            {precedent.caseNumber}
+                          </Text>
+                          <Button
+                            size="xs"
+                            variant="outline"
+                            onClick={() => viewFullPrecedent(precedent)}
+                            flexShrink={0}
+                          >
+                            전문보기
+                          </Button>
+                        </Box>
                         <Text fontSize="sm" color="gray.800" lineHeight={1.5}>
                           {precedent.summary}
                         </Text>
@@ -316,6 +328,13 @@ function FinalReview() {
         executionProbability={executionProbability}
         winProbabilityDescription={winProbabilityDescription}
         executionProbabilityDescription={executionProbabilityDescription}
+      />
+
+      {/* 판례 전문 모달 */}
+      <PrecedentModal
+        isOpen={showPrecedentModal}
+        onClose={() => setShowPrecedentModal(false)}
+        precedent={selectedPrecedent}
       />
     </>
   );
