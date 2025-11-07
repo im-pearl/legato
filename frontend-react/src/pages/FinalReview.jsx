@@ -19,8 +19,8 @@ function FinalReview() {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
-  const [winProbability, setWinProbability] = useState([75]);
-  const [executionProbability, setExecutionProbability] = useState([80]);
+  const [winProbability, setWinProbability] = useState([30, 75]);
+  const [executionProbability, setExecutionProbability] = useState([40, 80]);
 
   const [winProbabilityDescription, setWinProbabilityDescription] = useState(
     '계약서가 없고 상대방의 확인 서명이 없는 견적서만으로는 계약상 대금청구가 인정되기 어려우나, 부당이득반환청구는 실제 제공된 용역의 가치에 기초하여 인정될 가능성이 높습니다...'
@@ -217,6 +217,9 @@ function FinalReview() {
               승소가능성
             </Text>
             <Box mb={6}>
+              <Text fontSize="md" fontWeight={600} color="gray.900" mb={3}>
+                {winProbability[0]}~{winProbability[1]}%
+              </Text>
               <Slider.Root
                 value={winProbability}
                 onValueChange={(e) => setWinProbability(e.value)}
@@ -224,10 +227,6 @@ function FinalReview() {
                 max={100}
                 step={5}
               >
-                <Box display="flex" justifyContent="space-between" mb={2}>
-                  <Slider.Label fontSize="sm" fontWeight={500}>승소 확률</Slider.Label>
-                  <Slider.ValueText fontSize="sm" fontWeight={600} color="gray.900" />
-                </Box>
                 <Slider.Control>
                   <Slider.Track>
                     <Slider.Range />
@@ -254,6 +253,9 @@ function FinalReview() {
               집행가능성
             </Text>
             <Box mb={6}>
+              <Text fontSize="md" fontWeight={600} color="gray.900" mb={3}>
+                {executionProbability[0]}~{executionProbability[1]}%
+              </Text>
               <Slider.Root
                 value={executionProbability}
                 onValueChange={(e) => setExecutionProbability(e.value)}
@@ -261,10 +263,6 @@ function FinalReview() {
                 max={100}
                 step={5}
               >
-                <Box display="flex" justifyContent="space-between" mb={2}>
-                  <Slider.Label fontSize="sm" fontWeight={500}>집행 확률</Slider.Label>
-                  <Slider.ValueText fontSize="sm" fontWeight={600} color="gray.900" />
-                </Box>
                 <Slider.Control>
                   <Slider.Track>
                     <Slider.Range />
