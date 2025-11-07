@@ -16,6 +16,7 @@ import {
 import {
   PopoverRoot,
   PopoverTrigger,
+  PopoverPositioner,
   PopoverContent,
   PopoverBody,
 } from '@chakra-ui/react';
@@ -238,7 +239,7 @@ function CaseResearch() {
             ))}
 
             {/* 선택된 판례 수 */}
-            <Box display="flex" justifyContent="flex-end" mb={4}>
+            <Box display="flex" justifyContent="flex-end" mt={2} mb={6}>
               <Text fontSize="sm" color="gray.700">
                 선택된 판례 수 :{' '}
                 <Text as="span" color="gray.900" fontWeight={500}>
@@ -248,14 +249,15 @@ function CaseResearch() {
             </Box>
 
             {/* 추가 검색 */}
-            <Box p={6} borderWidth="1px" borderRadius="lg" bg="gray.50">
+            <Box p={6} borderRadius="lg" bg="gray.50">
               <Text fontSize="md" fontWeight={600} color="gray.800" mb={4}>
                 추가 판례 검색
               </Text>
               <Box display="flex" gap={2}>
                 <Input
+                  bg="white"
                   flex={1}
-                  placeholder="자연어로 검색하세요"
+                  placeholder="검색어를 입력하세요"
                   value={searchKeyword}
                   onChange={(e) => setSearchKeyword(e.target.value)}
                   onKeyPress={(e) => {
@@ -269,7 +271,7 @@ function CaseResearch() {
                 >
                   <LuSearch />
                 </IconButton>
-                <PopoverRoot>
+                <PopoverRoot portalled positioning={{ placement: 'bottom-end' }}>
                   <PopoverTrigger asChild>
                     <IconButton
                       variant="outline"
@@ -278,8 +280,9 @@ function CaseResearch() {
                       <LuFilter />
                     </IconButton>
                   </PopoverTrigger>
-                  <PopoverContent>
-                    <PopoverBody p={6} minW="300px">
+                  <PopoverPositioner>
+                    <PopoverContent>
+                      <PopoverBody p={6} minW="300px">
                       <Text fontSize="sm" fontWeight={600} mb={4}>
                         검색 필터
                       </Text>
@@ -318,7 +321,8 @@ function CaseResearch() {
                         </Box>
                       </Stack>
                     </PopoverBody>
-                  </PopoverContent>
+                    </PopoverContent>
+                  </PopoverPositioner>
                 </PopoverRoot>
               </Box>
             </Box>
