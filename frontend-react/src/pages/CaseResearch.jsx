@@ -22,6 +22,7 @@ import {
 import { LuSearch, LuFilter } from 'react-icons/lu';
 import AppSidebar from '../components/common/AppSidebar';
 import AppHeader from '../components/common/AppHeader';
+import StepsBar from '../components/common/StepsBar';
 import LoadingModal from '../components/common/LoadingModal';
 
 function CaseResearch() {
@@ -135,15 +136,23 @@ function CaseResearch() {
         display="flex"
         flexDirection="column"
         minH="100vh"
-        ml={drawerOpen ? '200px' : '65px'}
+        ml={drawerOpen ? '200px' : '0'}
         transition="margin-left 0.3s"
       >
-        <AppHeader caseNumber="12345" caseTitle="강제추행 피해자입니다" />
+        <AppHeader 
+          caseNumber="12345" 
+          caseTitle="강제추행 피해자입니다"
+          onToggleSidebar={() => setDrawerOpen(!drawerOpen)}
+          sidebarOpen={drawerOpen}
+        />
+        <StepsBar />
 
         <Box
           as="main"
           flexGrow={1}
-          p={6}
+          pt={2}
+          px={6}
+          pb={6}
           bg="white"
         >
         {/* 사실관계 */}
