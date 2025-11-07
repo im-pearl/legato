@@ -25,11 +25,14 @@ import AppSidebar from '../components/common/AppSidebar';
 import AppHeader from '../components/common/AppHeader';
 import StepsBar from '../components/common/StepsBar';
 import LoadingModal from '../components/common/LoadingModal';
+import PrecedentModal from '../components/case-research/PrecedentModal';
 
 function CaseResearch() {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [showLoadingModal, setShowLoadingModal] = useState(false);
+  const [showPrecedentModal, setShowPrecedentModal] = useState(false);
+  const [selectedPrecedent, setSelectedPrecedent] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [searchType, setSearchType] = useState('all');
   const [searchCourt, setSearchCourt] = useState('all');
@@ -83,7 +86,8 @@ function CaseResearch() {
   };
 
   const viewFullPrecedent = (precedent) => {
-    alert(`${precedent.caseNumber} 판례 전문 보기를 요청했습니다.`);
+    setSelectedPrecedent(precedent);
+    setShowPrecedentModal(true);
   };
 
   const searchPrecedents = () => {
@@ -196,7 +200,7 @@ function CaseResearch() {
                   >
                     {issueIndex + 1}
                   </Box>
-                  <Text fontSize="md" color="gray.800" fontWeight={500} flex={1}>
+                  <Text fontSize="md" color="gray.800" fontWeight={600} flex={1}>
                     {issue.content}
                   </Text>
                 </Box>
@@ -213,10 +217,10 @@ function CaseResearch() {
                       <CheckboxCard.HiddenInput />
                       <CheckboxCard.Control>
                         <CheckboxCard.Content>
-                          <CheckboxCard.Label fontWeight={600} color="gray.900" mb={2}>
+                          <CheckboxCard.Label fontWeight={500} color="gray.900" mb={2}>
                             {precedent.caseNumber}
                           </CheckboxCard.Label>
-                          <CheckboxCard.Description fontSize="sm" color="gray.800" lineHeight={1.6} mb={3}>
+                          <CheckboxCard.Description fontSize="sm" color="gray.900" lineHeight={1.6} mb={3}>
                             {precedent.summary}
                           </CheckboxCard.Description>
                           <Button
@@ -347,6 +351,12 @@ function CaseResearch() {
         <LoadingModal
           isVisible={showLoadingModal}
           message="AI가 승소가능성 및 집행가능성을 검토하고 있습니다."
+        />
+
+        <PrecedentModal
+          isOpen={showPrecedentModal}
+          onClose={() => setShowPrecedentModal(false)}
+          precedent={selectedPrecedent}
         />
         </Box>
       </Box>

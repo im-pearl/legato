@@ -1,4 +1,4 @@
-import { Box, Text, Button, Table, For, Dialog, Portal } from '@chakra-ui/react';
+import { Box, Text, Button, Table, For, Dialog, Portal, CloseButton } from '@chakra-ui/react';
 import { Progress } from '@chakra-ui/react';
 
 function PreviewReportModal({ 
@@ -28,8 +28,14 @@ function PreviewReportModal({
         <Dialog.Positioner>
           <Dialog.Content>
             <Dialog.Header>
-              <Dialog.Title>사건 심사 보고서</Dialog.Title>
-              <Dialog.CloseTrigger />
+              <Dialog.Title pr={12}>사건 심사 보고서</Dialog.Title>
+              <CloseButton
+                position="absolute"
+                top={4}
+                right={4}
+                size="sm"
+                onClick={onClose}
+              />
             </Dialog.Header>
 
             <Dialog.Body>
