@@ -9,7 +9,7 @@ import {
   IconButton,
   Stack,
 } from '@chakra-ui/react';
-import { LuPlus, LuTrash2 } from 'react-icons/lu';
+import { LuPlus, LuX } from 'react-icons/lu';
 import AppHeader from '../components/common/AppHeader';
 import StepsBar, { stepsWidth } from '../components/common/StepsBar';
 import LoadingModal from '../components/common/LoadingModal';
@@ -159,12 +159,12 @@ function IssueIdentification() {
                   <IconButton
                     size="sm"
                     variant="ghost"
-                    colorPalette="red"
+                    colorPalette="gray"
                     onClick={() => deleteIssue(index)}
                     flexShrink={0}
                     aria-label="삭제"
                   >
-                    <LuTrash2 />
+                    <LuX />
                   </IconButton>
                 </Box>
               ))}

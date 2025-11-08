@@ -1,7 +1,25 @@
 import { Box, Card, Button, Text, IconButton, Editable, FileUpload } from '@chakra-ui/react';
-import { LuFile, LuPlus, LuTrash2 } from 'react-icons/lu';
+import { LuFile, LuPlus, LuX, LuFileText, LuImage } from 'react-icons/lu';
 
 function EvidenceList({ files, onFileChange, onRemoveFile, onUpdateDescription }) {
+  const getFileIcon = (fileName) => {
+    const extension = fileName.split('.').pop()?.toLowerCase();
+    
+    // 문서 파일
+    const documentExtensions = ['pdf', 'doc', 'docx', 'txt', 'hwp', 'xlsx', 'xls', 'ppt', 'pptx'];
+    if (documentExtensions.includes(extension)) {
+      return <LuFileText size={18} color="gray" />;
+    }
+    
+    // 이미지 파일
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp'];
+    if (imageExtensions.includes(extension)) {
+      return <LuImage size={18} color="gray" />;
+    }
+    
+    // 기타
+    return <LuFile size={18} color="gray" />;
+  };
   return (
     <Card.Root variant="outline">
       <Card.Body>
@@ -32,7 +50,7 @@ function EvidenceList({ files, onFileChange, onRemoveFile, onUpdateDescription }
             {files.map((file, index) => (
               <Box
                 key={index}
-                p={4}
+                px={4} py={2}
                 borderBottomWidth={index < files.length - 1 ? '1px' : '0'}
                 borderColor="gray.200"
               >
@@ -43,7 +61,7 @@ function EvidenceList({ files, onFileChange, onRemoveFile, onUpdateDescription }
                   mb={2}
                 >
                   <Box display="flex" alignItems="center" gap={2}>
-                    <LuFile size={18} color="gray" />
+                    {getFileIcon(file.name)}
                     <Text fontSize="sm" fontWeight={500}>
                       {file.name}
                     </Text>
@@ -51,11 +69,11 @@ function EvidenceList({ files, onFileChange, onRemoveFile, onUpdateDescription }
                   <IconButton
                     size="sm"
                     variant="ghost"
-                    colorPalette="red"
+                    colorPalette="gray"
                     onClick={() => onRemoveFile(index)}
                     aria-label="삭제"
                   >
-                    <LuTrash2 />
+                    <LuX />
                   </IconButton>
                 </Box>
                 <Editable.Root

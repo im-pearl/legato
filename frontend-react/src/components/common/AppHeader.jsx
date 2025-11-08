@@ -38,8 +38,13 @@ function AppHeader() {
         justifyContent="space-between"
         px={6}
       >
-        <Text fontSize="lg" fontWeight={700} color="gray.900">
-          심사 AI
+        <Text 
+          fontSize="lg" 
+          fontWeight={500} 
+          color="gray.900"
+          fontFamily="'Circular Std', sans-serif"
+        >
+          Legal AI
         </Text>
 
         <Box
@@ -54,10 +59,10 @@ function AppHeader() {
           _hover={{ bg: 'gray.50' }}
         >
           <Avatar.Root size="xs" bg="gray.700" color="white">
-            <Avatar.Fallback name="정범환" />
+            <Avatar.Fallback name="임진주" />
           </Avatar.Root>
           <Text fontSize="0.9rem" fontWeight={500} color="gray.700">
-            정범환 변호사
+            임진주
           </Text>
         </Box>
       </Box>

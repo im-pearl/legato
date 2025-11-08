@@ -10,7 +10,6 @@ function Home() {
       justifyContent="center"
       alignItems="center"
       minH="100vh"
-      bg="white"
     >
       <Box
         display="flex"
@@ -19,14 +18,14 @@ function Home() {
         gap={8}
       >
         <Text fontSize="3xl" fontWeight={600} color="gray.800">
-          심사 AI 데모
+          심사 AI 진짜 맛보기 한스푼
         </Text>
         <Button
           size="lg"
           colorPalette="gray"
           onClick={() => navigate('/fact-review')}
         >
-          데모 페이지 가기
+          한스푼 페이지 가기
         </Button>
       </Box>
     </Box>
