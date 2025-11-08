@@ -13,6 +13,7 @@ import { LuPlus, LuX } from 'react-icons/lu';
 import AppHeader from '../components/common/AppHeader';
 import StepsBar, { stepsWidth } from '../components/common/StepsBar';
 import LoadingModal from '../components/common/LoadingModal';
+import AIRequestableText from '../components/common/AIRequestableText';
 
 function IssueIdentification() {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ function IssueIdentification() {
     { content: '상대방에게 부당이득반환책임이 성립하는지 여부' },
   ]);
 
-  const factsContent = `1. 의뢰인은 상대방으로부터 **시 **구 **번지 오피스텔 신축설계(면적 00,000,000 m2 규모)의 건축설계(건축심의, 경관심의, 건축인허가, 구조 심의) 용역(이하 '이 사건 용역')을 의뢰받아 완료하였음. (계약서 없음)
+  const [factsContent, setFactsContent] = useState(`1. 의뢰인은 상대방으로부터 **시 **구 **번지 오피스텔 신축설계(면적 00,000,000 m2 규모)의 건축설계(건축심의, 경관심의, 건축인허가, 구조 심의) 용역(이하 '이 사건 용역')을 의뢰받아 완료하였음. (계약서 없음)
 
 - 건축심의, 건축허가, 건축구조심의 완료 및 건축물 착공연기신청 완료(착공연기 기간 내)
 
@@ -35,7 +36,7 @@ function IssueIdentification() {
 
 4. 의뢰인은 이 사건 용역의 설계비가 평당 00,000원이라고 주장하며, 이에 용역대금은 약 0원이라고 주장함. (건축 설계비 산정근거: 평 × 00,000원, 건물규모: 00,000,000 m2 (0,000평))
 
-5. 이에 의뢰인은 대금 잔금 약 1억 원을 상대방에게 청구하고자 함.`;
+5. 이에 의뢰인은 대금 잔금 약 1억 원을 상대방에게 청구하고자 함.`);
 
   const addNewIssue = () => {
     setIssues([...issues, { content: '쟁점 내용을 입력하세요.' }]);
@@ -85,8 +86,9 @@ function IssueIdentification() {
             <Text fontSize="lg" fontWeight={600} mb={4}>
               사실관계
             </Text>
-            <Textarea
-              defaultValue={factsContent}
+            <AIRequestableText
+              value={factsContent}
+              onChange={setFactsContent}
               rows={10}
               fontFamily="inherit"
               lineHeight={1.5}
