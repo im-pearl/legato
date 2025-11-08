@@ -38,12 +38,10 @@ function AIRequestableText({ value, onChange, ...textareaProps }) {
           const end = start + selectedStr.length;
 
           const rect = range.getBoundingClientRect();
-          const scrollY = window.scrollY || window.pageYOffset;
-          const scrollX = window.scrollX || window.pageXOffset;
 
           setToolbarPos({
-            top: rect.top + scrollY - 50,
-            left: rect.left + scrollX + rect.width / 2,
+            top: rect.bottom + 5,
+            left: rect.left + rect.width / 2,
           });
 
           setSelection({ start, end, text: selectedStr });
@@ -95,6 +93,7 @@ function AIRequestableText({ value, onChange, ...textareaProps }) {
       modified: mockResponse,
       diffs: diffs,
       range: { start: selection.start, end: selection.end },
+      position: toolbarPos, // 위치 정보 저장
     });
 
     setToolbarPos(null);
@@ -197,7 +196,7 @@ function AIRequestableText({ value, onChange, ...textareaProps }) {
       {toolbarPos && (
         <Box
           className="ai-toolbar"
-          position="absolute"
+          position="fixed"
           top={`${toolbarPos.top}px`}
           left={`${toolbarPos.left}px`}
           transform="translateX(-50%)"
@@ -265,13 +264,12 @@ function AIRequestableText({ value, onChange, ...textareaProps }) {
         </Box>
       )}
 
-      {aiSuggestion && (
+      {aiSuggestion && aiSuggestion.position && (
         <Box
-          position="absolute"
-          top="100%"
-          left="50%"
+          position="fixed"
+          top={`${aiSuggestion.position.top}px`}
+          left={`${aiSuggestion.position.left}px`}
           transform="translateX(-50%)"
-          mt={2}
           zIndex={1000}
           bg="white"
           p={3}
