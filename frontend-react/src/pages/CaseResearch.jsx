@@ -273,7 +273,7 @@ function CaseResearch() {
                       <Stack gap={4}>
                         <Box>
                           <Text fontSize="xs" color="gray.700" mb={1}>
-                            검색 타입
+                            사건 분야
                           </Text>
                           <NativeSelectRoot size="sm">
                             <NativeSelectField
@@ -281,9 +281,9 @@ function CaseResearch() {
                               onChange={(e) => setSearchType(e.target.value)}
                             >
                               <option value="all">전체</option>
-                              <option value="title">제목</option>
-                              <option value="content">내용</option>
-                              <option value="caseNumber">사건번호</option>
+                              <option value="civil">민사</option>
+                              <option value="criminal">형사</option>
+                              <option value="administrative">행정</option>
                             </NativeSelectField>
                           </NativeSelectRoot>
                         </Box>
