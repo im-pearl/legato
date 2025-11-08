@@ -80,7 +80,7 @@ function IssueIdentification() {
         p={6}
       >
         {/* 사실관계 섹션 */}
-        <Card.Root variant="outline" mb={6}>
+        <Card.Root variant="outline" mb={4}>
           <Card.Body>
             <Text fontSize="lg" fontWeight={600} mb={4}>
               사실관계
@@ -95,7 +95,7 @@ function IssueIdentification() {
         </Card.Root>
 
         {/* 쟁점 섹션 */}
-        <Card.Root variant="outline" mb={6}>
+        <Card.Root variant="outline" mb={4}>
           <Card.Body>
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
               <Text fontSize="lg" fontWeight={600}>

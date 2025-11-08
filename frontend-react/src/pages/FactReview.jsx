@@ -1,39 +1,31 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { prepareDataForLLM } from '../utils/highlightUtils';
 import {
   Box,
   Card,
-  Button,
-  Text,
   Grid,
   GridItem,
-  IconButton,
   Stack,
-  Input,
   Textarea,
   ScrollArea,
+  Button,
+  Text,
 } from '@chakra-ui/react';
-import {
-  LuCloudUpload,
-  LuTrash2,
-  LuPencil,
-  LuFile,
-} from 'react-icons/lu';
 import AppHeader from '../components/common/AppHeader';
 import StepsBar, { stepsWidth } from '../components/common/StepsBar';
 import LoadingModal from '../components/common/LoadingModal';
 import RequestForm from '../components/fact-review/RequestForm';
 import ConsultationResult from '../components/fact-review/ConsultationResult';
+import EvidenceList from '../components/fact-review/EvidenceList';
 
 function FactReview() {
   const navigate = useNavigate();
-  const fileInputRef = useRef(null);
 
   const [showLoadingModal, setShowLoadingModal] = useState(false);
   const [files, setFiles] = useState([
-    { name: '과거_설계_계약서.pdf', highlight: false },
-    { name: '지급내역.png', highlight: false },
+    { name: '과거_설계_계약서.pdf', description: '' },
+    { name: '지급내역.png', description: '' },
   ]);
 
   const [qaItems, setQaItems] = useState([
@@ -107,29 +99,23 @@ function FactReview() {
     ],
   });
 
-  const handleFileSelect = (event) => {
-    const selectedFiles = Array.from(event.target.files);
-    selectedFiles.forEach((file) => {
-      setFiles((prev) => [...prev, { name: file.name, highlight: false, file }]);
-    });
-  };
-
-  const handleFileDrop = (event) => {
-    event.preventDefault();
-    const droppedFiles = Array.from(event.dataTransfer.files);
-    droppedFiles.forEach((file) => {
-      setFiles((prev) => [...prev, { name: file.name, highlight: false, file }]);
-    });
-  };
-
-  const toggleFileHighlight = (index) => {
-    setFiles((prev) =>
-      prev.map((file, i) => (i === index ? { ...file, highlight: !file.highlight } : file))
-    );
+  const handleFileChange = (details) => {
+    const newFiles = details.acceptedFiles.map((file) => ({
+      name: file.name,
+      description: '',
+      file,
+    }));
+    setFiles((prev) => [...prev, ...newFiles]);
   };
 
   const removeFile = (index) => {
     setFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const updateFileDescription = (index, description) => {
+    setFiles((prev) =>
+      prev.map((file, i) => (i === index ? { ...file, description } : file))
+    );
   };
 
   const saveTemp = () => {
@@ -239,15 +225,15 @@ function FactReview() {
         {/* 메인 2열 레이아웃 */}
         <Grid 
           templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }} 
-          gap={6} 
-          mb={6}
+          gap={2} 
+          mb={4}
         >
           {/* 왼쪽 열: 의뢰서 & 상담 결과지 */}
           <GridItem>
             <ScrollArea.Root maxHeight="calc(100vh - 180px)">
               <ScrollArea.Viewport>
                 <ScrollArea.Content paddingEnd="3">
-                  <Stack gap={6}>
+                  <Stack gap={4}>
                     <RequestForm
                       basicInfo={requestBasicInfo}
                       title="계약서 작성 없이 설계용역을 했는데 터무니없이 낮은 금액을 받았어요"
@@ -276,93 +262,14 @@ function FactReview() {
             <ScrollArea.Root maxHeight="calc(100vh - 180px)" variant="always">
               <ScrollArea.Viewport>
                 <ScrollArea.Content paddingEnd="3">
-                  <Stack gap={6}>
+                  <Stack gap={4}>
               {/* 자료 업로드 */}
-              <Card.Root variant="outline">
-                <Card.Body>
-                  <Text fontSize="lg" fontWeight={600} mb={4}>
-                    증거 리스트
-                  </Text>
-
-                  <Box
-                    onClick={() => fileInputRef.current?.click()}
-                    onDragOver={(e) => e.preventDefault()}
-                    onDrop={handleFileDrop}
-                    p={8}
-                    borderWidth="2px"
-                    borderStyle="dashed"
-                    borderColor="gray.300"
-                    borderRadius="lg"
-                    textAlign="center"
-                    cursor="pointer"
-                    transition="all 0.2s"
-                    _hover={{
-                      borderColor: 'gray.400',
-                      bg: 'gray.50',
-                    }}
-                  >
-                    <LuCloudUpload size={40} color="gray" style={{ margin: '0 auto 8px' }} />
-                    <Text fontSize="md" fontWeight={500} color="gray.700">
-                      클릭하거나 파일을 여기에 끌어다 놓으세요
-                    </Text>
-                    <Text fontSize="xs" color="gray.600">
-                      PDF, DOCX, JPG, PNG 파일 (최대 20MB)
-                    </Text>
-                    <Input
-                      ref={fileInputRef}
-                      type="file"
-                      multiple
-                      display="none"
-                      onChange={handleFileSelect}
-                    />
-                  </Box>
-
-                  {files.length > 0 && (
-                    <Stack gap={3} mt={4}>
-                      {files.map((file, index) => (
-                        <Box
-                          key={index}
-                          p={3}
-                          borderWidth="1px"
-                          borderRadius="md"
-                          display="flex"
-                          alignItems="center"
-                          justifyContent="space-between"
-                          bg={file.highlight ? 'gray.50' : 'white'}
-                          borderColor={file.highlight ? 'gray.400' : 'gray.300'}
-                        >
-                          <Box display="flex" alignItems="center" gap={3}>
-                            <LuFile size={20} color="gray" />
-                            <Text fontSize="sm" fontWeight={500}>
-                              {file.name}
-                            </Text>
-                          </Box>
-                          <Box display="flex" gap={1}>
-                            <IconButton
-                              size="sm"
-                              variant={file.highlight ? 'solid' : 'ghost'}
-                              colorPalette={file.highlight ? 'gray' : 'gray'}
-                              onClick={() => toggleFileHighlight(index)}
-                              aria-label="하이라이트"
-                            >
-                              <LuPencil />
-                            </IconButton>
-                            <IconButton
-                              size="sm"
-                              variant="ghost"
-                              colorPalette="red"
-                              onClick={() => removeFile(index)}
-                              aria-label="삭제"
-                            >
-                              <LuTrash2 />
-                            </IconButton>
-                          </Box>
-                        </Box>
-                      ))}
-                    </Stack>
-                  )}
-                </Card.Body>
-              </Card.Root>
+              <EvidenceList
+                files={files}
+                onFileChange={handleFileChange}
+                onRemoveFile={removeFile}
+                onUpdateDescription={updateFileDescription}
+              />
 
               {/* 심사역 작성 */}
               <Card.Root variant="outline">

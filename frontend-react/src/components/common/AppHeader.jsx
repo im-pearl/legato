@@ -39,7 +39,7 @@ function AppHeader() {
         px={6}
       >
         <Text fontSize="lg" fontWeight={700} color="gray.900">
-          심사 AI 데모
+          심사 AI
         </Text>
 
         <Box
@@ -67,6 +67,7 @@ function AppHeader() {
         <Tabs.Root
           value={currentTab}
           onValueChange={handleTabChange}
+          variant="line"
           size="md"
         >
           <Tabs.List>

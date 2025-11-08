@@ -122,7 +122,7 @@ function FinalReview() {
           p={6}
         >
         {/* 사실관계 */}
-        <Card.Root variant="outline" mb={6}>
+        <Card.Root variant="outline" mb={4}>
           <Card.Body>
             <Text fontSize="lg" fontWeight={600} mb={4}>
               사실관계
@@ -136,7 +136,7 @@ function FinalReview() {
         {/* 쟁점 및 포섭 */}
         <For each={issues}>
           {(issue, issueIndex) => (
-            <Card.Root key={issueIndex} variant="outline" mb={6}>
+            <Card.Root key={issueIndex} variant="outline" mb={4}>
               <Card.Body>
                 <Text fontSize="lg" fontWeight={600} mb={2} color="gray.900">
                   쟁점 {issueIndex + 1}. {issue.content}
@@ -145,7 +145,7 @@ function FinalReview() {
                 <Text fontSize="md" fontWeight={600} color="gray.800" mb={4} mt={6}>
                   관련 판례
                 </Text>
-                <Stack gap={4} mb={6}>
+                <Stack gap={4} mb={4}>
                   <For each={issue.precedents}>
                     {(precedent, index) => (
                       <Box key={index} p={4} borderWidth="1px" borderRadius="md">
@@ -186,7 +186,7 @@ function FinalReview() {
         </For>
 
         {/* 결론 */}
-        <Card.Root variant="outline" mb={6}>
+        <Card.Root variant="outline" mb={4}>
           <Card.Body>
             <Text fontSize="lg" fontWeight={600} mb={4}>
               결론
@@ -203,12 +203,12 @@ function FinalReview() {
         </Card.Root>
 
         {/* 승소가능성 */}
-        <Card.Root variant="outline" mb={6}>
+        <Card.Root variant="outline" mb={4}>
           <Card.Body>
-            <Text fontSize="lg" fontWeight={600} mb={6}>
+            <Text fontSize="lg" fontWeight={600} mb={4}>
               승소가능성
             </Text>
-            <Box mb={6}>
+            <Box mb={4}>
               <Text fontSize="md" fontWeight={600} color="gray.900" mb={3}>
                 {winProbability[0]}~{winProbability[1]}%
               </Text>
@@ -239,12 +239,12 @@ function FinalReview() {
         </Card.Root>
 
         {/* 집행가능성 */}
-        <Card.Root variant="outline" mb={6}>
+        <Card.Root variant="outline" mb={4}>
           <Card.Body>
-            <Text fontSize="lg" fontWeight={600} mb={6}>
+            <Text fontSize="lg" fontWeight={600} mb={4}>
               집행가능성
             </Text>
-            <Box mb={6}>
+            <Box mb={4}>
               <Text fontSize="md" fontWeight={600} color="gray.900" mb={3}>
                 {executionProbability[0]}~{executionProbability[1]}%
               </Text>

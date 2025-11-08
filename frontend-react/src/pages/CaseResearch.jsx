@@ -141,7 +141,7 @@ function CaseResearch() {
         p={6}
       >
         {/* 사실관계 */}
-        <Card.Root variant="outline" mb={6}>
+        <Card.Root variant="outline" mb={4}>
           <Card.Body>
             <Text fontSize="lg" fontWeight={600} mb={4}>
               사실관계
@@ -153,9 +153,9 @@ function CaseResearch() {
         </Card.Root>
 
         {/* 판례 검색 결과 */}
-        <Card.Root variant="outline" mb={6}>
+        <Card.Root variant="outline" mb={4}>
           <Card.Body>
-            <Text fontSize="lg" fontWeight={600} mb={6}>
+            <Text fontSize="lg" fontWeight={600} mb={4}>
               판례 검색 결과
             </Text>
 
@@ -223,7 +223,7 @@ function CaseResearch() {
             ))}
 
             {/* 선택된 판례 수 */}
-            <Box display="flex" justifyContent="flex-end" mt={2} mb={6}>
+            <Box display="flex" justifyContent="flex-end" mt={2} mb={4}>
               <Text fontSize="sm" color="gray.700">
                 선택된 판례 수 :{' '}
                 <Text as="span" color="gray.900" fontWeight={500}>
