@@ -284,7 +284,7 @@ function AIRequestableText({ value, onChange, ...textareaProps }) {
             </Button>
             <Button size="sm" variant="outline" onClick={handleRejectSuggestion}>
               <LuX />
-              삭제
+              거절
             </Button>
           </Box>
         </Box>

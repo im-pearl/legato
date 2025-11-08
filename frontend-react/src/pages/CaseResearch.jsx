@@ -330,7 +330,7 @@ function CaseResearch() {
 
         <LoadingModal
           isVisible={showLoadingModal}
-          message="AI가 승소가능성 및 집행가능성을 검토하고 있습니다."
+          message="AI가 투자심사보고서 초안을 작성하고 있습니다."
         />
 
         <PrecedentModal
