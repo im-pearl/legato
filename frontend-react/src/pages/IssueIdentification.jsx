@@ -10,14 +10,12 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import { LuPlus, LuTrash2 } from 'react-icons/lu';
-import AppSidebar from '../components/common/AppSidebar';
 import AppHeader from '../components/common/AppHeader';
-import StepsBar from '../components/common/StepsBar';
+import StepsBar, { stepsWidth } from '../components/common/StepsBar';
 import LoadingModal from '../components/common/LoadingModal';
 
 function IssueIdentification() {
   const navigate = useNavigate();
-  const [drawerOpen, setDrawerOpen] = useState(true);
   const [showLoadingModal, setShowLoadingModal] = useState(false);
   const [issues, setIssues] = useState([
     { content: '계약상 대금이 00,000,000 원으로 정해졌다고 볼 수 있는지 여부' },
@@ -72,33 +70,15 @@ function IssueIdentification() {
   };
 
   return (
-    <Box display="flex">
-      <AppSidebar open={drawerOpen} onToggle={() => setDrawerOpen(!drawerOpen)} />
+    <Box minH="100vh">
+      <AppHeader />
+      <StepsBar />
 
       <Box
-        flexGrow={1}
-        display="flex"
-        flexDirection="column"
-        minH="100vh"
-        ml={drawerOpen ? '200px' : '0'}
-        transition="margin-left 0.3s"
+        as="main"
+        ml={stepsWidth}
+        p={6}
       >
-        <AppHeader 
-          caseNumber="12345" 
-          caseTitle="강제추행 피해자입니다"
-          onToggleSidebar={() => setDrawerOpen(!drawerOpen)}
-          sidebarOpen={drawerOpen}
-        />
-        <StepsBar />
-
-        <Box
-          as="main"
-          flexGrow={1}
-          pt={2}
-          px={6}
-          pb={6}
-          bg="white"
-        >
         {/* 사실관계 섹션 */}
         <Card.Root variant="outline" mb={6}>
           <Card.Body>
@@ -194,11 +174,11 @@ function IssueIdentification() {
 
         {/* 액션 버튼 */}
         <Box display="flex" justifyContent="space-between" gap={4}>
-          <Button size="lg" variant="outline" onClick={goBack}>
+          <Button size="lg" variant="outline" onClick={goBack} bg="white">
             이전으로
           </Button>
           <Box display="flex" gap={3}>
-            <Button size="lg" variant="outline" onClick={saveTemp}>
+            <Button size="lg" variant="outline" onClick={saveTemp} bg="white">
               임시저장
             </Button>
             <Button size="lg" colorPalette="gray" onClick={searchCases}>
@@ -211,7 +191,6 @@ function IssueIdentification() {
           isVisible={showLoadingModal}
           message="AI가 사실관계와 쟁점을 기반으로 판례를 검색하고 있습니다."
         />
-        </Box>
       </Box>
     </Box>
   );

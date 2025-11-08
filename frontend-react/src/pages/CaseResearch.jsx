@@ -21,15 +21,13 @@ import {
   PopoverBody,
 } from '@chakra-ui/react';
 import { LuSearch, LuFilter } from 'react-icons/lu';
-import AppSidebar from '../components/common/AppSidebar';
 import AppHeader from '../components/common/AppHeader';
-import StepsBar from '../components/common/StepsBar';
+import StepsBar, { stepsWidth } from '../components/common/StepsBar';
 import LoadingModal from '../components/common/LoadingModal';
 import PrecedentModal from '../components/case-research/PrecedentModal';
 
 function CaseResearch() {
   const navigate = useNavigate();
-  const [drawerOpen, setDrawerOpen] = useState(true);
   const [showLoadingModal, setShowLoadingModal] = useState(false);
   const [showPrecedentModal, setShowPrecedentModal] = useState(false);
   const [selectedPrecedent, setSelectedPrecedent] = useState(null);
@@ -133,33 +131,15 @@ function CaseResearch() {
 5. 이에 의뢰인은 대금 잔금 약 1억 원을 상대방에게 청구하고자 함.`;
 
   return (
-    <Box display="flex">
-      <AppSidebar open={drawerOpen} onToggle={() => setDrawerOpen(!drawerOpen)} />
+    <Box minH="100vh">
+      <AppHeader />
+      <StepsBar />
 
       <Box
-        flexGrow={1}
-        display="flex"
-        flexDirection="column"
-        minH="100vh"
-        ml={drawerOpen ? '200px' : '0'}
-        transition="margin-left 0.3s"
+        as="main"
+        ml={stepsWidth}
+        p={6}
       >
-        <AppHeader 
-          caseNumber="12345" 
-          caseTitle="강제추행 피해자입니다"
-          onToggleSidebar={() => setDrawerOpen(!drawerOpen)}
-          sidebarOpen={drawerOpen}
-        />
-        <StepsBar />
-
-        <Box
-          as="main"
-          flexGrow={1}
-          pt={2}
-          px={6}
-          pb={6}
-          bg="white"
-        >
         {/* 사실관계 */}
         <Card.Root variant="outline" mb={6}>
           <Card.Body>
@@ -335,11 +315,11 @@ function CaseResearch() {
 
         {/* 액션 버튼 */}
         <Box display="flex" justifyContent="space-between" gap={4}>
-          <Button size="lg" variant="outline" onClick={goBack}>
+          <Button size="lg" variant="outline" onClick={goBack} bg="white">
             이전으로
           </Button>
           <Box display="flex" gap={3}>
-            <Button size="lg" variant="outline" onClick={saveTemp}>
+            <Button size="lg" variant="outline" onClick={saveTemp} bg="white">
               임시저장
             </Button>
             <Button size="lg" colorPalette="gray" onClick={finalReview}>
@@ -358,7 +338,6 @@ function CaseResearch() {
           onClose={() => setShowPrecedentModal(false)}
           precedent={selectedPrecedent}
         />
-        </Box>
       </Box>
     </Box>
   );

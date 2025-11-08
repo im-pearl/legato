@@ -1,54 +1,84 @@
-import { Box, Text, IconButton } from '@chakra-ui/react';
-import { LuMenu } from 'react-icons/lu';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Box, Text, Tabs } from '@chakra-ui/react';
+import { Avatar } from '@chakra-ui/react';
 
-function AppHeader({ caseNumber, caseTitle, onToggleSidebar, sidebarOpen }) {
+function AppHeader() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // AI 심사 관련 페이지 체크
+  const isAIReview = location.pathname.includes('/fact-review') || 
+                     location.pathname.includes('/issue-identification') || 
+                     location.pathname.includes('/case-research') || 
+                     location.pathname.includes('/final-review');
+
+  const currentTab = isAIReview ? 'ai-review' : 'prompt-edit';
+
+  const handleTabChange = (details) => {
+    if (details.value === 'ai-review') {
+      navigate('/fact-review');
+    }
+    // 'prompt-edit'는 아무 동작 안 함
+  };
+
   return (
     <Box
       as="header"
       position="sticky"
       top={0}
-      h="56px"
       bg="white"
-      borderBottomWidth="1px"
-      borderColor="gray.200"
-      display="flex"
-      alignItems="center"
-      px={3}
-      gap={1.5}
       flexShrink={0}
       zIndex={100}
     >
-      {!sidebarOpen && (
-        <IconButton
-          onClick={onToggleSidebar}
-          size="sm"
-          variant="ghost"
-          aria-label="사이드바 열기"
-        >
-          <LuMenu />
-        </IconButton>
-      )}
+      {/* 첫 번째 줄: 로고 + 유저 */}
       <Box
-        px={2}
-        py={1}
-        bg="gray.100"
-        color="gray.900"
-        fontWeight={600}
-        fontSize="0.875rem"
-        borderRadius="md"
-        h="28px"
+        h="56px"
         display="flex"
         alignItems="center"
+        justifyContent="space-between"
+        px={6}
       >
-        {caseNumber}번 신청
+        <Text fontSize="lg" fontWeight={700} color="gray.900">
+          심사 AI 데모
+        </Text>
+
+        <Box
+          display="flex"
+          alignItems="center"
+          gap={3}
+          cursor="pointer"
+          px={2}
+          py={1}
+          borderRadius="lg"
+          transition="all 0.2s"
+          _hover={{ bg: 'gray.50' }}
+        >
+          <Avatar.Root size="xs" bg="gray.700" color="white">
+            <Avatar.Fallback name="정범환" />
+          </Avatar.Root>
+          <Text fontSize="0.9rem" fontWeight={500} color="gray.700">
+            정범환 변호사
+          </Text>
+        </Box>
       </Box>
-      <Text
-        fontSize="md"
-        fontWeight={500}
-        color="gray.800"
-      >
-        {caseTitle}
-      </Text>
+
+      {/* 두 번째 줄: 탭 네비게이션 */}
+      <Box px={6}>
+        <Tabs.Root
+          value={currentTab}
+          onValueChange={handleTabChange}
+          size="md"
+        >
+          <Tabs.List>
+            <Tabs.Trigger value="ai-review">
+              AI 심사
+            </Tabs.Trigger>
+            <Tabs.Trigger value="prompt-edit">
+              프롬프트 수정
+            </Tabs.Trigger>
+          </Tabs.List>
+        </Tabs.Root>
+      </Box>
     </Box>
   );
 }

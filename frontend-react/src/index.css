@@ -2,6 +2,9 @@ body {
   font-family: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+  background-color: #f9fafb !important;
 }
 
 * {
@@ -10,4 +13,5 @@ body {
 
 #root {
   min-height: 100vh;
+  background-color: #f9fafb !important;
 }

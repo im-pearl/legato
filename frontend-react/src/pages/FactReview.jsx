@@ -20,9 +20,8 @@ import {
   LuPencil,
   LuFile,
 } from 'react-icons/lu';
-import AppSidebar from '../components/common/AppSidebar';
 import AppHeader from '../components/common/AppHeader';
-import StepsBar from '../components/common/StepsBar';
+import StepsBar, { stepsWidth } from '../components/common/StepsBar';
 import LoadingModal from '../components/common/LoadingModal';
 import RequestForm from '../components/fact-review/RequestForm';
 import ConsultationResult from '../components/fact-review/ConsultationResult';
@@ -31,7 +30,6 @@ function FactReview() {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
-  const [drawerOpen, setDrawerOpen] = useState(true);
   const [showLoadingModal, setShowLoadingModal] = useState(false);
   const [files, setFiles] = useState([
     { name: '과거_설계_계약서.pdf', highlight: false },
@@ -229,33 +227,15 @@ function FactReview() {
   };
 
   return (
-    <Box display="flex">
-      <AppSidebar open={drawerOpen} onToggle={() => setDrawerOpen(!drawerOpen)} />
+    <Box minH="100vh">
+      <AppHeader />
+      <StepsBar />
 
       <Box
-        flexGrow={1}
-        display="flex"
-        flexDirection="column"
-        minH="100vh"
-        ml={drawerOpen ? '200px' : '0'}
-        transition="margin-left 0.3s"
+        as="main"
+        ml={stepsWidth}
+        p={6}
       >
-        <AppHeader 
-          caseNumber="12345" 
-          caseTitle="강제추행 피해자입니다"
-          onToggleSidebar={() => setDrawerOpen(!drawerOpen)}
-          sidebarOpen={drawerOpen}
-        />
-        <StepsBar />
-
-        <Box
-          as="main"
-          flexGrow={1}
-          pt={2}
-          px={6}
-          pb={6}
-          bg="white"
-        >
         {/* 메인 2열 레이아웃 */}
         <Grid 
           templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }} 
@@ -408,7 +388,7 @@ function FactReview() {
 
         {/* 액션 버튼 */}
         <Box display="flex" justifyContent="space-between" gap={4}>
-          <Button size="lg" variant="outline" onClick={saveTemp}>
+          <Button size="lg" variant="outline" onClick={saveTemp} bg="white">
             임시저장
           </Button>
           <Button size="lg" onClick={analyzeIssues}>
@@ -420,7 +400,6 @@ function FactReview() {
           isVisible={showLoadingModal}
           message="AI가 사실관계를 정리하고 쟁점을 추출하고 있습니다."
         />
-        </Box>
       </Box>
     </Box>
   );

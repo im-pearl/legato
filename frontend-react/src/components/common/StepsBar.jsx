@@ -2,6 +2,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Box } from '@chakra-ui/react';
 import { Steps } from '@chakra-ui/react';
 
+const stepsWidth = '160px';
+
 function StepsBar() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -10,7 +12,7 @@ function StepsBar() {
     { title: '사실관계 검토', path: '/fact-review' },
     { title: '쟁점 분석', path: '/issue-identification' },
     { title: '판례 리서치', path: '/case-research' },
-    { title: '심사보고서 작성', path: '/final-review' },
+    { title: '사안 포섭', path: '/final-review' },
   ];
 
   const getCurrentStep = () => {
@@ -26,16 +28,20 @@ function StepsBar() {
 
   return (
     <Box
-      bg="white"
-      py={4}
-      px={6}
+      position="fixed"
+      left={0}
+      top="calc(56px + 48px)"
+      w={stepsWidth}
+      pt={8}
+      px={4}
+      zIndex={50}
     >
       <Steps.Root
         step={currentStep}
         count={steps.length}
         onStepChange={handleStepChange}
-        variant="subtle"
-        colorPalette="gray"
+        orientation="vertical"
+        height="260px"
         size="sm"
       >
         <Steps.List>
@@ -54,5 +60,6 @@ function StepsBar() {
   );
 }
 
+export { stepsWidth };
 export default StepsBar;
 
