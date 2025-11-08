@@ -295,12 +295,15 @@ function FactReview() {
 
         {/* 액션 버튼 */}
         <Box display="flex" justifyContent="space-between" gap={4}>
+          <Box display="flex"></Box>
+          <Box display="flex" gap={3}>
           <Button size="lg" variant="outline" onClick={saveTemp} bg="white">
             임시저장
           </Button>
           <Button size="lg" onClick={analyzeIssues}>
             확인
           </Button>
+          </Box>
         </Box>
 
         <LoadingModal
