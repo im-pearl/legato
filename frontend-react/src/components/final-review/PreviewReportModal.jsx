@@ -1,5 +1,4 @@
 import { Box, Text, Button, Table, For, Dialog, Portal, CloseButton } from '@chakra-ui/react';
-import { Progress } from '@chakra-ui/react';
 
 function PreviewReportModal({ 
   isOpen, 
@@ -11,11 +10,8 @@ function PreviewReportModal({
   receiptDate,
   factsContent,
   issues,
-  conclusion,
   winProbability,
-  executionProbability,
   winProbabilityDescription,
-  executionProbabilityDescription,
 }) {
   return (
     <Dialog.Root
@@ -84,7 +80,7 @@ function PreviewReportModal({
                 </Text>
                 <For each={issues}>
                   {(issue, index) => (
-                    <Box key={index} mb={6} pb={6} borderBottomWidth={index < issues.length - 1 ? '1px' : '0'} borderBottomStyle="dashed" borderColor="gray.200">
+                    <Box key={index} mb={6}>
                       <Text fontSize="md" fontWeight={600} mb={2}>
                         {index + 1}. {issue.content}
                       </Text>
@@ -110,53 +106,16 @@ function PreviewReportModal({
                 </For>
               </Box>
 
-              {/* 결론 */}
-              <Box mb={6}>
-                <Text fontSize="lg" fontWeight={600} color="gray.900" mb={3} pb={1} borderBottomWidth="1px" borderColor="gray.200">
-                  결론
-                </Text>
-                <Text fontSize="sm" lineHeight={1.6}>
-                  {conclusion}
-                </Text>
-              </Box>
-
               {/* 승소가능성 */}
               <Box mb={6}>
                 <Text fontSize="lg" fontWeight={600} color="gray.900" mb={3} pb={1} borderBottomWidth="1px" borderColor="gray.200">
                   승소가능성 평가
                 </Text>
-                <Box mb={4}>
-                  <Progress.Root value={winProbability[0]} colorPalette="gray" size="lg">
-                    <Progress.Track>
-                      <Progress.Range />
-                    </Progress.Track>
-                  </Progress.Root>
-                  <Text textAlign="center" fontWeight={600} mt={2} color="gray.900">
-                    {winProbability[0]}%
-                  </Text>
-                </Box>
+                <Text fontSize="md" fontWeight={600} color="gray.900" mb={3}>
+                  {winProbability[0]}~{winProbability[1]}%
+                </Text>
                 <Text fontSize="sm" lineHeight={1.6}>
                   {winProbabilityDescription}
-                </Text>
-              </Box>
-
-              {/* 집행가능성 */}
-              <Box mb={6}>
-                <Text fontSize="lg" fontWeight={600} color="gray.900" mb={3} pb={1} borderBottomWidth="1px" borderColor="gray.200">
-                  집행가능성 평가
-                </Text>
-                <Box mb={4}>
-                  <Progress.Root value={executionProbability[0]} colorPalette="gray" size="lg">
-                    <Progress.Track>
-                      <Progress.Range />
-                    </Progress.Track>
-                  </Progress.Root>
-                  <Text textAlign="center" fontWeight={600} mt={2} color="gray.900">
-                    {executionProbability[0]}%
-                  </Text>
-                </Box>
-                <Text fontSize="sm" lineHeight={1.6}>
-                  {executionProbabilityDescription}
                 </Text>
               </Box>
             </Dialog.Body>

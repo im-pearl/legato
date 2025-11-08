@@ -21,18 +21,9 @@ function FinalReview() {
   const [showPrecedentModal, setShowPrecedentModal] = useState(false);
   const [selectedPrecedent, setSelectedPrecedent] = useState(null);
   const [winProbability, setWinProbability] = useState([30, 75]);
-  const [executionProbability, setExecutionProbability] = useState([40, 80]);
 
   const [winProbabilityDescription, setWinProbabilityDescription] = useState(
     '계약서가 없고 상대방의 확인 서명이 없는 견적서만으로는 계약상 대금청구가 인정되기 어려우나, 부당이득반환청구는 실제 제공된 용역의 가치에 기초하여 인정될 가능성이 높습니다...'
-  );
-
-  const [executionProbabilityDescription, setExecutionProbabilityDescription] = useState(
-    '상대방은 건설회사(법인)로, 토지 가액 약 9억 원의 재산을 보유하고 있어 집행 대상 재산이 충분합니다. 법인의 경우 개인보다 재산 은닉이 어렵고...'
-  );
-
-  const [conclusion, setConclusion] = useState(
-    '의뢰인의 계약상 설계용역대금청구는 계약서가 없고 의뢰인이 일방적으로 작성한 견적서만으로는 계약 내용이 확정되었다고 보기 어려워 기각될 가능성이 높습니다...'
   );
 
   const clientName = '김건축';
@@ -185,23 +176,6 @@ function FinalReview() {
           )}
         </For>
 
-        {/* 결론 */}
-        <Card.Root variant="outline" mb={4}>
-          <Card.Body>
-            <Text fontSize="lg" fontWeight={600} mb={4}>
-              결론
-            </Text>
-            <Textarea
-              value={conclusion}
-              onChange={(e) => setConclusion(e.target.value)}
-              rows={5}
-              fontFamily="inherit"
-              fontSize="0.95rem"
-              lineHeight={1.5}
-            />
-          </Card.Body>
-        </Card.Root>
-
         {/* 승소가능성 */}
         <Card.Root variant="outline" mb={4}>
           <Card.Body>
@@ -238,42 +212,6 @@ function FinalReview() {
           </Card.Body>
         </Card.Root>
 
-        {/* 집행가능성 */}
-        <Card.Root variant="outline" mb={4}>
-          <Card.Body>
-            <Text fontSize="lg" fontWeight={600} mb={4}>
-              집행가능성
-            </Text>
-            <Box mb={4}>
-              <Text fontSize="md" fontWeight={600} color="gray.900" mb={3}>
-                {executionProbability[0]}~{executionProbability[1]}%
-              </Text>
-              <Slider.Root
-                value={executionProbability}
-                onValueChange={(e) => setExecutionProbability(e.value)}
-                min={0}
-                max={100}
-                step={5}
-              >
-                <Slider.Control>
-                  <Slider.Track>
-                    <Slider.Range />
-                  </Slider.Track>
-                  <Slider.Thumbs />
-                </Slider.Control>
-              </Slider.Root>
-            </Box>
-            <Textarea
-              value={executionProbabilityDescription}
-              onChange={(e) => setExecutionProbabilityDescription(e.target.value)}
-              rows={4}
-              fontFamily="inherit"
-              fontSize="0.95rem"
-              lineHeight={1.5}
-            />
-          </Card.Body>
-        </Card.Root>
-
         {/* 액션 버튼 */}
         <Box display="flex" justifyContent="space-between" gap={4}>
           <Button size="lg" variant="outline" onClick={goBack} bg="white">
@@ -302,11 +240,8 @@ function FinalReview() {
         receiptDate={receiptDate}
         factsContent={factsContent}
         issues={issues}
-        conclusion={conclusion}
         winProbability={winProbability}
-        executionProbability={executionProbability}
         winProbabilityDescription={winProbabilityDescription}
-        executionProbabilityDescription={executionProbabilityDescription}
       />
 
       {/* 판례 전문 모달 */}

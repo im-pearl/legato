@@ -58,7 +58,6 @@ function EvidenceList({ files, onFileChange, onRemoveFile, onUpdateDescription }
                   display="flex"
                   alignItems="center"
                   justifyContent="space-between"
-                  mb={2}
                 >
                   <Box display="flex" alignItems="center" gap={2}>
                     {getFileIcon(file.name)}

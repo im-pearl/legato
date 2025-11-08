@@ -18,14 +18,14 @@ function Home() {
         gap={8}
       >
         <Text fontSize="3xl" fontWeight={600} color="gray.800">
-          심사 AI 진짜 맛보기 한스푼
+          심사 AI 맛보기
         </Text>
         <Button
           size="lg"
           colorPalette="gray"
           onClick={() => navigate('/fact-review')}
         >
-          한스푼 페이지 가기
+          맛보기 페이지 가기
         </Button>
       </Box>
     </Box>

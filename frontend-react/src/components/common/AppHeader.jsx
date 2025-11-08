@@ -80,7 +80,10 @@ function AppHeader() {
               AI 심사
             </Tabs.Trigger>
             <Tabs.Trigger value="prompt-edit">
-              프롬프트 수정
+              Prompt
+            </Tabs.Trigger>
+            <Tabs.Trigger value="settings">
+              Settings
             </Tabs.Trigger>
           </Tabs.List>
         </Tabs.Root>
