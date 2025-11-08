@@ -39,7 +39,7 @@ function AppHeader() {
         px={6}
       >
         <Text 
-          fontSize="lg" 
+          fontSize="xl" 
           fontWeight={500} 
           color="gray.900"
           fontFamily="'Circular Std', sans-serif"
