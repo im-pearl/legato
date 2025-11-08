@@ -38,7 +38,7 @@ function IssueIdentification() {
   5. 이에 의뢰인은 대금 잔금 약 1억 원을 상대방에게 청구하고자 함.`);
 
   const addNewIssue = () => {
-    setIssues([...issues, { content: '쟁점 내용을 입력하세요.' }]);
+    setIssues([...issues, { content: '' }]);
   };
 
   const deleteIssue = (index) => {
@@ -133,7 +133,7 @@ function IssueIdentification() {
                   <Box
                     w="24px"
                     h="24px"
-                    mt="6px"
+                    mt="8px"
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
@@ -152,9 +152,10 @@ function IssueIdentification() {
                     onChange={(e) => updateIssue(index, e.target.value)}
                     variant="plain"
                     rows={1}
-                    fontSize="0.95rem"
+                    fontSize="md"
                     lineHeight={1.5}
                     flex={1}
+                    placeholder="쟁점을 입력해주세요"
                   />
 
                   <IconButton
