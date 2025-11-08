@@ -78,7 +78,7 @@ function EvidenceList({ files, onFileChange, onRemoveFile, onUpdateDescription }
                 <Editable.Root
                   value={file.description}
                   onValueChange={(details) => onUpdateDescription(index, details.value)}
-                  placeholder="설명 추가..."
+                  placeholder="증거에 대한 설명을 입력해주세요"
                 >
                   <Editable.Preview
                     fontSize="sm"

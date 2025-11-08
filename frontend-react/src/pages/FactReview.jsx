@@ -275,10 +275,10 @@ function FactReview() {
               <Card.Root variant="outline">
                 <Card.Body>
                   <Text fontSize="lg" fontWeight={600} mb={4}>
-                    심사역 작성
+                    심사역 의견
                   </Text>
                   <Textarea
-                    placeholder="사건에 대한 심사 내용을 작성해주세요..."
+                    placeholder="심사역의 1차 의견을 작성해주세요"
                     rows={6}
                   />
                 </Card.Body>
