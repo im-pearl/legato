@@ -84,13 +84,13 @@ function PreviewReportModal({
                       <Text fontSize="md" fontWeight={600} mb={2}>
                         {index + 1}. {issue.content}
                       </Text>
-                      <Text fontSize="sm" lineHeight={1.6} mb={4}>
+                      <Text fontSize="sm" lineHeight={1.6} mb={2}>
                         {issue.subsumption}
                       </Text>
-                      <Text fontSize="sm" fontWeight={600} mb={2}>
+                      <Text fontSize="sm" fontWeight={500} mb={2}>
                         관련 판례
                       </Text>
-                      <Box as="ul" pl={6} m={0}>
+                      <Box as="ul" pl={2} m={0}>
                         <For each={issue.precedents}>
                           {(precedent, pIndex) => (
                             <Box key={pIndex} as="li">
