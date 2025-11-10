@@ -56,7 +56,7 @@ function PrecedentModal({ isOpen, onClose, precedent }) {
             <Dialog.Body overflowY="auto" py={6}>
           {/* 판시사항 */}
           <Box mb={6}>
-            <Text fontSize="sm" fontWeight={600} color="gray.900" mb={2}>
+            <Text fontSize="md" fontWeight={600} color="gray.900" mb={2}>
               판시사항
             </Text>
             <Text fontSize="sm" color="gray.800" lineHeight={1.8}>
@@ -66,7 +66,7 @@ function PrecedentModal({ isOpen, onClose, precedent }) {
 
           {/* 판결요지 */}
           <Box mb={6}>
-            <Text fontSize="sm" fontWeight={600} color="gray.900" mb={2}>
+            <Text fontSize="md" fontWeight={600} color="gray.900" mb={2}>
               판결요지
             </Text>
             <Text fontSize="sm" color="gray.800" lineHeight={1.8}>
@@ -76,7 +76,7 @@ function PrecedentModal({ isOpen, onClose, precedent }) {
 
           {/* 참조조문 */}
           <Box mb={6}>
-            <Text fontSize="sm" fontWeight={600} color="gray.900" mb={2}>
+            <Text fontSize="md" fontWeight={600} color="gray.900" mb={2}>
               참조조문
             </Text>
             <Text fontSize="sm" color="gray.800">
@@ -86,7 +86,7 @@ function PrecedentModal({ isOpen, onClose, precedent }) {
 
           {/* 당사자 */}
           <Box mb={6}>
-            <Text fontSize="sm" fontWeight={600} color="gray.900" mb={3}>
+            <Text fontSize="md" fontWeight={600} color="gray.900" mb={3}>
               당사자
             </Text>
             <Box display="flex" flexDirection="column" gap={2}>
@@ -119,7 +119,7 @@ function PrecedentModal({ isOpen, onClose, precedent }) {
 
           {/* 주문 */}
           <Box mb={6}>
-            <Text fontSize="sm" fontWeight={600} color="gray.900" mb={2}>
+            <Text fontSize="md" fontWeight={600} color="gray.900" mb={2}>
               주문
             </Text>
             <Text fontSize="sm" color="gray.800" lineHeight={1.8}>
@@ -129,7 +129,7 @@ function PrecedentModal({ isOpen, onClose, precedent }) {
 
           {/* 이유 */}
           <Box mb={6}>
-            <Text fontSize="sm" fontWeight={600} color="gray.900" mb={2}>
+            <Text fontSize="md" fontWeight={600} color="gray.900" mb={2}>
               이유
             </Text>
             <Text fontSize="sm" color="gray.800" lineHeight={1.8} whiteSpace="pre-line">
