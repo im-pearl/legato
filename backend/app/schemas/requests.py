@@ -44,7 +44,7 @@ class IssuesRequest(BaseModel):
     case_request: CaseRequest
     consultation_result: ConsultationResult
     reviewer_notes: str | None = None
-    analysis_result: dict = Field(..., description="1단계 사실관계 검토 결과")
+    analysis_result: str | dict = Field(..., description="1단계 사실관계 검토 결과 (텍스트 또는 dict)")
 
 
 class PrecedentsRequest(BaseModel):
@@ -52,8 +52,8 @@ class PrecedentsRequest(BaseModel):
     case_request: CaseRequest
     consultation_result: ConsultationResult
     reviewer_notes: str | None = None
-    analysis_result: dict
-    issues_result: dict = Field(..., description="2단계 쟁점 분석 결과")
+    analysis_result: str | dict
+    issues_result: str | dict = Field(..., description="2단계 쟁점 분석 결과 (텍스트 또는 dict)")
 
 
 class ReportRequest(BaseModel):
@@ -61,7 +61,7 @@ class ReportRequest(BaseModel):
     case_request: CaseRequest
     consultation_result: ConsultationResult
     reviewer_notes: str | None = None
-    analysis_result: dict
-    issues_result: dict
-    precedents_result: dict = Field(..., description="3단계 판례 리서치 결과")
+    analysis_result: str | dict
+    issues_result: str | dict
+    precedents_result: str | dict = Field(..., description="3단계 판례 리서치 결과 (텍스트 또는 dict)")
 

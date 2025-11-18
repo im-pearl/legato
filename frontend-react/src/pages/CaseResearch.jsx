@@ -1,70 +1,130 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Box,
   Card,
   Button,
   Text,
-  Input,
-  IconButton,
   Stack,
   Badge,
   CheckboxCard,
-  NativeSelectRoot,
-  NativeSelectField,
+  Spinner,
 } from '@chakra-ui/react';
-import {
-  PopoverRoot,
-  PopoverTrigger,
-  PopoverPositioner,
-  PopoverContent,
-  PopoverBody,
-} from '@chakra-ui/react';
-import { LuSearch, LuFilter } from 'react-icons/lu';
+import { LuSparkles } from 'react-icons/lu';
 import AppHeader from '../components/common/AppHeader';
 import StepsBar, { stepsWidth } from '../components/common/StepsBar';
-import LoadingModal from '../components/common/LoadingModal';
 import PrecedentModal from '../components/case-research/PrecedentModal';
+import { useStreaming } from '../hooks/useStreaming';
 
 function CaseResearch() {
   const navigate = useNavigate();
-  const [showLoadingModal, setShowLoadingModal] = useState(false);
+  const location = useLocation();
   const [showPrecedentModal, setShowPrecedentModal] = useState(false);
   const [selectedPrecedent, setSelectedPrecedent] = useState(null);
-  const [searchKeyword, setSearchKeyword] = useState('');
-  const [searchType, setSearchType] = useState('all');
-  const [searchCourt, setSearchCourt] = useState('all');
+  const [issues, setIssues] = useState([]);
+  const [factsContent, setFactsContent] = useState('');
+  const { startStreaming, isStreaming } = useStreaming();
+  
+  // 스트리밍 중인 데이터
+  const [streamingData, setStreamingData] = useState({});
 
-  const [issues, setIssues] = useState([
-    {
-      content: '계약상 대금이 00,000,000 원으로 정해졌다고 볼 수 있는지 여부',
-      precedents: [
-        {
-          caseNumber: '서울중앙지방법원 2023. 7. 12. 선고 2022가단5192624 판결',
-          summary:
-            '원고와 피고 사이에 원고가 구하는 건축 설계용역대금 77,736,651원에 관한 합의가 있었다거나 원고가 제공한 설계용역에 관한 보수가 위 금액 상당에 이르는지에 관하여 보건대, 갑 제3호증의 기재만으로는 이를 인정하기 부족하고, 달리 이를 인정할 만한 증거가 없다(원고가 작성한 갑 제3호증 작업비용산정서는 그 산정방식이나 근거가 불명확하고, 원고가 이를 근거로 피고에게 설계용역대금을 청구하였다거나 피고가 이를 인정하였다고 볼 만한 사정이 없다).',
-          selected: true,
-        },
-        {
-          caseNumber: '대구지방법원 2024. 4. 4. 선고 2022가합206258 판결',
-          summary:
-            '설계용역 수행의 대가 지급 여부나 그 산정 기준은 원고와 피고 사이의 설계용역계약 성립을 위한 본질적인 사항에 속하는데도, 아래 사정에 비추어 보면 원고가 2019년 4월경부터 같은 해 7월경까지 이 사건 설계도서를 작성하여 이를 피고에게 제공한 행위에 관하여 원고와 피고 사이에 설계용역 수행의 대가를 별도로 지급할지 여부나 그 대가의 산정 기준에 관한 협의나 의사교환이 이루어졌다고 보이지 않는바, 그 무렵 이 사건 상가건물에 관한 설계용역계약이 성립하였다고 볼 수 없다.',
-          selected: false,
-        },
-      ],
-    },
-    {
-      content: '상대방에게 부당이득반환책임이 성립하는지 여부',
-      precedents: [
-        {
-          caseNumber: '대구지방법원 2024. 4. 4. 선고 2022가합206258 판결',
-          summary:
-            '설계용역대금에 관한 명시적인 약정이 없어 설계용역 성립은 부정하였으나, 감정인의 감정 결과를 기초로 한 부당이득금에 대한 부당이득반환의무를 인정한 사례',
-          selected: true,
-        },
-      ],
-    },
-  ]);
+  useEffect(() => {
+    if (location.state?.factsContent) {
+      setFactsContent(location.state.factsContent);
+    }
+    if (location.state?.issues) {
+      setIssues(location.state.issues.map(issue => ({
+        ...issue,
+        precedents: []
+      })));
+    }
+    if (location.state?.requestData) {
+      // 자동으로 판례 생성
+      generatePrecedents();
+    }
+  }, []);
+
+  /**
+   * 판례 생성 (스트리밍)
+   */
+  const generatePrecedents = async () => {
+    setStreamingData({});
+    
+    let currentIssueTitle = '';
+    let currentCaseIndex = -1;
+    let currentCaseData = {};
+    let tempStreamingData = {};
+
+    await startStreaming(
+      '/precedents/stream',
+      {
+        ...location.state.requestData,
+        analysis_result: location.state.factsContent,
+        issues_result: location.state.issuesText,
+      },
+      (element) => {
+        // 파싱된 요소 처리
+        if (element.type === 'tag_start') {
+          if (element.tag.startsWith('issue')) {
+            // 새로운 쟁점 시작 - issue1:쟁점제목 형식
+            const content = element.content || '';
+            const match = content.match(/:(.+)/);
+            if (match) {
+              currentIssueTitle = match[1].trim();
+            }
+            currentCaseIndex = -1;
+          }
+          else if (element.tag.startsWith('case')) {
+            // 새로운 판례 시작
+            currentCaseIndex++;
+            currentCaseData = { caseNumber: '', summary: '', selected: true, isStreaming: true };
+          }
+        }
+        else if (element.type === 'tag_content') {
+          // 내용 업데이트
+          if (element.tag === 'num') {
+            currentCaseData.caseNumber = (currentCaseData.caseNumber || '') + element.content;
+          }
+          else if (element.tag === 'summary') {
+            currentCaseData.summary = (currentCaseData.summary || '') + element.content;
+            
+            // 실시간 업데이트
+            if (!tempStreamingData[currentIssueTitle]) {
+              tempStreamingData[currentIssueTitle] = [];
+            }
+            tempStreamingData[currentIssueTitle][currentCaseIndex] = currentCaseData;
+            setStreamingData({...tempStreamingData});
+          }
+        }
+        else if (element.type === 'tag_end') {
+          if (element.tag.startsWith('case')) {
+            // 판례 완료
+            currentCaseData.isStreaming = false;
+            
+            if (!tempStreamingData[currentIssueTitle]) {
+              tempStreamingData[currentIssueTitle] = [];
+            }
+            tempStreamingData[currentIssueTitle][currentCaseIndex] = {...currentCaseData};
+            setStreamingData({...tempStreamingData});
+          }
+        }
+      },
+      () => {
+        // 스트리밍 완료 - issues 배열에 판례 추가
+        setIssues(prev => prev.map(issue => {
+          const precedents = tempStreamingData[issue.content] || [];
+          return {
+            ...issue,
+            precedents: precedents.map(p => ({
+              caseNumber: p.caseNumber,
+              summary: p.summary,
+              selected: true, // 기본값: 모두 선택
+            }))
+          };
+        }));
+      }
+    );
+  };
 
   const togglePrecedentSelection = (issueIndex, precedentIndex) => {
     const newIssues = [...issues];
@@ -76,7 +136,7 @@ function CaseResearch() {
   const getSelectedPrecedentsCount = () => {
     let count = 0;
     issues.forEach((issue) => {
-      issue.precedents.forEach((precedent) => {
+      issue.precedents?.forEach((precedent) => {
         if (precedent.selected) count++;
       });
     });
@@ -86,14 +146,6 @@ function CaseResearch() {
   const viewFullPrecedent = (precedent) => {
     setSelectedPrecedent(precedent);
     setShowPrecedentModal(true);
-  };
-
-  const searchPrecedents = () => {
-    if (!searchKeyword.trim()) {
-      alert('검색어를 입력해주세요.');
-      return;
-    }
-    alert(`"${searchKeyword}" 키워드로 판례 검색을 요청했습니다.`);
   };
 
   const goBack = () => {
@@ -109,37 +161,43 @@ function CaseResearch() {
       alert('최소 하나 이상의 판례를 선택해주세요.');
       return;
     }
-    setShowLoadingModal(true);
-    setTimeout(() => {
-      setShowLoadingModal(false);
-      navigate('/final-review');
-    }, 1500);
+    
+    // 선택된 판례만 필터링하여 전달
+    const filteredIssues = issues.map(issue => ({
+      ...issue,
+      precedents: issue.precedents?.filter(p => p.selected) || []
+    }));
+    
+    // 판례 텍스트 생성
+    const precedentsText = filteredIssues.map((issue, issueIdx) => {
+      const casesText = issue.precedents.map((precedent, caseIdx) => 
+        `@case${caseIdx + 1}\n@num:${precedent.caseNumber}\n@summary:${precedent.summary}\n@end`
+      ).join('\n');
+      
+      return `@issue${issueIdx + 1}:${issue.content}\n${casesText}`;
+    }).join('\n\n');
+    
+    navigate('/final-review', {
+      state: {
+        factsContent,
+        issues: filteredIssues,
+        precedentsText,
+        requestData: location.state?.requestData,
+      }
+    });
   };
 
-  const factsContent = `1. 의뢰인은 상대방으로부터 **시 **구 **번지 오피스텔 신축설계(면적 00,000,000 m2 규모)의 건축설계(건축심의, 경관심의, 건축인허가, 구조 심의) 용역(이하 '이 사건 용역')을 의뢰받아 완료하였음. (계약서 없음)
-- 건축심의, 건축허가, 건축구조심의 완료 및 건축물 착공연기신청 완료(착공연기 기간 내)
-
-2. 상대방은 의뢰인에게 총 0,000,000원을 입금하였음(지급내역)
-- 1차 지급: 0,000,000원 입금(입금자 **주식회사)
-- 2차 지급: 0,000,000원 입금(입금자 **주식회사)
-- 3차 지급: 0,000,000원 입금(입금자 **주식회사)
-
-3. 의뢰인은 이 사건 용역에 대하여 평당 0만 원, 총 00,000,000 원으로 견적서를 작성하였음. (의뢰인 단독 날인)
-
-4. 의뢰인은 이 사건 용역의 설계비가 평당 00,000원이라고 주장하며, 이에 용역대금은 약 0원이라고 주장함. (건축 설계비 산정근거: 평 × 00,000원, 건물규모: 00,000,000 m2 (0,000평))
-
-5. 이에 의뢰인은 대금 잔금 약 1억 원을 상대방에게 청구하고자 함.`;
-
   return (
-    <Box minH="100vh">
-      <AppHeader />
-      <StepsBar />
+    <>
+      <Box minH="100vh">
+        <AppHeader />
+        <StepsBar />
 
-      <Box
-        as="main"
-        ml={stepsWidth}
-        p={6}
-      >
+        <Box
+          as="main"
+          ml={stepsWidth}
+          p={6}
+        >
         {/* 사실관계 */}
         <Card.Root variant="outline" mb={4}>
           <Card.Body>
@@ -155,38 +213,80 @@ function CaseResearch() {
         {/* 판례 검색 결과 */}
         <Card.Root variant="outline" mb={4}>
           <Card.Body>
-            <Text fontSize="lg" fontWeight={600} mb={4}>
-              판례 검색 결과
-            </Text>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={6}>
+              <Text fontSize="lg" fontWeight={600}>
+                판례 검색 결과
+              </Text>
+              {!isStreaming && issues.length > 0 && (
+                <Button
+                  size="xs"
+                  variant="outline"
+                  onClick={generatePrecedents}
+                  colorPalette="blue"
+                >
+                  <LuSparkles />
+                  AI 재생성
+                </Button>
+              )}
+            </Box>
+
+            {issues.length === 0 && isStreaming && (
+              <Box display="flex" justifyContent="center" py={12}>
+                <Spinner size="xl" colorPalette="gray" />
+              </Box>
+            )}
 
             {issues.map((issue, issueIndex) => (
               <Box
                 key={issueIndex}
-                mb={issueIndex < issues.length - 1 ? 8 : 0}
+                mb={6}
+                pb={6}
+                borderBottomWidth={issueIndex < issues.length - 1 ? '1px' : '0'}
+                borderBottomStyle="dashed"
+                borderColor="gray.300"
               >
-                <Box display="flex" alignItems="flex-start" gap={3} mb={4}>
-                  <Box
-                    w="24px"
-                    h="24px"
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    bg="gray.900"
-                    color="white"
-                    borderRadius="full"
-                    fontWeight={600}
-                    flexShrink={0}
-                    fontSize="0.75rem"
+                <Box display="flex" alignItems="flex-start" mb={4}>
+                  <Badge
+                    size="sm"
+                    colorPalette="gray"
+                    mr={4}
+                    fontWeight={500}
                   >
                     {issueIndex + 1}
-                  </Box>
-                  <Text fontSize="md" color="gray.800" fontWeight={600} flex={1}>
+                  </Badge>
+                  <Text fontSize="md" color="gray.800" fontWeight={400}>
                     {issue.content}
                   </Text>
                 </Box>
 
-                <Box ml={8} display="flex" flexDirection="column" gap={4}>
-                  {issue.precedents.map((precedent, precedentIndex) => (
+                <Box ml={10} display="flex" flexDirection="column" gap={4}>
+                  {/* 스트리밍 중인 판례 표시 */}
+                  {isStreaming && !streamingData[issue.content] && (
+                    <Box display="flex" justifyContent="center" py={6}>
+                      <Spinner size="md" colorPalette="gray" />
+                    </Box>
+                  )}
+                  
+                  {isStreaming && streamingData[issue.content]?.map((precedent, precedentIndex) => (
+                    <Box
+                      key={`streaming-${precedentIndex}`}
+                      p={4}
+                      borderWidth="1px"
+                      borderColor="gray.300"
+                      borderRadius="md"
+                      bg="white"
+                    >
+                      <Text fontWeight={600} color="gray.900" mb={2}>
+                        {precedent.caseNumber || '판례 번호 로딩 중...'}
+                      </Text>
+                      <Text fontSize="sm" color="gray.800" lineHeight={1.6}>
+                        {precedent.summary || '요지 로딩 중...'}
+                      </Text>
+                    </Box>
+                  ))}
+                  
+                  {/* 완료된 판례 (선택 가능) */}
+                  {!isStreaming && issue.precedents?.map((precedent, precedentIndex) => (
                     <CheckboxCard.Root
                       key={precedentIndex}
                       checked={precedent.selected}
@@ -197,25 +297,24 @@ function CaseResearch() {
                       <CheckboxCard.HiddenInput />
                       <CheckboxCard.Control>
                         <CheckboxCard.Content>
-                          <CheckboxCard.Label fontWeight={500} color="gray.900" mb={2}>
+                          <CheckboxCard.Label fontWeight={600} color="gray.900" mb={2}>
                             {precedent.caseNumber}
                           </CheckboxCard.Label>
-                          <CheckboxCard.Description fontSize="sm" color="gray.900" lineHeight={1.6} mb={3}>
+                          <CheckboxCard.Description fontSize="sm" color="gray.800" lineHeight={1.6} mb={3}>
                             {precedent.summary}
                           </CheckboxCard.Description>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              viewFullPrecedent(precedent);
-                            }}
-                          >
-                            전문보기
-                          </Button>
                         </CheckboxCard.Content>
                         <CheckboxCard.Indicator />
                       </CheckboxCard.Control>
+                      <CheckboxCard.Addon justifyContent="flex-end">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => viewFullPrecedent(precedent)}
+                        >
+                          전문보기
+                        </Button>
+                      </CheckboxCard.Addon>
                     </CheckboxCard.Root>
                   ))}
                 </Box>
@@ -223,125 +322,49 @@ function CaseResearch() {
             ))}
 
             {/* 선택된 판례 수 */}
-            <Box display="flex" justifyContent="flex-end" mt={2} mb={4}>
-              <Text fontSize="sm" color="gray.700">
-                선택된 판례 수 :{' '}
-                <Text as="span" color="gray.900" fontWeight={500}>
-                  {getSelectedPrecedentsCount()}
+            {!isStreaming && issues.length > 0 && (
+              <Box display="flex" justifyContent="flex-end" mb={4}>
+                <Text fontSize="sm" color="gray.700">
+                  선택된 판례 수 :{' '}
+                  <Text as="span" color="gray.900" fontWeight={500}>
+                    {getSelectedPrecedentsCount()}
+                  </Text>
                 </Text>
-              </Text>
-            </Box>
-
-            {/* 추가 검색 */}
-            <Box p={6} borderRadius="lg" bg="gray.50">
-              <Text fontSize="md" fontWeight={600} color="gray.800" mb={4}>
-                추가 판례 검색
-              </Text>
-              <Box display="flex" gap={2}>
-                <Input
-                  bg="white"
-                  flex={1}
-                  placeholder="검색어를 입력하세요"
-                  value={searchKeyword}
-                  onChange={(e) => setSearchKeyword(e.target.value)}
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter') searchPrecedents();
-                  }}
-                />
-                <IconButton
-                  onClick={searchPrecedents}
-                  colorPalette="gray"
-                  aria-label="검색"
-                >
-                  <LuSearch />
-                </IconButton>
-                <PopoverRoot portalled positioning={{ placement: 'bottom-end' }}>
-                  <PopoverTrigger asChild>
-                    <IconButton
-                      variant="outline"
-                      aria-label="필터"
-                    >
-                      <LuFilter />
-                    </IconButton>
-                  </PopoverTrigger>
-                  <PopoverPositioner>
-                    <PopoverContent>
-                      <PopoverBody p={6} minW="300px">
-                      <Text fontSize="sm" fontWeight={600} mb={4}>
-                        검색 필터
-                      </Text>
-                      <Stack gap={4}>
-                        <Box>
-                          <Text fontSize="xs" color="gray.700" mb={1}>
-                            사건 분야
-                          </Text>
-                          <NativeSelectRoot size="sm">
-                            <NativeSelectField
-                              value={searchType}
-                              onChange={(e) => setSearchType(e.target.value)}
-                            >
-                              <option value="all">전체</option>
-                              <option value="civil">민사</option>
-                              <option value="criminal">형사</option>
-                              <option value="administrative">행정</option>
-                            </NativeSelectField>
-                          </NativeSelectRoot>
-                        </Box>
-                        <Box>
-                          <Text fontSize="xs" color="gray.700" mb={1}>
-                            법원
-                          </Text>
-                          <NativeSelectRoot size="sm">
-                            <NativeSelectField
-                              value={searchCourt}
-                              onChange={(e) => setSearchCourt(e.target.value)}
-                            >
-                              <option value="all">모든 법원</option>
-                              <option value="supreme">대법원</option>
-                              <option value="high">고등법원</option>
-                              <option value="district">지방법원</option>
-                            </NativeSelectField>
-                          </NativeSelectRoot>
-                        </Box>
-                      </Stack>
-                    </PopoverBody>
-                    </PopoverContent>
-                  </PopoverPositioner>
-                </PopoverRoot>
               </Box>
-            </Box>
+            )}
           </Card.Body>
         </Card.Root>
 
         {/* 액션 버튼 */}
         <Box display="flex" justifyContent="space-between" gap={4}>
-          <Button size="lg" variant="outline" onClick={goBack} bg="white">
+          <Button size="lg" variant="outline" onClick={goBack} bg="white" isDisabled={isStreaming}>
             이전으로
           </Button>
           <Box display="flex" gap={3}>
-            <Button size="lg" variant="outline" onClick={saveTemp} bg="white">
+            <Button size="lg" variant="outline" onClick={saveTemp} bg="white" isDisabled={isStreaming}>
               임시저장
             </Button>
-            <Button size="lg" colorPalette="gray" onClick={finalReview}>
-              확인
+            <Button 
+              size="lg" 
+              colorPalette="gray" 
+              onClick={finalReview}
+              isDisabled={isStreaming || getSelectedPrecedentsCount() === 0}
+            >
+              최종 검토
             </Button>
           </Box>
         </Box>
-
-        <LoadingModal
-          isVisible={showLoadingModal}
-          message="AI가 투자심사보고서 초안을 작성하고 있습니다."
-        />
-
-        <PrecedentModal
-          isOpen={showPrecedentModal}
-          onClose={() => setShowPrecedentModal(false)}
-          precedent={selectedPrecedent}
-        />
+        </Box>
       </Box>
-    </Box>
+
+      {/* 판례 전문 모달 */}
+      <PrecedentModal
+        isOpen={showPrecedentModal}
+        onClose={() => setShowPrecedentModal(false)}
+        precedent={selectedPrecedent}
+      />
+    </>
   );
 }
 
 export default CaseResearch;
-

@@ -1,5 +1,6 @@
 from anthropic import Anthropic
 from app.core.config import settings
+from typing import Iterator
 
 
 class ClaudeClient:
@@ -41,6 +42,40 @@ class ClaudeClient:
         )
         
         return response.content[0].text
+    
+    def generate_stream(
+        self,
+        system_prompt: str,
+        user_message: str,
+        max_tokens: int | None = None,
+        temperature: float | None = None,
+    ) -> Iterator[str]:
+        """
+        Generate a streaming response from Claude.
+        
+        Args:
+            system_prompt: System prompt for Claude
+            user_message: User message/query
+            max_tokens: Maximum tokens to generate (overrides default)
+            temperature: Temperature for generation (overrides default)
+        
+        Yields:
+            Text chunks as they arrive
+        """
+        try:
+            with self.client.messages.stream(
+                model=self.model,
+                max_tokens=max_tokens or self.max_tokens,
+                temperature=temperature or self.temperature,
+                system=system_prompt,
+                messages=[
+                    {"role": "user", "content": user_message}
+                ]
+            ) as stream:
+                for text in stream.text_stream:
+                    yield text
+        except Exception as e:
+            yield f"[@에러]에러가 발생했습니다: {str(e)}[@에러_끝]"
 
 
 # Singleton instance

@@ -1,4 +1,5 @@
 import json
+from typing import Iterator
 from app.core.claude_client import claude_client
 from app.prompts.prompt_loader import prompt_loader
 from app.schemas.requests import PrecedentsRequest
@@ -51,6 +52,39 @@ class PrecedentsService:
         
         except (json.JSONDecodeError, ValueError) as e:
             raise ValueError(f"Failed to parse Claude response: {e}\nResponse: {response_text}")
+    
+    def research_precedents_stream(self, request: PrecedentsRequest) -> Iterator[str]:
+        """
+        3단계: 판례 리서치 스트리밍
+        
+        Args:
+            request: 판례 리서치 요청
+        
+        Yields:
+            텍스트 청크
+        """
+        # 시스템 프롬프트 로드
+        system_prompt = prompt_loader.load(self.prompt_name)
+        
+        # 문자열이면 그대로, dict면 JSON 변환
+        analysis_result_str = request.analysis_result if isinstance(request.analysis_result, str) else json.dumps(request.analysis_result, ensure_ascii=False, indent=2)
+        issues_result_str = request.issues_result if isinstance(request.issues_result, str) else json.dumps(request.issues_result, ensure_ascii=False, indent=2)
+        
+        # 사용자 메시지 구성
+        user_message = prompt_loader.format_user_message(
+            case_request=request.case_request,
+            consultation_result=request.consultation_result,
+            reviewer_notes=request.reviewer_notes,
+            analysis_result=analysis_result_str,
+            issues_result=issues_result_str
+        )
+        
+        # Claude API 스트리밍 호출
+        for chunk in claude_client.generate_stream(
+            system_prompt=system_prompt,
+            user_message=user_message
+        ):
+            yield chunk
 
 
 precedents_service = PrecedentsService()

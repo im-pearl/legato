@@ -127,14 +127,35 @@ function FactReview() {
     const llmData = prepareDataForLLM(qaItems, consultationGroups);
     console.log('LLM 전송 데이터:', llmData);
     
-    // TODO: 실제 API 호출
-    // await sendToLLM(llmData);
-    
-    setShowLoadingModal(true);
-    setTimeout(() => {
-      setShowLoadingModal(false);
-      navigate('/issue-identification');
-    }, 1500);
+    // 쟁점 분석 페이지로 이동하며 데이터 전달
+    navigate('/issue-identification', {
+      state: {
+        requestData: {
+          case_request: {
+            title: '계약서 작성 없이 설계용역을 했는데 터무니없이 낮은 금액을 받았어요',
+            questions: qaItems.map(item => ({
+              question: item.question,
+              answer: item.answer
+            })),
+            created_date: requestBasicInfo['의뢰서 작성일'],
+            case_type: requestBasicInfo['사건 분류'],
+          },
+          consultation_result: {
+            case_name: consultationGroups['상담 내용'][0].value,
+            facts: consultationGroups['상담 내용'][1].value,
+            legal_principle: consultationGroups['상담 내용'][3].value,
+            evidence: consultationGroups['상담 내용'][4].value,
+            unfavorable_factors: consultationGroups['상담 내용'][5].value,
+            expected_amount: consultationGroups['상담 내용'][6].value,
+            execution_plan: consultationGroups['상담 내용'][7].value,
+            initial_fee: consultationGroups['비용 정보'][0].value,
+            success_fee: consultationGroups['비용 정보'][1].value,
+            client_name: consultationGroups['기초 정보'][0].value,
+            lawyer_name: consultationGroups['기초 정보'][2].value,
+          }
+        }
+      }
+    });
   };
 
   // 의뢰서 값 변경 핸들러

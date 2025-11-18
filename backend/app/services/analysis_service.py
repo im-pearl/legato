@@ -1,4 +1,5 @@
 import json
+from typing import Iterator
 from app.core.claude_client import claude_client
 from app.prompts.prompt_loader import prompt_loader
 from app.schemas.requests import AnalysisRequest
@@ -50,6 +51,33 @@ class AnalysisService:
         
         except (json.JSONDecodeError, ValueError) as e:
             raise ValueError(f"Failed to parse Claude response: {e}\nResponse: {response_text}")
+    
+    def analyze_stream(self, request: AnalysisRequest) -> Iterator[str]:
+        """
+        1단계: 사실관계 검토 스트리밍
+        
+        Args:
+            request: 분석 요청
+        
+        Yields:
+            텍스트 청크
+        """
+        # 시스템 프롬프트 로드
+        system_prompt = prompt_loader.load(self.prompt_name)
+        
+        # 사용자 메시지 구성
+        user_message = prompt_loader.format_user_message(
+            case_request=request.case_request,
+            consultation_result=request.consultation_result,
+            reviewer_notes=request.reviewer_notes
+        )
+        
+        # Claude API 스트리밍 호출
+        for chunk in claude_client.generate_stream(
+            system_prompt=system_prompt,
+            user_message=user_message
+        ):
+            yield chunk
 
 
 analysis_service = AnalysisService()

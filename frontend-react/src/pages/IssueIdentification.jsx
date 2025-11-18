@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Box,
   Card,
@@ -8,34 +8,108 @@ import {
   Textarea,
   IconButton,
   Stack,
+  Spinner,
 } from '@chakra-ui/react';
-import { LuPlus, LuX } from 'react-icons/lu';
+import { LuPlus, LuX, LuSparkles } from 'react-icons/lu';
 import AppHeader from '../components/common/AppHeader';
 import StepsBar, { stepsWidth } from '../components/common/StepsBar';
-import LoadingModal from '../components/common/LoadingModal';
-import AIRequestableText from '../components/common/AIRequestableText';
+import { useStreaming } from '../hooks/useStreaming';
 
 function IssueIdentification() {
   const navigate = useNavigate();
-  const [showLoadingModal, setShowLoadingModal] = useState(false);
-  const [issues, setIssues] = useState([
-    { content: '계약상 대금이 00,000,000 원으로 정해졌다고 볼 수 있는지 여부' },
-    { content: '상대방에게 부당이득반환책임이 성립하는지 여부' },
-  ]);
+  const location = useLocation();
+  const [issues, setIssues] = useState([]);
+  const [factsContent, setFactsContent] = useState('');
+  const { startStreaming, isStreaming } = useStreaming();
+  
+  // 스트리밍 중인 쟁점 임시 저장
+  const [streamingIssues, setStreamingIssues] = useState([]);
 
-  const [factsContent, setFactsContent] = useState(`1. 의뢰인은 상대방으로부터 **시 **구 **번지 오피스텔 신축설계(면적 00,000,000 m2 규모)의 건축설계(건축심의, 경관심의, 건축인허가, 구조 심의) 용역(이하 '이 사건 용역')을 의뢰받아 완료하였음. (계약서 없음)
-  - 건축심의, 건축허가, 건축구조심의 완료 및 건축물 착공연기신청 완료(착공연기 기간 내)
-  
-  2. 상대방은 의뢰인에게 총 0,000,000원을 입금하였음(지급내역)
-  - 1차 지급: 0,000,000원 입금(입금자 **주식회사)
-  - 2차 지급: 0,000,000원 입금(입금자 **주식회사)
-  - 3차 지급: 0,000,000원 입금(입금자 **주식회사)
-  
-  3. 의뢰인은 이 사건 용역에 대하여 평당 0만 원, 총 00,000,000 원으로 견적서를 작성하였음. (의뢰인 단독 날인)
-  
-  4. 의뢰인은 이 사건 용역의 설계비가 평당 00,000원이라고 주장하며, 이에 용역대금은 약 0원이라고 주장함. (건축 설계비 산정근거: 평 × 00,000원, 건물규모: 00,000,000 m2 (0,000평))
-  
-  5. 이에 의뢰인은 대금 잔금 약 1억 원을 상대방에게 청구하고자 함.`);
+  // 페이지 진입 시 자동으로 분석 시작
+  useEffect(() => {
+    if (location.state?.requestData) {
+      // FactReview에서 넘어온 데이터로 자동 분석
+      analyzeFactsAndIssues(location.state.requestData);
+    }
+  }, []);
+
+  /**
+   * 사실관계 + 쟁점 분석 (순차 스트리밍)
+   */
+  const analyzeFactsAndIssues = async (requestData) => {
+    setFactsContent('');
+    setIssues([]);
+    setStreamingIssues([]);
+    
+    // 1단계: 사실관계 스트리밍
+    let analysisText = '';
+    await startStreaming(
+      '/analysis/stream',
+      requestData,
+      (element) => {
+        if (element.type === 'text' || element.type === 'tag_content') {
+          analysisText += element.content;
+          setFactsContent(analysisText);
+        }
+      },
+      async () => {
+        // 사실관계 완료 후 2단계: 쟁점 분석
+        await analyzeIssues({ ...requestData, analysis_result: analysisText });
+      }
+    );
+  };
+
+  /**
+   * 쟁점 분석 (스트리밍)
+   */
+  const analyzeIssues = async (requestData) => {
+    let currentIssueIndex = -1;
+    let currentIssueContent = '';
+
+    await startStreaming(
+      '/issues/stream',
+      requestData,
+      (element) => {
+        if (element.type === 'tag_start' && element.tag.startsWith('issue')) {
+          // 새로운 쟁점 시작
+          currentIssueIndex++;
+          currentIssueContent = '';
+          
+          setStreamingIssues(prev => [
+            ...prev,
+            { content: '', isStreaming: true }
+          ]);
+        }
+        else if (element.type === 'tag_content' && element.tag.startsWith('issue')) {
+          // 쟁점 내용 업데이트
+          currentIssueContent += element.content;
+          
+          setStreamingIssues(prev => {
+            const newIssues = [...prev];
+            if (newIssues[currentIssueIndex]) {
+              newIssues[currentIssueIndex].content = currentIssueContent;
+            }
+            return newIssues;
+          });
+        }
+        else if (element.type === 'tag_end' && element.tag.startsWith('issue')) {
+          // 쟁점 완료
+          setStreamingIssues(prev => {
+            const newIssues = [...prev];
+            if (newIssues[currentIssueIndex]) {
+              newIssues[currentIssueIndex].isStreaming = false;
+              newIssues[currentIssueIndex].content = element.content;
+            }
+            return newIssues;
+          });
+        }
+      },
+      () => {
+        // 스트리밍 완료
+        setIssues(streamingIssues.map(issue => ({ content: issue.content })));
+      }
+    );
+  };
 
   const addNewIssue = () => {
     setIssues([...issues, { content: '' }]);
@@ -62,12 +136,23 @@ function IssueIdentification() {
   };
 
   const searchCases = () => {
-    setShowLoadingModal(true);
-    setTimeout(() => {
-      setShowLoadingModal(false);
-      navigate('/case-research');
-    }, 1500);
+    // 다음 페이지로 이동하며 데이터 전달
+    const issuesText = issues.map((issue, idx) => 
+      `@issue${idx + 1}\n${issue.content}\n@end`
+    ).join('\n\n');
+    
+    navigate('/case-research', {
+      state: {
+        factsContent,
+        issuesText,
+        issues,
+        requestData: location.state?.requestData,
+      }
+    });
   };
+
+  // 스트리밍 중이거나 완료된 쟁점을 표시
+  const displayIssues = isStreaming ? streamingIssues : issues;
 
   return (
     <Box minH="100vh">
@@ -82,16 +167,40 @@ function IssueIdentification() {
         {/* 사실관계 섹션 */}
         <Card.Root variant="outline" mb={4}>
           <Card.Body>
-            <Text fontSize="lg" fontWeight={600} mb={4}>
-              사실관계
-            </Text>
-            <AIRequestableText
-              value={factsContent}
-              onChange={setFactsContent}
-              rows={10}
-              fontFamily="inherit"
-              lineHeight={1.5}
-            />
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
+              <Text fontSize="lg" fontWeight={600}>
+                사실관계
+              </Text>
+              {!isStreaming && factsContent && (
+                <Button
+                  size="xs"
+                  variant="outline"
+                  onClick={() => analyzeFactsAndIssues(location.state?.requestData)}
+                  colorPalette="blue"
+                >
+                  <LuSparkles />
+                  AI 재생성
+                </Button>
+              )}
+            </Box>
+            
+            {isStreaming && !factsContent && (
+              <Box display="flex" justifyContent="center" py={20}>
+                <Spinner size="xl" colorPalette="gray" />
+              </Box>
+            )}
+            
+            {(!isStreaming || factsContent) && (
+              <Textarea
+                value={factsContent}
+                onChange={(e) => !isStreaming && setFactsContent(e.target.value)}
+                rows={10}
+                fontFamily="inherit"
+                lineHeight={1.5}
+                isDisabled={isStreaming}
+                placeholder="사실관계를 입력하세요"
+              />
+            )}
           </Card.Body>
         </Card.Root>
 
@@ -106,14 +215,27 @@ function IssueIdentification() {
                 size="xs"
                 variant="subtle"
                 onClick={addNewIssue}
+                isDisabled={isStreaming}
               >
                 <LuPlus />
                 추가
               </Button>
             </Box>
 
+            {displayIssues.length === 0 && !isStreaming && (
+              <Text color="gray.500" textAlign="center" py={8}>
+                쟁점이 자동으로 생성됩니다...
+              </Text>
+            )}
+
+            {displayIssues.length === 0 && isStreaming && (
+              <Box display="flex" justifyContent="center" py={8}>
+                <Spinner size="lg" colorPalette="gray" />
+              </Box>
+            )}
+
             <Stack gap={4}>
-              {issues.map((issue, index) => (
+              {displayIssues.map((issue, index) => (
                 <Box
                   key={index}
                   display="flex"
@@ -156,18 +278,21 @@ function IssueIdentification() {
                     lineHeight={1.5}
                     flex={1}
                     placeholder="쟁점을 입력해주세요"
+                    isDisabled={issue.isStreaming || isStreaming}
                   />
 
-                  <IconButton
-                    size="sm"
-                    variant="ghost"
-                    colorPalette="gray"
-                    onClick={() => deleteIssue(index)}
-                    flexShrink={0}
-                    aria-label="삭제"
-                  >
-                    <LuX />
-                  </IconButton>
+                  {!issue.isStreaming && !isStreaming && (
+                    <IconButton
+                      size="sm"
+                      variant="ghost"
+                      colorPalette="gray"
+                      onClick={() => deleteIssue(index)}
+                      flexShrink={0}
+                      aria-label="삭제"
+                    >
+                      <LuX />
+                    </IconButton>
+                  )}
                 </Box>
               ))}
             </Stack>
@@ -176,23 +301,23 @@ function IssueIdentification() {
 
         {/* 액션 버튼 */}
         <Box display="flex" justifyContent="space-between" gap={4}>
-          <Button size="lg" variant="outline" onClick={goBack} bg="white">
+          <Button size="lg" variant="outline" onClick={goBack} bg="white" isDisabled={isStreaming}>
             이전으로
           </Button>
           <Box display="flex" gap={3}>
-            <Button size="lg" variant="outline" onClick={saveTemp} bg="white">
+            <Button size="lg" variant="outline" onClick={saveTemp} bg="white" isDisabled={isStreaming}>
               임시저장
             </Button>
-            <Button size="lg" colorPalette="gray" onClick={searchCases}>
+            <Button 
+              size="lg" 
+              colorPalette="gray" 
+              onClick={searchCases}
+              isDisabled={isStreaming || displayIssues.length === 0}
+            >
               확인
             </Button>
           </Box>
         </Box>
-
-        <LoadingModal
-          isVisible={showLoadingModal}
-          message="AI가 사실관계와 쟁점을 기반으로 판례를 검색하고 있습니다."
-        />
       </Box>
     </Box>
   );

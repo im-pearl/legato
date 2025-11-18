@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import StreamingResponse
 from app.schemas.requests import PrecedentsRequest
 from app.schemas.responses import PrecedentsResponse
 from app.services.precedents_service import precedents_service
@@ -18,6 +19,22 @@ async def research_precedents(request: PrecedentsRequest):
         return result
     except ValueError as e:
         raise HTTPException(status_code=500, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+
+@router.post("/precedents/stream")
+async def research_precedents_stream(request: PrecedentsRequest):
+    """
+    3단계: 판례 리서치 (스트리밍)
+    
+    도출된 쟁점에 대해 관련 판례를 스트리밍으로 검색하고 분석합니다.
+    """
+    try:
+        return StreamingResponse(
+            precedents_service.research_precedents_stream(request),
+            media_type="text/event-stream"
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
