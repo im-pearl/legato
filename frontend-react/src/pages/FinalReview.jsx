@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Box,
@@ -32,6 +32,9 @@ function FinalReview() {
   
   // 스트리밍 중인 데이터
   const [streamingJudgments, setStreamingJudgments] = useState({});
+  
+  // 중복 실행 방지 (React Strict Mode 대응)
+  const hasGeneratedRef = useRef(false);
 
   const clientName = '김건축';
   const requestNumber = 'CS-20250314-0042';
@@ -48,7 +51,8 @@ function FinalReview() {
         subsumption: ''
       })));
     }
-    if (location.state?.requestData) {
+    if (location.state?.requestData && !hasGeneratedRef.current) {
+      hasGeneratedRef.current = true;
       // 자동으로 보고서 생성
       generateReport();
     }
@@ -77,53 +81,37 @@ function FinalReview() {
         precedents_result: location.state.precedentsText,
       },
       (element) => {
-        // 파싱된 요소 처리
-        if (element.type === 'tag_start') {
+        console.log('FinalReview 파싱:', element); // 디버깅
+        
+        // tag_end에서만 처리 (완성된 내용만 렌더링)
+        if (element.type === 'tag_end') {
           if (element.tag.startsWith('issue')) {
-            // 새로운 쟁점 판단 시작 - issue1. 쟁점제목 형식
-            const content = element.content || '';
-            const match = content.match(/\.\s*(.+)/);
+            // 쟁점 판단 완료 - "쟁점제목: 판단" 형식에서 파싱
+            const content = element.content.trim();
+            const match = content.match(/^([^:\n]+):\s*(.+)/s);
             if (match) {
-              currentIssueTitle = match[1].trim();
+              const issueTitle = match[1].trim();
+              const judgment = match[2].trim();
+              tempJudgments[issueTitle] = judgment;
+              setStreamingJudgments({...tempJudgments});
             }
-            currentJudgment = '';
-          }
-        }
-        else if (element.type === 'tag_content') {
-          if (element.tag.startsWith('issue')) {
-            currentJudgment += element.content;
-            
-            // 실시간 업데이트
-            tempJudgments[currentIssueTitle] = currentJudgment;
-            setStreamingJudgments({...tempJudgments});
-          }
-          else if (element.tag === 'prob') {
-            // 승소가능성 텍스트 수집
-            probData.reason = (probData.reason || '') + element.content;
-          }
-        }
-        else if (element.type === 'tag_end') {
-          if (element.tag.startsWith('issue')) {
-            // 쟁점 판단 완료
-            tempJudgments[currentIssueTitle] = element.content.trim();
-            setStreamingJudgments({...tempJudgments});
           }
           else if (element.tag === 'prob') {
             // 승소가능성 파싱
             const content = element.content.trim();
             const match = content.match(/(\d+)~(\d+)/);
             if (match) {
-              probData.min = parseInt(match[1]);
-              probData.max = parseInt(match[2]);
+              const min = parseInt(match[1]);
+              const max = parseInt(match[2]);
               
-              setWinProbability([probData.min, probData.max]);
+              setWinProbability([min, max]);
               
               // 근거 추출 (범위 다음 줄)
               const lines = content.split('\n');
               const reasonLines = lines.slice(1).filter(line => line.trim() && !line.includes('~'));
-              probData.reason = reasonLines.map(line => line.replace(/^-\s*/, '')).join(' ');
+              const reason = reasonLines.map(line => line.replace(/^-\s*/, '')).join(' ');
               
-              setWinProbabilityDescription(probData.reason);
+              setWinProbabilityDescription(reason);
             }
           }
         }

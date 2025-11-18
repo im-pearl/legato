@@ -5,14 +5,15 @@
  */
 
 /**
- * 스트리밍 텍스트 파서 클래스
+ * 스트리밍 텍스트 파서 클래스 (@tag@ 형식)
  */
 export class StreamingTagParser {
   constructor() {
-    this.buffer = '';
-    this.currentTag = null;
-    this.tagContent = '';
-    this.elements = []; // { type: 'tag' | 'text', tag: string, content: string }
+    this.buffer = '';           // 미처리 텍스트 버퍼
+    this.currentTag = null;     // 현재 열린 태그
+    this.tagContent = '';       // 태그 내용
+    this.pendingAt = false;     // @ 대기 중
+    this.pendingTag = '';       // @ 이후 축적 중인 태그명
   }
 
   /**
@@ -21,113 +22,125 @@ export class StreamingTagParser {
    * @returns {Array} 새로 파싱된 요소들
    */
   addChunk(chunk) {
-    this.buffer += chunk;
-    return this.parse();
-  }
-
-  /**
-   * 버퍼를 파싱하여 태그와 텍스트 추출
-   * @returns {Array} 새로 파싱된 요소들
-   */
-  parse() {
     const newElements = [];
-    let i = 0;
-
-    while (i < this.buffer.length) {
-      // @ 태그 시작 감지
-      if (this.buffer[i] === '@') {
-        // 태그 이름 추출 (다음 공백, 줄바꿈, : 또는 @까지)
-        let tagEnd = i + 1;
-        while (
-          tagEnd < this.buffer.length &&
-          this.buffer[tagEnd] !== '\n' &&
-          this.buffer[tagEnd] !== '\r' &&
-          this.buffer[tagEnd] !== ' ' &&
-          this.buffer[tagEnd] !== ':' &&
-          this.buffer[tagEnd] !== '@'
-        ) {
-          tagEnd++;
-        }
-
-        const tagName = this.buffer.substring(i + 1, tagEnd);
-
-        // 태그 시작
-        if (!this.currentTag) {
-          this.currentTag = tagName;
-          this.tagContent = '';
+    
+    for (let i = 0; i < chunk.length; i++) {
+      const char = chunk[i];
+      
+      // @ 감지
+      if (char === '@') {
+        // 이미 @ 대기 중이면 태그 완성
+        if (this.pendingAt) {
+          const tagName = this.pendingTag;
           
-          // 태그 시작 이벤트 (UI 렌더링용)
-          newElements.push({
-            type: 'tag_start',
-            tag: tagName,
-            content: '',
-          });
-
-          // : 다음의 내용도 같이 처리 (예: @issue1:강제추행)
-          if (this.buffer[tagEnd] === ':') {
-            i = tagEnd + 1;
-            continue;
-          } else {
-            i = tagEnd;
-            continue;
+          // @end@ 태그 - 현재 열린 태그 종료
+          if (tagName === 'end' && this.currentTag) {
+            // 버퍼에 남은 태그 내용 먼저 처리
+            for (const c of this.buffer) {
+              if (c !== '\r') {
+                this.tagContent += c;
+                newElements.push({
+                  type: 'tag_content',
+                  tag: this.currentTag,
+                  content: c,
+                });
+              }
+            }
+            this.buffer = '';
+            
+            // 태그 종료
+            newElements.push({
+              type: 'tag_end',
+              tag: this.currentTag,
+              content: this.tagContent.trim(),
+            });
+            this.currentTag = null;
+            this.tagContent = '';
           }
-        }
-        // 태그 종료 (현재 태그와 같은 이름)
-        else if (tagName === 'end' || tagName === '끝') {
-          newElements.push({
-            type: 'tag_end',
-            tag: this.currentTag,
-            content: this.tagContent.trim(),
-          });
-
-          this.currentTag = null;
-          this.tagContent = '';
-          i = tagEnd;
+          // 태그 시작
+          else if (!this.currentTag) {
+            // 버퍼에 남은 일반 텍스트 먼저 처리
+            for (const c of this.buffer) {
+              if (c !== '\r') {
+                newElements.push({
+                  type: 'text',
+                  content: c,
+                });
+              }
+            }
+            this.buffer = '';
+            
+            // 태그 시작
+            this.currentTag = tagName;
+            this.tagContent = '';
+            newElements.push({
+              type: 'tag_start',
+              tag: tagName,
+              content: '',
+            });
+          }
+          // 중첩된 다른 태그 (내용으로 처리)
+          else {
+            this.buffer += '@' + this.pendingTag + '@';
+          }
           
-          // 줄바꿈 건너뛰기
-          while (i < this.buffer.length && (this.buffer[i] === '\n' || this.buffer[i] === '\r')) {
-            i++;
-          }
-          continue;
+          // @ 대기 상태 초기화
+          this.pendingAt = false;
+          this.pendingTag = '';
         }
-        // 다른 태그 시작 (중첩)
+        // @ 처음 등장 - 대기 시작
         else {
-          // 현재 태그 내용에 추가
-          this.tagContent += this.buffer[i];
-          i++;
-          continue;
+          this.pendingAt = true;
+          this.pendingTag = '';
         }
       }
-
-      // 태그 내부일 경우
-      if (this.currentTag) {
-        this.tagContent += this.buffer[i];
-        
-        // 태그 내부 텍스트 업데이트 이벤트
-        if (this.buffer[i] !== '\r') { // \r은 건너뛰기
-          newElements.push({
-            type: 'tag_content',
-            tag: this.currentTag,
-            content: this.buffer[i],
-          });
+      // @ 대기 중일 때
+      else if (this.pendingAt) {
+        // 알파벳/숫자면 태그명에 추가
+        if (/[a-zA-Z0-9]/.test(char)) {
+          this.pendingTag += char;
+        }
+        // 그 외 문자면 @ 취소하고 일반 텍스트로 처리
+        else {
+          this.buffer += '@' + this.pendingTag + char;
+          this.pendingAt = false;
+          this.pendingTag = '';
         }
       }
-      // 태그 외부 (일반 텍스트)
+      // 일반 텍스트
       else {
-        if (this.buffer[i] !== '\r') { // \r은 건너뛰기
-          newElements.push({
-            type: 'text',
-            content: this.buffer[i],
-          });
+        this.buffer += char;
+      }
+    }
+    
+    // 버퍼에 남은 내용 처리 (@ 대기 중이 아닐 때만)
+    if (!this.pendingAt && this.buffer.length > 0) {
+      if (this.currentTag) {
+        // 태그 내부
+        for (const c of this.buffer) {
+          if (c !== '\r') {
+            this.tagContent += c;
+            newElements.push({
+              type: 'tag_content',
+              tag: this.currentTag,
+              content: c,
+            });
+          }
+        }
+      } else {
+        // 태그 외부
+        for (const c of this.buffer) {
+          if (c !== '\r') {
+            newElements.push({
+              type: 'text',
+              content: c,
+            });
+          }
         }
       }
-
-      i++;
+      this.buffer = '';
     }
-
-    // 처리된 부분 제거
-    this.buffer = '';
-
+    
     return newElements;
   }
 
@@ -137,6 +150,39 @@ export class StreamingTagParser {
   complete() {
     const remaining = [];
     
+    // @ 대기 중이었으면 일반 텍스트로 처리
+    if (this.pendingAt) {
+      this.buffer += '@' + this.pendingTag;
+      this.pendingAt = false;
+      this.pendingTag = '';
+    }
+    
+    // 버퍼 남은 내용 처리
+    if (this.buffer.length > 0) {
+      if (this.currentTag) {
+        for (const c of this.buffer) {
+          if (c !== '\r') {
+            this.tagContent += c;
+            remaining.push({
+              type: 'tag_content',
+              tag: this.currentTag,
+              content: c,
+            });
+          }
+        }
+      } else {
+        for (const c of this.buffer) {
+          if (c !== '\r') {
+            remaining.push({
+              type: 'text',
+              content: c,
+            });
+          }
+        }
+      }
+    }
+    
+    // 태그가 아직 열려 있으면 종료
     if (this.currentTag && this.tagContent) {
       remaining.push({
         type: 'tag_end',
@@ -159,7 +205,8 @@ export class StreamingTagParser {
     this.buffer = '';
     this.currentTag = null;
     this.tagContent = '';
-    this.elements = [];
+    this.pendingAt = false;
+    this.pendingTag = '';
   }
 }
 

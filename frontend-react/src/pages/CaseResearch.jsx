@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Box,
@@ -27,6 +27,9 @@ function CaseResearch() {
   
   // 스트리밍 중인 데이터
   const [streamingData, setStreamingData] = useState({});
+  
+  // 중복 실행 방지 (React Strict Mode 대응)
+  const hasGeneratedRef = useRef(false);
 
   useEffect(() => {
     if (location.state?.factsContent) {
@@ -38,7 +41,8 @@ function CaseResearch() {
         precedents: []
       })));
     }
-    if (location.state?.requestData) {
+    if (location.state?.requestData && !hasGeneratedRef.current) {
+      hasGeneratedRef.current = true;
       // 자동으로 판례 생성
       generatePrecedents();
     }
@@ -63,49 +67,39 @@ function CaseResearch() {
         issues_result: location.state.issuesText,
       },
       (element) => {
-        // 파싱된 요소 처리
-        if (element.type === 'tag_start') {
+        console.log('CaseResearch 파싱:', element); // 디버깅
+        
+        // tag_end에서만 처리 (완성된 내용만 렌더링)
+        if (element.type === 'tag_end') {
           if (element.tag.startsWith('issue')) {
-            // 새로운 쟁점 시작 - issue1:쟁점제목 형식
-            const content = element.content || '';
-            const match = content.match(/:(.+)/);
-            if (match) {
-              currentIssueTitle = match[1].trim();
-            }
+            // 쟁점 제목 완성
+            currentIssueTitle = element.content.trim();
             currentCaseIndex = -1;
           }
-          else if (element.tag.startsWith('case')) {
-            // 새로운 판례 시작
-            currentCaseIndex++;
-            currentCaseData = { caseNumber: '', summary: '', selected: true, isStreaming: true };
-          }
-        }
-        else if (element.type === 'tag_content') {
-          // 내용 업데이트
-          if (element.tag === 'num') {
-            currentCaseData.caseNumber = (currentCaseData.caseNumber || '') + element.content;
+          else if (element.tag === 'num') {
+            // 판례 번호 완성
+            currentCaseData.caseNumber = element.content.trim();
           }
           else if (element.tag === 'summary') {
-            currentCaseData.summary = (currentCaseData.summary || '') + element.content;
-            
-            // 실시간 업데이트
-            if (!tempStreamingData[currentIssueTitle]) {
-              tempStreamingData[currentIssueTitle] = [];
-            }
-            tempStreamingData[currentIssueTitle][currentCaseIndex] = currentCaseData;
-            setStreamingData({...tempStreamingData});
+            // 판례 요지 완성
+            currentCaseData.summary = element.content.trim();
           }
-        }
-        else if (element.type === 'tag_end') {
-          if (element.tag.startsWith('case')) {
-            // 판례 완료
-            currentCaseData.isStreaming = false;
+          else if (element.tag.startsWith('case')) {
+            // 판례 전체 완료
+            currentCaseIndex++;
             
             if (!tempStreamingData[currentIssueTitle]) {
               tempStreamingData[currentIssueTitle] = [];
             }
-            tempStreamingData[currentIssueTitle][currentCaseIndex] = {...currentCaseData};
+            tempStreamingData[currentIssueTitle].push({
+              caseNumber: currentCaseData.caseNumber || '',
+              summary: currentCaseData.summary || '',
+              selected: true
+            });
             setStreamingData({...tempStreamingData});
+            
+            // 다음 판례를 위해 초기화
+            currentCaseData = { caseNumber: '', summary: '' };
           }
         }
       },

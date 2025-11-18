@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Box,
@@ -24,89 +24,51 @@ function IssueIdentification() {
   
   // 스트리밍 중인 쟁점 임시 저장
   const [streamingIssues, setStreamingIssues] = useState([]);
+  
+  // 중복 실행 방지 (React Strict Mode 대응)
+  const hasAnalyzedRef = useRef(false);
 
   // 페이지 진입 시 자동으로 분석 시작
   useEffect(() => {
-    if (location.state?.requestData) {
+    if (location.state?.requestData && !hasAnalyzedRef.current) {
+      hasAnalyzedRef.current = true;
       // FactReview에서 넘어온 데이터로 자동 분석
       analyzeFactsAndIssues(location.state.requestData);
     }
   }, []);
 
   /**
-   * 사실관계 + 쟁점 분석 (순차 스트리밍)
+   * 사실관계 + 쟁점 분석 (하나의 스트리밍)
    */
   const analyzeFactsAndIssues = async (requestData) => {
     setFactsContent('');
     setIssues([]);
     setStreamingIssues([]);
     
-    // 1단계: 사실관계 스트리밍
-    let analysisText = '';
+    let completedIssues = [];
+
     await startStreaming(
       '/analysis/stream',
       requestData,
       (element) => {
-        if (element.type === 'text' || element.type === 'tag_content') {
-          analysisText += element.content;
-          setFactsContent(analysisText);
-        }
-      },
-      async () => {
-        // 사실관계 완료 후 2단계: 쟁점 분석
-        await analyzeIssues({ ...requestData, analysis_result: analysisText });
-      }
-    );
-  };
-
-  /**
-   * 쟁점 분석 (스트리밍)
-   */
-  const analyzeIssues = async (requestData) => {
-    let currentIssueIndex = -1;
-    let currentIssueContent = '';
-
-    await startStreaming(
-      '/issues/stream',
-      requestData,
-      (element) => {
-        if (element.type === 'tag_start' && element.tag.startsWith('issue')) {
-          // 새로운 쟁점 시작
-          currentIssueIndex++;
-          currentIssueContent = '';
-          
-          setStreamingIssues(prev => [
-            ...prev,
-            { content: '', isStreaming: true }
-          ]);
-        }
-        else if (element.type === 'tag_content' && element.tag.startsWith('issue')) {
-          // 쟁점 내용 업데이트
-          currentIssueContent += element.content;
-          
-          setStreamingIssues(prev => {
-            const newIssues = [...prev];
-            if (newIssues[currentIssueIndex]) {
-              newIssues[currentIssueIndex].content = currentIssueContent;
-            }
-            return newIssues;
-          });
-        }
-        else if (element.type === 'tag_end' && element.tag.startsWith('issue')) {
-          // 쟁점 완료
-          setStreamingIssues(prev => {
-            const newIssues = [...prev];
-            if (newIssues[currentIssueIndex]) {
-              newIssues[currentIssueIndex].isStreaming = false;
-              newIssues[currentIssueIndex].content = element.content;
-            }
-            return newIssues;
-          });
+        console.log('파싱 element:', element); // 디버깅
+        
+        // tag_end에서만 처리 (완성된 내용만 렌더링)
+        if (element.type === 'tag_end') {
+          if (element.tag === 'facts') {
+            // 사실관계 완료
+            setFactsContent(element.content);
+          }
+          else if (element.tag && element.tag.startsWith('issue')) {
+            // 쟁점 완료
+            completedIssues.push({ content: element.content });
+            setStreamingIssues([...completedIssues]);
+          }
         }
       },
       () => {
         // 스트리밍 완료
-        setIssues(streamingIssues.map(issue => ({ content: issue.content })));
+        setIssues(completedIssues);
       }
     );
   };
@@ -171,17 +133,6 @@ function IssueIdentification() {
               <Text fontSize="lg" fontWeight={600}>
                 사실관계
               </Text>
-              {!isStreaming && factsContent && (
-                <Button
-                  size="xs"
-                  variant="outline"
-                  onClick={() => analyzeFactsAndIssues(location.state?.requestData)}
-                  colorPalette="blue"
-                >
-                  <LuSparkles />
-                  AI 재생성
-                </Button>
-              )}
             </Box>
             
             {isStreaming && !factsContent && (
