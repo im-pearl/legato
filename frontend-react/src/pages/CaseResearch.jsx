@@ -74,39 +74,67 @@ function CaseResearch() {
           if (element.tag.startsWith('issue')) {
             // 쟁점 제목 완성
             currentIssueTitle = element.content.trim();
-            currentCaseIndex = -1;
+            console.log('🔵 쟁점 설정:', currentIssueTitle);
           }
-          else if (element.tag === 'num') {
+          else if (element.tag.startsWith('num')) {
             // 판례 번호 완성
             currentCaseData.caseNumber = element.content.trim();
+            console.log('📌 판례번호:', currentCaseData.caseNumber);
+            
+            // num과 summary가 모두 있으면 즉시 저장
+            if (currentCaseData.caseNumber && currentCaseData.summary) {
+              console.log('✅ 판례 완료! (num 시점)');
+              if (!tempStreamingData[currentIssueTitle]) {
+                tempStreamingData[currentIssueTitle] = [];
+              }
+              tempStreamingData[currentIssueTitle].push({
+                caseNumber: currentCaseData.caseNumber,
+                summary: currentCaseData.summary,
+                selected: true
+              });
+              console.log('💾 tempStreamingData:', JSON.stringify(tempStreamingData, null, 2));
+              setStreamingData({...tempStreamingData});
+              
+              // 다음 판례를 위해 초기화
+              currentCaseData = { caseNumber: '', summary: '' };
+            }
           }
-          else if (element.tag === 'summary') {
+          else if (element.tag.startsWith('summary')) {
             // 판례 요지 완성
             currentCaseData.summary = element.content.trim();
-          }
-          else if (element.tag.startsWith('case')) {
-            // 판례 전체 완료
-            currentCaseIndex++;
+            console.log('📝 요지:', currentCaseData.summary);
             
-            if (!tempStreamingData[currentIssueTitle]) {
-              tempStreamingData[currentIssueTitle] = [];
+            // num과 summary가 모두 있으면 즉시 저장
+            if (currentCaseData.caseNumber && currentCaseData.summary) {
+              console.log('✅ 판례 완료! (summary 시점)');
+              if (!tempStreamingData[currentIssueTitle]) {
+                tempStreamingData[currentIssueTitle] = [];
+              }
+              tempStreamingData[currentIssueTitle].push({
+                caseNumber: currentCaseData.caseNumber,
+                summary: currentCaseData.summary,
+                selected: true
+              });
+              console.log('💾 tempStreamingData:', JSON.stringify(tempStreamingData, null, 2));
+              setStreamingData({...tempStreamingData});
+              
+              // 다음 판례를 위해 초기화
+              currentCaseData = { caseNumber: '', summary: '' };
             }
-            tempStreamingData[currentIssueTitle].push({
-              caseNumber: currentCaseData.caseNumber || '',
-              summary: currentCaseData.summary || '',
-              selected: true
-            });
-            setStreamingData({...tempStreamingData});
-            
-            // 다음 판례를 위해 초기화
-            currentCaseData = { caseNumber: '', summary: '' };
           }
         }
       },
       () => {
         // 스트리밍 완료 - issues 배열에 판례 추가
+        console.log('🎉 스트리밍 완료!');
+        console.log('tempStreamingData:', tempStreamingData);
+        console.log('issues 배열:', issues);
+        
         setIssues(prev => prev.map(issue => {
+          console.log(`🔍 매칭 시도: issue.content="${issue.content}"`);
           const precedents = tempStreamingData[issue.content] || [];
+          console.log(`   매칭된 판례 수: ${precedents.length}`);
+          
           return {
             ...issue,
             precedents: precedents.map(p => ({

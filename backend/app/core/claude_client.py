@@ -73,6 +73,7 @@ class ClaudeClient:
                 ]
             ) as stream:
                 for text in stream.text_stream:
+                    print(f"[LLM 청크] {repr(text)}")  # 디버깅
                     yield text
         except Exception as e:
             yield f"[@에러]에러가 발생했습니다: {str(e)}[@에러_끝]"
