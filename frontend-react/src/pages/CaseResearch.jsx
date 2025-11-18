@@ -254,7 +254,7 @@ function CaseResearch() {
 
             {issues.length === 0 && isStreaming && (
               <Box display="flex" justifyContent="center" py={12}>
-                <Spinner size="xl" colorPalette="gray" />
+                <Spinner size="md" colorPalette="gray" />
               </Box>
             )}
 

@@ -137,7 +137,7 @@ function IssueIdentification() {
             
             {isStreaming && !factsContent && (
               <Box display="flex" justifyContent="center" py={20}>
-                <Spinner size="xl" colorPalette="gray" />
+                <Spinner size="md" colorPalette="gray" />
               </Box>
             )}
             
@@ -181,7 +181,7 @@ function IssueIdentification() {
 
             {displayIssues.length === 0 && isStreaming && (
               <Box display="flex" justifyContent="center" py={8}>
-                <Spinner size="lg" colorPalette="gray" />
+                <Spinner size="md" colorPalette="gray" />
               </Box>
             )}
 

@@ -193,7 +193,7 @@ function FinalReview() {
         {/* 로딩 중 */}
         {isStreaming && issues.length === 0 && (
           <Box display="flex" justifyContent="center" py={12}>
-            <Spinner size="xl" colorPalette="gray" />
+            <Spinner size="md" colorPalette="gray" />
           </Box>
         )}
 
